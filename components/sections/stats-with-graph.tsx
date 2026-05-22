@@ -5,13 +5,16 @@ import { Section } from '../elements/section'
 export function Stat({
   stat,
   text,
+  source, 
+  sourceLink, 
   className,
   ...props
-}: { stat: ReactNode; text: ReactNode } & ComponentProps<'div'>) {
+}: { stat: ReactNode; text: ReactNode; source?: string; sourceLink?: string } & ComponentProps<'div'>) {
   return (
     <div className={clsx('border-l border-olive-950/20 pl-6 dark:border-white/20', className)} {...props}>
-      <div className="text-2xl/10 tracking-tight text-olive-950 dark:text-white">{stat}</div>
+      <div className="text-2xl/10 tracking-tight text-olive-700 dark:text-white">{stat}</div>
       <p className="mt-2 text-sm/7 text-olive-700 dark:text-olive-400">{text}</p>
+      {source && <a href={sourceLink} className="mt-1 text-sm/6 text-olive-500 dark:text-olive-600">{source}</a>}
     </div>
   )
 }

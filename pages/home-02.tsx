@@ -20,6 +20,9 @@ import {
 import { Plan, PricingMultiTier } from '@/components/sections/pricing-multi-tier'
 import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
 import { TestimonialLargeQuote } from '@/components/sections/testimonial-with-large-quote'
+import { Feature, FeaturesWithLargeDemo } from '@/components/sections/features-with-large-demo'
+import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo'
+
 
 export default function Page() {
   return (
@@ -239,11 +242,10 @@ export default function Page() {
         {/* Features */}
         <Features
           id="features"
-          headline="Everything you need to deliver personal, organized, and delightful support."
+          headline="Core services built to modernize how your business grows"
           subheadline={
             <p>
-              Work smarter, reply faster, and keep every customer conversation right where it belongs — in one simple
-              inbox, where you can ignore it.
+             Kickbord helps small and mid-sized businesses improve how they show up, respond, and convert through strategic marketing support, modern website experiences, and AI-powered business systems.
             </p>
           }
           cta={
@@ -255,7 +257,7 @@ export default function Page() {
             <>
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="blue" placement="bottom-right">
+                  <Screenshot wallpaper="green" placement="bottom-right">
                     <img
                       src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736"
                       alt=""
@@ -300,8 +302,8 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="Shared Inbox"
-                subheadline={<p>Manage support emails together in real time — no more support email hot potato.</p>}
+                headline="AI Voice Agents"
+                subheadline={<p>Deploy AI-powered receptionists that answer calls, qualify leads, route inquiries, and help your business stay responsive even when your team is busy.</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
@@ -350,12 +352,13 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="Collision Detection"
-                subheadline={<p>See when a teammate is replying before you hit send. Goodbye duplicate replies.</p>}
+                
+                headline="Websites & Digital Presence"
+                subheadline={<p>Redesign outdated websites and digital touchpoints so your business looks sharper, feels more credible, and supports the way modern customers evaluate who to trust.</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="brown" placement="bottom-left">
+                  <Screenshot wallpaper="blue" placement="bottom-left">
                     <img
                       src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736"
                       alt=""
@@ -400,9 +403,10 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="Inbox Agent"
-                subheadline={<p>Get valuable context without having to read through your customer's angry emails.</p>}
+                headline="Marketing Strategy & Systems"
+                subheadline={<p>Clarify your messaging, improve your digital presence, and build stronger marketing systems so your business can operate with more consistency and confidence.</p>}
               />
+              
             </>
           }
         />
@@ -410,20 +414,87 @@ export default function Page() {
         {/* Stats */}
         <StatsWithGraph
           id="stats"
-          eyebrow="Built for scale"
-          headline="The inbox powering customer conversations everywhere."
+          eyebrow="Why businesses hire Kickbord"
+          headline="Small businesses now have access to capabilities that used to belong to much bigger companies."
           subheadline={
             <p>
-              Oatmeal helps teams deliver personal, organized, and fast customer support across the world. From small
-              startups to enterprise teams, we process millions of messages each month — using a massive network of low
-              wage workers stationed around the globe.
+              AI is giving small and mid-sized businesses new ways to respond faster, automate routine work, and compete more effectively without building a large team. Pair that with a stronger website and clearer digital touchpoints, and there is more opportunity than ever to operate with the speed, credibility, and efficiency customers now expect.
             </p>
           }
         >
-          <Stat stat="2M+" text="Emails manually processed every week across thousands of teams." />
-          <Stat stat="99.98%" text="Uptime — because your customers never stop complaining." />
+          <Stat stat="21x" text="Businesses are 21 times more likely to qualify a lead when they respond within 5 minutes — which is why AI responders and voice agents can be so valuable when speed matters." source="LeadAngel" sourceLink="https://www.leadangel.com/blog/operations/speed-to-lead-statistics/" />
+          <Stat stat="64%" text="SMB leaders say AI helps level the playing field with larger competitors.  " source="Connected Counsel" sourceLink="https://connectedcouncil.org/wp-content/uploads/2025/03/Digital-Ads-and-AI-Help-Small-Businesses-Navigate-Uncertainty.pdf" />
         </StatsWithGraph>
 
+          {/* AI  Agent Feature */}
+          <FeaturesWithLargeDemo
+            id="ai-capabilities"
+            headline="Powerful AI features that work for you"
+            subheadline="Automate customer interactions and scale your business without scaling your team"
+            demo={
+              <Screenshot wallpaper="green" placement="bottom">
+                <img
+                  src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736"
+                  alt="AI dashboard"
+                  className="bg-black/75 not-dark:hidden max-lg:hidden"
+                  width={1200}
+                  height={736}
+                />
+              </Screenshot>
+            }
+            features={
+              <>
+                <Feature
+                  headline="Instant Call Answering"
+                  subheadline={<p>AI agents pick up every call in under 2 seconds, ensuring no customer waits.</p>}
+                />
+                <Feature
+                  headline="Natural Conversations"
+                  subheadline={<p>Advanced language models create human-like interactions that feel authentic.</p>}
+                />
+                <Feature
+                  headline="Lead Scoring"
+                  subheadline={<p>Automatically identify and prioritize high-value prospects based on conversation data.</p>}
+                />
+                <Feature
+                  headline="CRM Integration"
+                  subheadline={<p>Sync call data directly to your existing tools and workflows seamlessly.</p>}
+                />
+                <Feature
+                  headline="Custom Scripts"
+                  subheadline={<p>Train agents on your specific business needs, products, and services.</p>}
+                />
+                <Feature
+                  headline="Performance Tracking"
+                  subheadline={<p>Monitor call metrics, conversion rates, and customer satisfaction in real-time.</p>}
+                />
+              </>
+            }
+          />
+        <HeroTwoColumnWithPhoto
+          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">AI-Powered Solutions</div>}
+          headline="Never miss another opportunity with 24/7 AI voice agents"
+          subheadline={
+            <p>
+              Deploy intelligent voice agents that answer calls, qualify leads, and route inquiries automatically. 
+              Keep your business responsive around the clock while your team focuses on closing deals and delivering value.
+            </p>
+          }
+          cta={
+            <div className="flex gap-4">
+              <ButtonLink href="#">Get started</ButtonLink>
+              <PlainButtonLink href="#">Learn more</PlainButtonLink>
+            </div>
+          }
+          photo={
+            <img
+              src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1200&h=800&fit=crop"
+              alt="AI voice agent dashboard"
+              className="w-full h-full"
+            />
+          }
+         
+        />  
         {/* Testimonial */}
         <TestimonialLargeQuote
           id="testimonial"

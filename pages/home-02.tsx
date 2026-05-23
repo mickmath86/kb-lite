@@ -1,12 +1,15 @@
 import { AnnouncementBadge } from '@/components/elements/announcement-badge'
-import { ButtonLink, PlainButtonLink, SoftButtonLink } from '@/components/elements/button'
+import { Button, ButtonLink, PlainButtonLink, SoftButtonLink } from '@/components/elements/button'
 import { EmailSignupForm } from '@/components/elements/email-signup-form'
 import { Link } from '@/components/elements/link'
 import { Logo, LogoGrid } from '@/components/elements/logo-grid'
 import { Main } from '@/components/elements/main'
 import { Screenshot } from '@/components/elements/screenshot'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
+import { ChatBubbleCircleIcon } from '@/components/icons/chat-bubble-circle-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
+import { SparklesIcon } from '@/components/icons/sparkles-icon'
+import { TargetIcon } from '@/components/icons/target-icon'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { FAQsTwoColumnAccordion, Faq } from '@/components/sections/faqs-two-column-accordion'
 import { FeatureThreeColumnWithDemos, Features } from '@/components/sections/features-three-column-with-demos'
@@ -24,6 +27,7 @@ import { Feature, FeaturesWithLargeDemo } from '@/components/sections/features-w
 import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo'
 import { HeroSimpleLeftAligned } from '@/components/sections/hero-simple-left-aligned'
 import { HeroLeftAlignedWithPhoto } from '@/components/sections/hero-left-aligned-with-photo'
+import { TestimonialTwoColumnWithLargePhoto } from '@/components/sections/testimonial-two-column-with-large-photo'
 
 
 export default function Page() {
@@ -33,9 +37,9 @@ export default function Page() {
         id="navbar"
         links={
           <>
-            <NavbarLink href="#">Pricing</NavbarLink>
             <NavbarLink href="#">About</NavbarLink>
-            <NavbarLink href="#">Docs</NavbarLink>
+            <NavbarLink href="#">Services</NavbarLink>
+            <NavbarLink href="#">Contact</NavbarLink>
             <NavbarLink href="#" className="sm:hidden">
               Log in
             </NavbarLink>
@@ -64,7 +68,7 @@ export default function Page() {
             <PlainButtonLink href="#" className="max-sm:hidden">
               Log in
             </PlainButtonLink>
-            <ButtonLink href="#">Get started</ButtonLink>
+            <ButtonLink href="#">Get started <ArrowNarrowRightIcon /></ButtonLink>
           </>
         }
       />
@@ -456,26 +460,12 @@ export default function Page() {
         />  
 
         {/* web feature section */}
-        <HeroSimpleLeftAligned
-          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Modern Web Experiences</div>}
-          headline="Your website is often the first impression. Make it count."
-          subheadline={
-            <p>
-              Outdated websites hurt credibility and cost you opportunities. We redesign digital touchpoints so your business looks sharper, feels more trustworthy, and supports the way modern customers evaluate who to work with.
-            </p>
-          }
-          cta={
-            <div className="flex gap-4">
-              <ButtonLink href="#">View our work</ButtonLink>
-              <PlainButtonLink href="#">Learn more</PlainButtonLink>
-            </div>
-          }
-        />
+     
         <FeaturesWithLargeDemo
           id="web-features"
-          eyebrow="Modern Web Experiences"
-          headline="What makes a modern website work"
-          subheadline="The details that build trust and drive action"
+          eyebrow="Websites & digital presence"
+          headline="Websites that build credibilty and convert with more confidence."
+          subheadline="For many small and mid-sized businesses, the website is still the first real test of trust. Kickbord helps modernize outdated digital experiences so businesses communicate more clearly, feel more polished, and make it easier for the right customers to take action."
           demo={
             <Screenshot wallpaper="blue" placement="bottom">
               <img
@@ -490,146 +480,79 @@ export default function Page() {
           features={
             <>
               <Feature
-                headline="Mobile-First Design"
-                subheadline={<p>Responsive layouts that look great and function perfectly on every device.</p>}
+                icon={<ChatBubbleCircleIcon />}
+                headline="Clear messaging"
+                subheadline={<p>Make it immediately obvious what the business does, who it helps, and what the next step should be. Clear homepage messaging is a recurring recommendation for professional-service websites.</p>}
               />
               <Feature
-                headline="Fast Load Times"
-                subheadline={<p>Optimized performance that keeps visitors engaged and improves search rankings.</p>}
+                icon={<SparklesIcon />}
+                headline="Credible design"
+                subheadline={<p>A modern visual system helps the business feel trustworthy, established, and worth contacting. First impressions are heavily design-related, and website credibility is closely tied to design quality.</p>}
               />
               <Feature
-                headline="Clear Messaging"
-                subheadline={<p>Strategic content that communicates value quickly and guides visitors to action.</p>}
+                icon={<TargetIcon />}
+                headline="Conversion-ready UX"
+                subheadline={<p>Strong structure, mobile responsiveness, speed, and clear calls to action help visitors move from interest to inquiry.</p>}
               />
-              <Feature
-                headline="Modern Aesthetics"
-                subheadline={<p>Clean, professional design that reflects current standards and builds credibility.</p>}
-              />
-              <Feature
-                headline="SEO Foundation"
-                subheadline={<p>Built-in optimization to help your business get found by the right customers.</p>}
-              />
-              <Feature
-                headline="Easy Updates"
-                subheadline={<p>Content management systems that let you maintain your site without technical expertise.</p>}
-              />
+              
             </>
           }
         />
         {/* Testimonial */}
-        <TestimonialLargeQuote
-          id="testimonial"
-          quote={
-            <p>
-              Oatmeal has completely transformed our customer support operations. The blend of AI efficiency and human
-              empathy has allowed us to provide exceptional service while significantly reducing costs.
-            </p>
+        <HeroTwoColumnWithPhoto
+          eyebrow="About Kickbord"
+          headline="Built to bring bigger-business digital capability to smaller companies"
+          subheadline="Kickbord is led by Mike Mathias, digital strategist and builder with experience across major brands including Google, Nike, Samsung, Verizon, and BBC. The goal is to bring that level of digital thinking, execution, and modernization to small and mid-sized businesses that need to compete more effectively online."
+          cta={<> <Link href="/contact">Get in Touch <ArrowNarrowRightIcon /></Link>  </>}
+          photo={
+            <Screenshot wallpaper="green" placement="bottom">
+              <img
+                src="/mike.png"
+                alt=""
+                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
+                width={2000}
+                height={160}
+              />
+            </Screenshot>
           }
-          img={
-            <img
-              src="https://assets.tailwindplus.com/avatars/10.webp?size=160"
-              alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
-              width={160}
-              height={160}
-            />
-          }
-          name="Jordan Rogers"
-          byline="Founder at Anomaly"
         />
+        
 
         {/* FAQs */}
         <FAQsTwoColumnAccordion id="faqs" headline="Questions & Answers">
           <Faq
             id="faq-1"
-            question="Do I need a credit card to start the free trial?"
-            answer="Yes, but don't worry, you won't be charged until the trial period is over. We won't send you an email reminding you when this happens because we are really hoping you'll forget and we can keep charging you until your cards expires"
+            question="What kinds of businesses does Kickbord work with?"
+            answer="Kickbord works with small and mid-sized businesses that want a stronger digital presence, better customer response systems, and more modern ways of operating online."
           />
           <Faq
             id="faq-2"
-            question="Can my whole team use the same inbox?"
-            answer="Yes, the more the merrier! Oatmeal works best when your entire company has access. We will charge you per additional seat, but we won't tell you about this until you get your invoice."
+            question="Do you only do AI voice agents?"
+            answer="No. AI voice agents are one featured offer, but Kickbord also helps businesses improve websites, digital systems, messaging, and broader customer-facing workflows."
           />
           <Faq
             id="faq-3"
-            question="Is the AI agent actually a bunch of people in India?"
-            answer="Not just India! We have people in lots of countries around the world pretending to be an AI, including some that are currently under sanctions, so we can't legally mention them here."
+            question="What is an AI voice agent, exactly?"
+            answer="An AI voice agent is a conversational phone assistant that can answer calls, qualify leads, answer common questions, route inquiries, and support scheduling more intelligently than a traditional phone menu."
           />
           <Faq
             id="faq-4"
-            question="Does Oatmeal replace my email client?"
-            answer="Absolutely. The idea is that we transition you away from email entirely, so you become completely dependent on our service. Like a parasite living off a host."
+            question="Can AI really help a small business?"
+            answer="Yes. For many smaller teams, AI is most useful when it improves responsiveness, reduces repetitive work, and helps the business operate with more consistency and efficiency."
+          />
+          <Faq
+            id="faq-5"
+            question="Do you also redesign websites?"
+            answer="Yes. Kickbord redesigns websites for businesses that need a more credible, modern, and conversion-aware digital presence."
+          />
+          <Faq
+            id="faq-6"
+            question="What if I am not sure what I need yet?"
+            answer="That is exactly what the first conversation is for. Kickbord can help identify whether the biggest opportunity is in AI, website improvements, digital strategy, or a broader systems upgrade."
           />
         </FAQsTwoColumnAccordion>
 
-        {/* Pricing */}
-        <PricingMultiTier
-          id="pricing"
-          headline="Pricing to fit your business needs."
-          plans={
-            <>
-              <Plan
-                name="Starter"
-                price="$12"
-                period="/mo"
-                subheadline={<p>Small teams getting started with shared inboxes</p>}
-                features={[
-                  'Shared inbox for up to 2 mailboxes',
-                  'Tagging & assignment',
-                  'Private notes',
-                  'Automatic replies',
-                  'Email support',
-                ]}
-                cta={
-                  <SoftButtonLink href="#" size="lg">
-                    Start free trial
-                  </SoftButtonLink>
-                }
-              />
-              <Plan
-                name="Growth"
-                price="$49"
-                period="/mo"
-                subheadline={<p>Growing teams needing collaboration and insights</p>}
-                badge="Most popular"
-                features={[
-                  'Everything in Starter',
-                  'Inbox Agent',
-                  'Unlimited mailboxes',
-                  'Collision detection',
-                  'Snippets and templates',
-                  'Reporting dashboard',
-                  'Slack integration',
-                ]}
-                cta={
-                  <ButtonLink href="#" size="lg">
-                    Start free trial
-                  </ButtonLink>
-                }
-              />
-              <Plan
-                name="Pro"
-                price="$299"
-                period="/mo"
-                subheadline={<p>Support-focused organizations and larger teams</p>}
-                features={[
-                  'Everything in Growth',
-                  'Custom roles & permissions',
-                  'Automation engine',
-                  'API access',
-                  'SLA tracking',
-                  'SSO support',
-                  'SOC 2 compliance',
-                ]}
-                cta={
-                  <SoftButtonLink href="#" size="lg">
-                    Start free trial
-                  </SoftButtonLink>
-                }
-              />
-            </>
-          }
-        />
+      
 
         {/* Call To Action */}
         <CallToActionSimple

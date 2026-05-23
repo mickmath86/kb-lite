@@ -22,6 +22,8 @@ import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
 import { TestimonialLargeQuote } from '@/components/sections/testimonial-with-large-quote'
 import { Feature, FeaturesWithLargeDemo } from '@/components/sections/features-with-large-demo'
 import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo'
+import { HeroSimpleLeftAligned } from '@/components/sections/hero-simple-left-aligned'
+import { HeroLeftAlignedWithPhoto } from '@/components/sections/hero-left-aligned-with-photo'
 
 
 export default function Page() {
@@ -427,50 +429,7 @@ export default function Page() {
         </StatsWithGraph>
 
           {/* AI  Agent Feature */}
-          <FeaturesWithLargeDemo
-            id="ai-capabilities"
-            headline="Powerful AI features that work for you"
-            subheadline="Automate customer interactions and scale your business without scaling your team"
-            demo={
-              <Screenshot wallpaper="green" placement="bottom">
-                <img
-                  src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736"
-                  alt="AI dashboard"
-                  className="bg-black/75 not-dark:hidden max-lg:hidden"
-                  width={1200}
-                  height={736}
-                />
-              </Screenshot>
-            }
-            features={
-              <>
-                <Feature
-                  headline="Instant Call Answering"
-                  subheadline={<p>AI agents pick up every call in under 2 seconds, ensuring no customer waits.</p>}
-                />
-                <Feature
-                  headline="Natural Conversations"
-                  subheadline={<p>Advanced language models create human-like interactions that feel authentic.</p>}
-                />
-                <Feature
-                  headline="Lead Scoring"
-                  subheadline={<p>Automatically identify and prioritize high-value prospects based on conversation data.</p>}
-                />
-                <Feature
-                  headline="CRM Integration"
-                  subheadline={<p>Sync call data directly to your existing tools and workflows seamlessly.</p>}
-                />
-                <Feature
-                  headline="Custom Scripts"
-                  subheadline={<p>Train agents on your specific business needs, products, and services.</p>}
-                />
-                <Feature
-                  headline="Performance Tracking"
-                  subheadline={<p>Monitor call metrics, conversion rates, and customer satisfaction in real-time.</p>}
-                />
-              </>
-            }
-          />
+         
         <HeroTwoColumnWithPhoto
           eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">AI-Powered Solutions</div>}
           headline="Never miss another opportunity with 24/7 AI voice agents"
@@ -495,6 +454,68 @@ export default function Page() {
           }
          
         />  
+
+        {/* web feature section */}
+        <HeroSimpleLeftAligned
+          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Modern Web Experiences</div>}
+          headline="Your website is often the first impression. Make it count."
+          subheadline={
+            <p>
+              Outdated websites hurt credibility and cost you opportunities. We redesign digital touchpoints so your business looks sharper, feels more trustworthy, and supports the way modern customers evaluate who to work with.
+            </p>
+          }
+          cta={
+            <div className="flex gap-4">
+              <ButtonLink href="#">View our work</ButtonLink>
+              <PlainButtonLink href="#">Learn more</PlainButtonLink>
+            </div>
+          }
+        />
+        <FeaturesWithLargeDemo
+          id="web-features"
+          eyebrow="Modern Web Experiences"
+          headline="What makes a modern website work"
+          subheadline="The details that build trust and drive action"
+          demo={
+            <Screenshot wallpaper="blue" placement="bottom">
+              <img
+                src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736"
+                alt="Modern website design"
+                className="bg-black/75 dark:hidden max-lg:hidden"
+                width={1200}
+                height={736}
+              />
+            </Screenshot>
+          }
+          features={
+            <>
+              <Feature
+                headline="Mobile-First Design"
+                subheadline={<p>Responsive layouts that look great and function perfectly on every device.</p>}
+              />
+              <Feature
+                headline="Fast Load Times"
+                subheadline={<p>Optimized performance that keeps visitors engaged and improves search rankings.</p>}
+              />
+              <Feature
+                headline="Clear Messaging"
+                subheadline={<p>Strategic content that communicates value quickly and guides visitors to action.</p>}
+              />
+              <Feature
+                headline="Modern Aesthetics"
+                subheadline={<p>Clean, professional design that reflects current standards and builds credibility.</p>}
+              />
+              <Feature
+                headline="SEO Foundation"
+                subheadline={<p>Built-in optimization to help your business get found by the right customers.</p>}
+              />
+              <Feature
+                headline="Easy Updates"
+                subheadline={<p>Content management systems that let you maintain your site without technical expertise.</p>}
+              />
+            </>
+          }
+        />
         {/* Testimonial */}
         <TestimonialLargeQuote
           id="testimonial"

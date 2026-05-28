@@ -1,6 +1,7 @@
 import { AnnouncementBadge } from '@/components/elements/announcement-badge'
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Main } from '@/components/elements/main'
+import { Screenshot } from '@/components/elements/screenshot'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
 import { GitDiffIcon } from '@/components/icons/git-diff-icon'
@@ -13,6 +14,7 @@ import { BrandCard, BrandsCardsMultiColumn } from '@/components/sections/brands-
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { Feature, FeaturesThreeColumn } from '@/components/sections/features-three-column'
 import { FooterCategory, FooterLink, FooterWithLinkCategories } from '@/components/sections/footer-with-link-categories'
+import { HeroLeftAlignedWithDemo } from '@/components/sections/hero-left-aligned-with-demo'
 import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo'
 import {
   NavbarLink,
@@ -38,21 +40,21 @@ export default function Page() {
               }
               logo={
                 <NavbarLogo href="/">
-                  {/* <img
-                    src="/logos/kb-logo.png"
+                  <img
+                    src="/logos/icon.png"
                     alt="Kickbord"
                     className="dark:hidden"
-                    width={150}
+                    width={85}
                     height={28}
                   />
                   <img
-                    src="https://assets.tailwindplus.com/logos/oatmeal-instrument.svg?color=white"
+                    src="/logos/icon.png"
                     alt="Oatmeal"
                     className="not-dark:hidden"
                     width={85}
                     height={28}
-                  /> */}
-                  <h1 className="text-4xl  font-display">Kickbord</h1>
+                  />
+                  {/* <h1 className="text-4xl  font-display">Kickbord</h1> */}
                 </NavbarLogo>
               }
               actions={
@@ -67,14 +69,33 @@ export default function Page() {
 
       <Main>
         {/* Hero */}
-        <HeroTwoColumnWithPhoto
-          id="hero"
-          eyebrow={<AnnouncementBadge href="#" text="2025 Business of the Year" cta="Learn more" />}
-          headline="Your customer success is our mission."
+        <HeroLeftAlignedWithDemo 
+          headline="Built to give growing businesses bigger-business capability"
           subheadline={
             <p>
-              We're on a mission to take the human element completely out of customer support — so your team can focus
-              on what matters most, profitability.
+              Kickbord was created to help ambitious businesses strengthen their marketing, modernize their digital presence, and use AI more practically. It is a founder-led partner for companies that want enterprise-level thinking without enterprise-level complexity.
+            </p>
+          }
+          demo={
+            <Screenshot wallpaper="green" placement="bottom">
+            <img
+              className="not-dark:bg-white/75 max-xl:hidden dark:bg-black/75"
+              src="https://assets.tailwindplus.com/photos/1.webp"
+              width={1800}
+              height={1600}
+              alt=""
+            />
+            </Screenshot>
+          }
+          footer="Built to give growing businesses bigger-business capability"
+        />
+        <HeroTwoColumnWithPhoto
+          id="origin-story"
+          // eyebrow={<AnnouncementBadge href="#" text="2025 Business of the Year" cta="Learn more" />}
+          headline="Built to give growing businesses bigger-business capability"
+          subheadline={
+            <p>
+              Kickbord was created to help ambitious businesses strengthen their marketing, modernize their digital presence, and use AI more practically. It is a founder-led partner for companies that want enterprise-level thinking without enterprise-level complexity.
             </p>
           }
           photo={
@@ -100,7 +121,7 @@ export default function Page() {
         {/* Brands */}
         <BrandsCardsMultiColumn
           id="brands"
-          eyebrow="Backed by the best"
+          eyebrow="Origin Story"
           headline="Funded by leading investors."
           subheadline={
             <p>

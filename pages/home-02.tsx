@@ -39,8 +39,8 @@ export default function Page() {
           <>
             <NavbarLink href="/about">About</NavbarLink>
             <NavbarLink href="/services">Services</NavbarLink>
-            <NavbarLink href="#">Contact</NavbarLink>
-            <NavbarLink href="#" className="sm:hidden">
+            <NavbarLink href="/contact">Contact</NavbarLink>
+            <NavbarLink href="/" className="sm:hidden">
               Log in
             </NavbarLink>
           </>
@@ -48,14 +48,14 @@ export default function Page() {
         logo={
           <NavbarLogo href="/">
             <img
-              src="/logos/icon.svg"
+              src="/logos/icon.png"
               alt="Kickbord"
               className="dark:hidden"
               width={85}
               height={28}
             />
             <img
-              src="/logos/icon.svg"
+              src="/logos/icon.png"
               className="not-dark:hidden"
               width={85}
               height={28}
@@ -68,7 +68,7 @@ export default function Page() {
             <PlainButtonLink href="#" className="max-sm:hidden">
               Log in
             </PlainButtonLink>
-            <ButtonLink href="#">Get started <ArrowNarrowRightIcon /></ButtonLink>
+            <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
           </>
         }
       />

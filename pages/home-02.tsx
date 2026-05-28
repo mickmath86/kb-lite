@@ -37,8 +37,8 @@ export default function Page() {
         id="navbar"
         links={
           <>
-            <NavbarLink href="#">About</NavbarLink>
-            <NavbarLink href="#">Services</NavbarLink>
+            <NavbarLink href="/about">About</NavbarLink>
+            <NavbarLink href="/services">Services</NavbarLink>
             <NavbarLink href="#">Contact</NavbarLink>
             <NavbarLink href="#" className="sm:hidden">
               Log in
@@ -48,19 +48,19 @@ export default function Page() {
         logo={
           <NavbarLogo href="/">
             <img
-              src="/logos/kb-logo.png"
+              src="/logos/icon.svg"
               alt="Kickbord"
               className="dark:hidden"
-              width={150}
+              width={85}
               height={28}
             />
             <img
-              src="https://assets.tailwindplus.com/logos/oatmeal-instrument.svg?color=white"
-              alt="Oatmeal"
+              src="/logos/icon.svg"
               className="not-dark:hidden"
               width={85}
               height={28}
             />
+            {/* <h1 className="text-4xl  font-display">Kickbord</h1> */}
           </NavbarLogo>
         }
         actions={
@@ -78,7 +78,7 @@ export default function Page() {
         <HeroWithDemoOnBackground
           id="hero"
           eyebrow={
-            <AnnouncementBadge href="#" text="Built from experience across Google, Nike, Samsung, Verizon, BBC, and more" cta="Learn more" variant="overlay" />
+            <AnnouncementBadge href="/about" text="Built from experience across Google, Nike, Samsung, Verizon, BBC, and more" cta="Learn more" variant="overlay" />
           }
           headline="Bring enterprise-level digital marketing to your business"
           subheadline={
@@ -101,43 +101,42 @@ export default function Page() {
             <>
               <img
                 className="bg-white/75 md:hidden dark:hidden"
-                src="/hand.jpeg"
+                src="/images/hero.png"
                 alt=""
                 width="3440"
                 height="1500"
               />
               <img
                 className="bg-black/75 not-dark:hidden md:hidden"
-                src="/hand.jpeg"
+                src="/images/hero.png"
                 alt=""
                 width="3440"
                 height="1500"
               />
               <img
                 className="bg-white/75 max-md:hidden lg:hidden dark:hidden"
-                src="/hand.jpeg"
+                src="/images/hero.png"
                 alt=""
                 width="3440"
                 height="1500"
               />
               <img
                 className="bg-black/75 not-dark:hidden max-md:hidden lg:hidden"
-                src="/hand.jpeg"
+                src="/images/hero.png"
                 alt=""
                 width="3440"
                 height="1500"
               />
               <img
                 className="bg-white/75 max-lg:hidden dark:hidden"
-                src="https://assets.tailwindplus.com/screenshots/1.webp?top=1500"
+                 src="/images/hero.png"
                 alt=""
                 width="3440"
                 height="1500"
               />
               <img
                 className="bg-black/75 not-dark:hidden max-lg:hidden"
-                src="https://assets.tailwindplus.com/screenshots/1.webp?top=1500&color=olive"
-                alt=""
+                src="/images/hero.png"
                 width="3440"
                 height="1500"
               />
@@ -147,97 +146,56 @@ export default function Page() {
             <LogoGrid>
               <Logo>
                 <img
-                  src="https://assets.tailwindplus.com/logos/9.svg?color=black&height=32"
-                  className="dark:hidden"
-                  alt=""
-                  width={51}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/9.svg?color=white&height=32"
-                  className="bg-black/75 not-dark:hidden"
-                  alt=""
-                  width={51}
+                  src="https://cdn.brandfetch.io/id6O2oGzv-/w/800/h/271/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                  alt="Google"
+                  width={94}
                   height={32}
                 />
               </Logo>
               <Logo>
                 <img
-                  src="https://assets.tailwindplus.com/logos/10.svg?color=black&height=32"
-                  className="dark:hidden"
-                  alt=""
-                  width={70}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/10.svg?color=white&height=32"
-                  className="bg-black/75 not-dark:hidden"
-                  alt=""
-                  width={70}
+                  src="https://cdn.brandfetch.io/idtEghWGp4/w/800/h/229/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                  alt="BBC"
+                  width={112}
                   height={32}
                 />
               </Logo>
               <Logo>
                 <img
-                  src="https://assets.tailwindplus.com/logos/11.svg?color=black&height=32"
-                  className="dark:hidden"
-                  alt=""
-                  width={100}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/11.svg?color=white&height=32"
-                  className="bg-black/75 not-dark:hidden"
-                  alt=""
-                  width={100}
+                  src="https://cdn.brandfetch.io/id_0dwKPKT/w/800/h/278/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                  alt="Nike"
+                  width={92}
                   height={32}
                 />
               </Logo>
               <Logo>
                 <img
-                  src="https://assets.tailwindplus.com/logos/12.svg?color=black&height=32"
-                  className="dark:hidden"
-                  alt=""
-                  width={85}
+                  src="https://cdn.brandfetch.io/iduaw_nOnR/w/800/h/122/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                  alt="Samsung"
+                  width={210}
                   height={32}
                 />
+              </Logo>
+             
+              <Logo>
                 <img
-                  src="https://assets.tailwindplus.com/logos/12.svg?color=white&height=32"
-                  className="bg-black/75 not-dark:hidden"
-                  alt=""
-                  width={85}
+                  src="https://cdn.brandfetch.io/id6htIcs_f/w/90/h/90/theme/dark/id4N0u-dxx.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                  alt="Procter & Gamble"
+                  width={32}
                   height={32}
                 />
               </Logo>
               <Logo>
                 <img
-                  src="https://assets.tailwindplus.com/logos/13.svg?color=black&height=32"
-                  className="dark:hidden"
-                  alt=""
-                  width={75}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/13.svg?color=white&height=32"
-                  className="bg-black/75 not-dark:hidden"
-                  alt=""
-                  width={75}
-                  height={32}
-                />
-              </Logo>
-              <Logo>
-                <img
-                  src="https://assets.tailwindplus.com/logos/8.svg?color=black&height=32"
-                  className="dark:hidden"
-                  alt=""
-                  width={85}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/8.svg?color=white&height=32"
-                  className="bg-black/75 not-dark:hidden"
-                  alt=""
-                  width={85}
+                  src="https://cdn.brandfetch.io/idXhrQrb5t/w/800/h/179/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                  alt="Verizon"
+                  width={143}
                   height={32}
                 />
               </Logo>
@@ -255,7 +213,7 @@ export default function Page() {
             </p>
           }
           cta={
-            <Link href="#">
+            <Link href="/services">
               See how it works <ArrowNarrowRightIcon />
             </Link>
           }
@@ -265,42 +223,42 @@ export default function Page() {
                 demo={
                   <Screenshot wallpaper="green" placement="bottom-right">
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736"
+                      src="/images/ai.png?left=1200&top=736"
                       alt=""
                       className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
                       height={736}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736&color=olive"
+                      src="/images/ai.png?left=1200&top=736&color=olive"
                       alt=""
                       width={1200}
                       height={736}
                       className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?left=1800&top=736"
+                      src="/images/ai.png?left=1800&top=736"
                       alt=""
                       className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
                       width={1800}
                       height={736}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?left=1800&top=736&color=olive"
+                      src="/images/ai.png?left=1800&top=736&color=olive"
                       alt=""
                       width={1800}
                       height={736}
                       className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736"
+                      src="/images/ai.png?left=1200&top=736"
                       alt=""
                       className="bg-white/75 max-lg:hidden dark:hidden"
                       width={1200}
                       height={736}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?left=1200&top=736&color=olive"
+                      src="/images/ai.png?left=1200&top=736&color=olive"
                       alt=""
                       width={1200}
                       height={736}
@@ -315,42 +273,42 @@ export default function Page() {
                 demo={
                   <Screenshot wallpaper="purple" placement="top-left">
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&bottom=736"
+                      src="/images/ai.png?right=1200&bottom=736"
                       alt=""
                       className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
                       height={736}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&bottom=736&color=olive"
+                      src="/images/ai.png?right=1200&bottom=736&color=olive"
                       alt=""
                       width={1200}
                       height={736}
                       className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1800&bottom=736"
+                      src="/images/ai.png?right=1800&bottom=736"
                       alt=""
                       className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
                       width={1800}
                       height={736}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1800&bottom=736&color=olive"
+                      src="/images/ai.png?right=1800&bottom=736&color=olive"
                       alt=""
                       width={1800}
                       height={736}
                       className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&bottom=736"
+                      src="/images/ai.png?right=1200&bottom=736"
                       alt=""
                       className="bg-white/75 max-lg:hidden dark:hidden"
                       width={1200}
                       height={736}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&bottom=736&color=olive"
+                      src="/images/ai.png?right=1200&bottom=736&color=olive"
                       alt=""
                       width={1200}
                       height={736}

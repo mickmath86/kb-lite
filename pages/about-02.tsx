@@ -1,6 +1,7 @@
 import { AnnouncementBadge } from '@/components/elements/announcement-badge'
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Main } from '@/components/elements/main'
+import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
 import { GitDiffIcon } from '@/components/icons/git-diff-icon'
 import { HeartIcon } from '@/components/icons/heart-icon'
@@ -24,44 +25,45 @@ export default function Page() {
   return (
     <>
       <NavbarWithLogoActionsAndCenteredLinks
-        id="navbar"
-        links={
-          <>
-            <NavbarLink href="#">Pricing</NavbarLink>
-            <NavbarLink href="#">About</NavbarLink>
-            <NavbarLink href="#">Docs</NavbarLink>
-            <NavbarLink href="#" className="sm:hidden">
-              Log in
-            </NavbarLink>
-          </>
-        }
-        logo={
-          <NavbarLogo href="#">
-            <img
-              src="https://assets.tailwindplus.com/logos/oatmeal-instrument.svg?color=mist-950"
-              alt="Oatmeal"
-              className="dark:hidden"
-              width={85}
-              height={28}
+              id="navbar"
+              links={
+                <>
+                  <NavbarLink href="/about">About</NavbarLink>
+                  <NavbarLink href="/services">Services</NavbarLink>
+                  <NavbarLink href="#">Contact</NavbarLink>
+                  <NavbarLink href="#" className="sm:hidden">
+                    Log in
+                  </NavbarLink>
+                </>
+              }
+              logo={
+                <NavbarLogo href="/">
+                  {/* <img
+                    src="/logos/kb-logo.png"
+                    alt="Kickbord"
+                    className="dark:hidden"
+                    width={150}
+                    height={28}
+                  />
+                  <img
+                    src="https://assets.tailwindplus.com/logos/oatmeal-instrument.svg?color=white"
+                    alt="Oatmeal"
+                    className="not-dark:hidden"
+                    width={85}
+                    height={28}
+                  /> */}
+                  <h1 className="text-4xl  font-display">Kickbord</h1>
+                </NavbarLogo>
+              }
+              actions={
+                <>
+                  <PlainButtonLink href="#" className="max-sm:hidden">
+                    Log in
+                  </PlainButtonLink>
+                  <ButtonLink href="#">Get started <ArrowNarrowRightIcon /></ButtonLink>
+                </>
+              }
             />
-            <img
-              src="https://assets.tailwindplus.com/logos/oatmeal-instrument.svg?color=white"
-              alt="Oatmeal"
-              className="not-dark:hidden"
-              width={85}
-              height={28}
-            />
-          </NavbarLogo>
-        }
-        actions={
-          <>
-            <PlainButtonLink href="#" className="max-sm:hidden">
-              Log in
-            </PlainButtonLink>
-            <ButtonLink href="#">Get started</ButtonLink>
-          </>
-        }
-      />
 
       <Main>
         {/* Hero */}

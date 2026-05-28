@@ -355,20 +355,17 @@ export default function GetStartedPage() {
 
     setSubmitting(true)
     try {
-      // Webhook — URL to be provided by Mike
-      const WEBHOOK_URL = process.env.NEXT_PUBLIC_ONBOARDING_WEBHOOK_URL || ''
+      const WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/FJeizTc6Xn4BiUesMgHQ/webhook-trigger/b284344c-328d-4a72-a3b5-f507444c5941'
 
-      if (WEBHOOK_URL) {
-        await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...answers,
-            source: 'kickbord-get-started',
-            submitted_at: new Date().toISOString(),
-          }),
-        })
-      }
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...answers,
+          source: 'kickbord-get-started',
+          submitted_at: new Date().toISOString(),
+        }),
+      })
 
       router.push('/get-started/complete')
     } catch {

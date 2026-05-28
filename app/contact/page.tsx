@@ -64,16 +64,13 @@ export default function ContactPage() {
     setStatus('submitting')
 
     try {
-      // Webhook URL — replace with your GoHighLevel or custom endpoint
-      const WEBHOOK_URL = process.env.NEXT_PUBLIC_CONTACT_WEBHOOK_URL || ''
+      const WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/FJeizTc6Xn4BiUesMgHQ/webhook-trigger/a24fbc54-25a8-4be2-9494-ad52e6a39dd4'
 
-      if (WEBHOOK_URL) {
-        await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...form, source: 'kickbord-contact-form' }),
-        })
-      }
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, source: 'kickbord-contact-form' }),
+      })
 
       setStatus('success')
     } catch {

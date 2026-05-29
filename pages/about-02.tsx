@@ -10,6 +10,8 @@ import { RocketIcon } from '@/components/icons/rocket-icon'
 import { StarIcon } from '@/components/icons/star-icon'
 import { TargetIcon } from '@/components/icons/target-icon'
 import { User2Icon } from '@/components/icons/user-2-icon'
+
+
 import { BrandCard, BrandsCardsMultiColumn } from '@/components/sections/brands-cards-multi-column'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { Feature, FeaturesThreeColumn } from '@/components/sections/features-three-column'
@@ -21,6 +23,8 @@ import {
   NavbarLogo,
   NavbarWithLogoActionsAndCenteredLinks,
 } from '@/components/sections/navbar-with-logo-actions-and-centered-links'
+import { Plan as PlanMulti, PricingMultiTier } from '@/components/sections/pricing-multi-tier'
+import { Stat as Stat3, StatsThreeColumnWithDescription } from '@/components/sections/stats-three-column-with-description'
 import { TeamMember, TeamThreeColumnGrid } from '@/components/sections/team-three-column-grid'
 
 export default function Page() {
@@ -69,29 +73,10 @@ export default function Page() {
 
       <Main>
         {/* Hero */}
-        <HeroLeftAlignedWithDemo 
-          headline="Built to give growing businesses bigger-business capability"
-          subheadline={
-            <p>
-              Kickbord was created to help ambitious businesses strengthen their marketing, modernize their digital presence, and use AI more practically. It is a founder-led partner for companies that want enterprise-level thinking without enterprise-level complexity.
-            </p>
-          }
-          demo={
-            <Screenshot wallpaper="green" placement="bottom">
-            <img
-              className="not-dark:bg-white/75 max-xl:hidden dark:bg-black/75"
-              src="https://assets.tailwindplus.com/photos/1.webp"
-              width={1800}
-              height={1600}
-              alt=""
-            />
-            </Screenshot>
-          }
-          footer="Built to give growing businesses bigger-business capability"
-        />
+        
         <HeroTwoColumnWithPhoto
           id="origin-story"
-          // eyebrow={<AnnouncementBadge href="#" text="2025 Business of the Year" cta="Learn more" />}
+          
           headline="Built to give growing businesses bigger-business capability"
           subheadline={
             <p>
@@ -118,85 +103,83 @@ export default function Page() {
           }
         />
 
-        {/* Brands */}
-        <BrandsCardsMultiColumn
-          id="brands"
-          eyebrow="Origin Story"
-          headline="Funded by leading investors."
+        <HeroLeftAlignedWithDemo 
+        eyebrow="Origin Story"
+          headline="From enterprise campaigns to giving growing businesses a real shot"
           subheadline={
+             <>  
             <p>
-              Oatmeal is backed by investors with decades of experience building the world's most boring and predictable
-              B2B SaaS.
+              I spent my career inside top agencies building websites, apps, and social campaigns for Fortune 500 brands, working alongside some of the most creative minds in advertising. I loved the creativity and the scale of that work – like leading the team that rebuilt the entire Google Ads web platform, a product used by tens of millions of people.
             </p>
+            <p>
+              But the longer I worked at that level, the more a pattern bothered me. Smaller and mid-sized businesses almost never got access to this kind of thinking or execution. They were bootstrapping, hiring whoever they could afford, or trying to figure out marketing, websites, and operations on their own – while the best talent was busy shipping massive campaigns for the biggest companies.
+              </p>
+              <p>
+              While freelancing as a lead producer at R/GA on Google projects, I had a realization: if smaller businesses could see what truly goes into enterprise-level marketing and business consulting, they would be blown away by what’s possible for them. With modern AI tools, one experienced enterprise-level marketer who knows what questions to ask and what problems to solve can now deliver that caliber of strategy, creative, and systems to growing businesses at a fraction of the old cost. Kickbord exists to do exactly that – bringing enterprise-level marketing and business consulting to small and mid-sized businesses that are ready to grow but should not have to do it alone.
+            </p>
+            <p>
+                -Mike M 
+            </p>
+            </>
           }
-        >
-          <BrandCard
-            logo={
-              <>
-                <img
-                  src="https://assets.tailwindplus.com/logos/15.svg?color=black&width=110"
-                  className="dark:hidden"
-                  alt=""
-                  width={124}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/15.svg?color=white&width=110"
-                  className="not-dark:hidden"
-                  alt=""
-                  width={124}
-                  height={32}
-                />
-              </>
-            }
-            text="Focused capital for founders building the next generation of pyramid shaped businesses."
-            footnote="Investor in Anomaly, Concise, Haptic and more."
-          />
-          <BrandCard
-            logo={
-              <>
-                <img
-                  src="https://assets.tailwindplus.com/logos/16.svg?color=black&width=120"
-                  className="dark:hidden"
-                  alt=""
-                  width={146}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/16.svg?color=white&width=120"
-                  className="not-dark:hidden"
-                  alt=""
-                  width={146}
-                  height={32}
-                />
-              </>
-            }
-            text="Serving as a tax-efficiency vehicle for investors waiting to move to a tax haven."
-            footnote="Investor in Quirk, Looply, Pine Labs and more."
-          />
-          <BrandCard
-            logo={
-              <>
-                <img
-                  src="https://assets.tailwindplus.com/logos/14.svg?color=black&width=80"
-                  className="dark:hidden"
-                  alt=""
-                  width={106}
-                  height={32}
-                />
-                <img
-                  src="https://assets.tailwindplus.com/logos/14.svg?color=white&width=80"
-                  className="not-dark:hidden"
-                  alt=""
-                  width={106}
-                  height={32}
-                />
-              </>
-            }
-            text="Investing in potentially volatile bubble markets at an early stage."
-            footnote="Investor in Artifact, Umbra, vivid.ai and more."
-          />
-        </BrandsCardsMultiColumn>
+          demo={
+            <Screenshot wallpaper="green" placement="bottom">
+            <img
+              className="not-dark:bg-white/75 max-xl:hidden dark:bg-black/75"
+              src="https://assets.tailwindplus.com/photos/1.webp"
+              width={1800}
+              height={1600}
+              alt=""
+            />
+            </Screenshot>
+          }
+          
+        />
+        
+        <StatsThreeColumnWithDescription 
+       
+          heading="Who We Help" 
+          description="Kickbord works with growing businesses that need stronger marketing, better digital systems, and a clearer path to scale. These are companies with real opportunity, but not always the time, in-house expertise, or internal infrastructure to turn that opportunity into consistent growth."
+          children={
+            <>
+              <Stat3 stat="Local businesses with momentum" text="Established businesses serving real markets and ready to grow more intentionally." />
+              <Stat3 stat="Lean teams without in-house marketing" text="Companies that need senior-level strategy without building a full internal department." />
+              <Stat3 stat="Owners ready to modernize" text="Businesses looking to improve marketing, websites, systems, and AI adoption in a practical way." />
+            </>
+          }
+        />
+        
+        <PricingMultiTier 
+        eyebrow="How Kickbord Helps"
+        headline="Strategy, execution, and systems built to move the business forward"
+         plans={
+                      <>
+                        <PlanMulti
+                          name="Strategy"
+                          price="Clarity and direction"
+                          subheadline={<p>Kickbord helps businesses clarify positioning, identify growth opportunities, and make better marketing decisions with a clear plan forward.</p>}
+                          features={['Brand and positioning clarity', 'Growth opportunity mapping', 'Website and funnel strategy', 'Marketing roadmap development']}
+                       
+                        />
+                        <PlanMulti
+                          name="90-Day Sprint"
+                          price="$1,500"
+                          period="/ month"
+                          badge="Most popular"
+                          subheadline={<p>A structured 3-month engagement covering strategy, execution, and ongoing optimization.</p>}
+                          features={['Everything in Strategic Build', 'Monthly strategy sessions', 'Campaign management', 'Performance reporting', 'Priority support']}
+                          
+                        />
+                        <PlanMulti
+                          name="Fractional CMO"
+                          price="$3,000"
+                          period="/ month"
+                          subheadline={<p>Ongoing senior marketing leadership embedded in your business. Full strategic and executional ownership.</p>}
+                          features={['Full CMO responsibilities', 'Weekly check-ins', 'Team management', 'Vendor coordination', 'Board-level reporting']}
+                       
+                        />
+                      </>
+                    }/>
 
         {/* Team */}
         <TeamThreeColumnGrid

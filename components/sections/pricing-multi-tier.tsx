@@ -19,7 +19,7 @@ export function Plan({
   subheadline: ReactNode
   badge?: ReactNode
   features: ReactNode[]
-  cta: ReactNode
+  cta?: ReactNode
 } & ComponentProps<'div'>) {
   return (
     <div
@@ -52,7 +52,7 @@ export function Plan({
           ))}
         </ul>
       </div>
-      {cta}
+      {cta && cta}
     </div>
   )
 }

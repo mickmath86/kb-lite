@@ -39,23 +39,25 @@ export default function Page() {
           <>
             <NavbarLink href="/about">About</NavbarLink>
             <NavbarLink href="/services">Services</NavbarLink>
+            <NavbarLink href="/ai-voice-agents">AI Voice Agents</NavbarLink>
+            <NavbarLink href="/results">Results</NavbarLink>
             <NavbarLink href="/contact">Contact</NavbarLink>
-            <NavbarLink href="/" className="sm:hidden">
-              Log in
+            <NavbarLink href="/get-started" className="sm:hidden">
+              Get started
             </NavbarLink>
           </>
         }
         logo={
           <NavbarLogo href="/">
             <img
-              src="/logos/icon.png"
+              src="/Logos/icon.svg"
               alt="Kickbord"
               className="dark:hidden"
               width={85}
               height={28}
             />
             <img
-              src="/logos/icon.png"
+              src="/Logos/icon.svg"
               className="not-dark:hidden"
               width={85}
               height={28}
@@ -515,21 +517,19 @@ export default function Page() {
         {/* Call To Action */}
         <CallToActionSimple
           id="call-to-action"
-          headline="Ready to make customer support feel simple again?"
+          headline="Ready to bring enterprise-level marketing to your business?"
           subheadline={
             <p>
-              Join hundreds of teams using Oatmeal to deliver faster, friendlier email support — using a massive network
-              of low wage workers stationed around the globe
+              Book a free strategy call and find out exactly where AI, better websites, and smarter marketing can move the needle for your business.
             </p>
           }
           cta={
             <div className="flex items-center gap-4">
-              <ButtonLink href="#" size="lg">
-                Start free trial
+              <ButtonLink href="/get-started" size="lg">
+                Get started <ArrowNarrowRightIcon />
               </ButtonLink>
-
-              <PlainButtonLink href="#" size="lg">
-                Book a demo <ChevronIcon />
+              <PlainButtonLink href="/contact" size="lg">
+                Book a call <ChevronIcon />
               </PlainButtonLink>
             </div>
           }
@@ -540,36 +540,23 @@ export default function Page() {
         id="footer"
         links={
           <>
-            <FooterCategory title="Product">
-              <FooterLink href="#">Features</FooterLink>
-              <FooterLink href="#">Pricing</FooterLink>
-              <FooterLink href="#">Integrations</FooterLink>
+            <FooterCategory title="Services">
+              <FooterLink href="/ai-voice-agents">AI Voice Agents</FooterLink>
+              <FooterLink href="/websites">Websites &amp; Redesigns</FooterLink>
+              <FooterLink href="/consulting">Consulting &amp; Strategy</FooterLink>
             </FooterCategory>
             <FooterCategory title="Company">
-              <FooterLink href="#">About</FooterLink>
-              <FooterLink href="#">Careers</FooterLink>
-              <FooterLink href="#">Blog</FooterLink>
-              <FooterLink href="#">Press Kit</FooterLink>
-            </FooterCategory>
-            <FooterCategory title="Resources">
-              <FooterLink href="#">Help Center</FooterLink>
-              <FooterLink href="#">API Docs</FooterLink>
-              <FooterLink href="#">Status</FooterLink>
-              <FooterLink href="#">Contact</FooterLink>
+              <FooterLink href="/about">About</FooterLink>
+              <FooterLink href="/results">Results</FooterLink>
+              <FooterLink href="/contact">Contact</FooterLink>
             </FooterCategory>
             <FooterCategory title="Legal">
               <FooterLink href="#">Privacy Policy</FooterLink>
               <FooterLink href="#">Terms of Service</FooterLink>
-              <FooterLink href="#">Security</FooterLink>
-            </FooterCategory>
-            <FooterCategory title="Connect">
-              <FooterLink href="#">X</FooterLink>
-              <FooterLink href="#">GitHub</FooterLink>
-              <FooterLink href="#">YouTube</FooterLink>
             </FooterCategory>
           </>
         }
-        fineprint="© 2025 Oatmeal, Inc."
+        fineprint="© 2026 Kickbord. All rights reserved."
       />
     </>
   )

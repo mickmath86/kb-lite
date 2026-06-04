@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { clsx } from 'clsx/lite'
 import { ArrowNarrowLeftIcon } from '@/components/icons/arrow-narrow-left-icon'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
@@ -39,6 +39,7 @@ interface LeadInfo {
   owner: string
   trade: string
   notes: string
+  siteUrl: string
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -236,6 +237,24 @@ function PreCallScreen({ info, onChange, onStart }: {
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/40">
+              Current website URL
+              <span className="ml-2 normal-case tracking-normal font-normal text-white/30">(optional — embeds their live site in the deck)</span>
+            </label>
+            <input
+              type="url"
+              value={info.siteUrl}
+              onChange={(e) => onChange('siteUrl', e.target.value)}
+              placeholder="https://theirwebsite.com"
+              className="w-full rounded-xl border border-white/15 bg-white/8 px-4 py-3 text-base text-white placeholder-white/25 outline-none ring-0 transition focus:border-white/40 focus:bg-white/12"
+            />
+            {info.siteUrl && (
+              <p className="mt-1.5 text-xs text-white/35">
+                A live preview slide will appear after the cover. Note: some sites block embedding — a fallback link is shown if so.
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/40">
               Pre-call notes
             </label>
             <textarea
@@ -267,6 +286,89 @@ function PreCallScreen({ info, onChange, onStart }: {
 // ─────────────────────────────────────────────────────────────────────────────
 // SLIDES 1–18 (all receive `info` prop for personalisation)
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Slide 1.5 (conditional) — Live Site Preview
+function SitePreviewSlide({ info }: { info: LeadInfo }) {
+  const [blocked, setBlocked] = useState(false)
+  const url = info.siteUrl
+
+  // Normalise URL — ensure it has a protocol
+  const normalised = url.startsWith('http') ? url : `https://${url}`
+
+  // Detect blocked embeds via iframe load error
+  // (some browsers fire onError, others just show a blank frame)
+  function handleError() {
+    setBlocked(true)
+  }
+
+  const company = info.company || 'Their site'
+
+  return (
+    <div className="relative flex h-full w-full flex-col overflow-hidden bg-olive-950">
+      {/* Header bar */}
+      <div className="flex shrink-0 items-center justify-between gap-4 border-b border-white/10 px-6 py-3">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs font-semibold uppercase tracking-widest text-white/40">Current site</span>
+          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">{company}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          {/* URL pill */}
+          <span className="max-w-xs truncate rounded-full bg-white/5 border border-white/10 px-3 py-1 text-xs text-white/50">
+            {normalised}
+          </span>
+          {/* Open in new tab */}
+          <a
+            href={normalised}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20"
+          >
+            <svg className="size-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 2H2.5A1.5 1.5 0 0 0 1 3.5v10A1.5 1.5 0 0 0 2.5 15h10A1.5 1.5 0 0 0 14 13.5V10M10 1h5m0 0v5m0-5L6.5 9.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Open in tab
+          </a>
+        </div>
+      </div>
+
+      {/* Iframe or blocked fallback */}
+      {blocked ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 px-8 text-center">
+          <div className="flex size-16 items-center justify-center rounded-2xl bg-white/5">
+            <svg className="size-8 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-display text-2xl text-white">This site blocks embedding.</p>
+            <p className="mt-2 text-sm text-white/50">Many sites prevent iframe previews for security reasons. Open it in a new tab instead.</p>
+          </div>
+          <a
+            href={normalised}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-olive-950 transition hover:opacity-90"
+          >
+            Open {company} website
+            <svg className="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 2H2.5A1.5 1.5 0 0 0 1 3.5v10A1.5 1.5 0 0 0 2.5 15h10A1.5 1.5 0 0 0 14 13.5V10M10 1h5m0 0v5m0-5L6.5 9.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+          <p className="text-xs text-white/30">Tip: bookmark their URL before the call so you can pull it up quickly.</p>
+        </div>
+      ) : (
+        <iframe
+          key={normalised}
+          src={normalised}
+          className="flex-1 w-full border-0"
+          title={`${company} website preview`}
+          onError={handleError}
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        />
+      )}
+    </div>
+  )
+}
 
 // Slide 1 — Your Contractor Website Rebuild (personalised cover)
 function Slide1({ info }: { info: LeadInfo }) {
@@ -1193,7 +1295,6 @@ function Slide18({ info }: { info: LeadInfo }) {
 // Slide registry (18 slides — Slide 0 is the pre-call screen, not counted)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const TOTAL = 18
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Deck shell
@@ -1203,14 +1304,16 @@ export default function ContractorPitchDeck() {
   const [started, setStarted] = useState(false)
   const [current, setCurrent] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [info, setInfo] = useState<LeadInfo>({ company: '', owner: '', trade: '', notes: '' })
+  const [info, setInfo] = useState<LeadInfo>({ company: '', owner: '', trade: '', notes: '', siteUrl: '' })
 
   function updateInfo(field: keyof LeadInfo, value: string) {
     setInfo((prev) => ({ ...prev, [field]: value }))
   }
 
+  // Max slides changes when siteUrl is added/removed — use a ref so callbacks stay stable
+  const maxSlideRef = useRef(18)
   const prev = useCallback(() => setCurrent((c) => Math.max(0, c - 1)), [])
-  const next = useCallback(() => setCurrent((c) => Math.min(TOTAL - 1, c + 1)), [])
+  const next = useCallback(() => setCurrent((c) => Math.min(maxSlideRef.current - 1, c + 1)), [])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -1223,14 +1326,25 @@ export default function ContractorPitchDeck() {
     return () => window.removeEventListener('keydown', onKey)
   }, [started, next, prev])
 
-  const slideLabels = [
+  // Build slide list dynamically — inject preview slide after cover if URL provided
+  const baseLabels = [
     'Website Rebuild', 'What Changed', 'What Sites Get Wrong', 'More Than a Site',
     'About Kickbord', 'Who We Help', 'The Problem', 'Why It Matters',
     'The System', 'Core Automations', 'Outcomes', 'Pricing Overview',
     'Launch', 'Grow', 'Scale', 'Upsells + Quarterly', 'Setup + Next Steps', 'Close',
   ]
+  const baseComponents = [Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7, Slide8, Slide9, Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17, Slide18]
 
-  const slideComponents = [Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7, Slide8, Slide9, Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17, Slide18]
+  const hasPreview = Boolean(info.siteUrl)
+  const slideLabels = hasPreview
+    ? ['Website Rebuild', 'Current Site Preview', ...baseLabels.slice(1)]
+    : baseLabels
+  const slideComponents = hasPreview
+    ? [Slide1, SitePreviewSlide, ...baseComponents.slice(1)]
+    : baseComponents
+
+  const SLIDE_COUNT = slideLabels.length
+  maxSlideRef.current = SLIDE_COUNT
   const CurrentSlide = slideComponents[current]
 
   // Pre-call screen
@@ -1269,7 +1383,7 @@ export default function ContractorPitchDeck() {
             onClick={() => setMenuOpen((o) => !o)}
             className="flex items-center gap-2 rounded-full bg-black/20 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-sm hover:bg-black/30 transition-colors"
           >
-            <span className="font-mono">{current + 1} / {TOTAL}</span>
+            <span className="font-mono">{current + 1} / {SLIDE_COUNT}</span>
             <span className="hidden sm:inline text-white/70">·</span>
             <span className="hidden sm:inline">{slideLabels[current]}</span>
           </button>
@@ -1344,10 +1458,10 @@ export default function ContractorPitchDeck() {
 
         <button
           onClick={next}
-          disabled={current === TOTAL - 1}
+          disabled={current === SLIDE_COUNT - 1}
           className={clsx(
             'flex size-10 items-center justify-center rounded-full transition-all',
-            current === TOTAL - 1
+            current === SLIDE_COUNT - 1
               ? 'opacity-0 pointer-events-none'
               : 'bg-black/20 text-white backdrop-blur-sm hover:bg-black/35'
           )}

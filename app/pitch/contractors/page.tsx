@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useId } from 'react'
 import { clsx } from 'clsx/lite'
 import { ArrowNarrowLeftIcon } from '@/components/icons/arrow-narrow-left-icon'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
@@ -34,6 +34,7 @@ import { UiLayoutIcon } from '@/components/icons/ui-layout-icon'
 import { UserCircleIcon } from '@/components/icons/user-circle-icon'
 import { AlertTriangleIcon } from '@/components/icons/alert-triangle-icon'
 import { PhoneIcon } from '@/components/icons/chat-bubble-circle-icon'
+import { Logo, LogoGrid } from '@/components/elements/logo-grid'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared sub-components
@@ -231,30 +232,43 @@ const TOTAL = 17
 
 function Slide1() {
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-16">
+    <div className="relative flex h-full w-full overflow-hidden bg-olive-950">
       {/* Background texture */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_-20%,oklch(33%_0.03_107)_0%,transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_120%,oklch(25%_0.025_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 flex max-w-4xl flex-col items-center gap-8 text-center">
-        <img src="/Logos/icon.svg" alt="Kickbord" width={100} height={34} className="brightness-0 invert opacity-80" />
+      {/* Content side */}
+      <div className="relative z-10 flex w-full lg:w-1/2 flex-col items-center justify-center px-8 py-16">
+        <div className="flex max-w-xl flex-col items-center gap-8 text-center lg:items-start lg:text-left">
+          <img src="/Logos/icon.svg" alt="Kickbord" width={100} height={34} className="brightness-0 invert opacity-80" />
 
-        <div>
-          <Eyebrow light>Contractor Growth System</Eyebrow>
-          <SlideHeadline light className="mt-4 text-5xl sm:text-6xl lg:text-7xl max-w-3xl">
-            More leads captured.<br />More jobs booked.
-          </SlideHeadline>
+          <div>
+            <Eyebrow light>Contractor Growth System</Eyebrow>
+            <SlideHeadline light className="mt-4 text-5xl sm:text-6xl lg:text-7xl">
+              More leads captured.<br />More jobs booked.
+            </SlideHeadline>
+          </div>
+
+          <SlideSubhead light className="text-lg/8">
+            AI-powered follow-up, automation, and local growth systems built specifically for contractors.
+          </SlideSubhead>
+
+          <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+            <Chip><LightingBoltIcon />Respond faster</Chip>
+            <Chip><TargetIcon />Capture more leads</Chip>
+            <Chip><CalendarIcon />Book more jobs</Chip>
+          </div>
         </div>
+      </div>
 
-        <SlideSubhead light className="max-w-2xl text-lg/8">
-          AI-powered follow-up, automation, and local growth systems built specifically for contractors.
-        </SlideSubhead>
-
-        <div className="flex flex-wrap justify-center gap-3">
-          <Chip><LightingBoltIcon />Respond faster</Chip>
-          <Chip><TargetIcon />Capture more leads</Chip>
-          <Chip><CalendarIcon />Book more jobs</Chip>
-        </div>
+      {/* Image side */}
+      <div className="hidden lg:block relative w-1/2">
+        <img 
+          src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop" 
+          alt="Contractor at work" 
+          className="absolute inset-0 h-full w-full object-cover opacity-60"
+        />
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent to-olive-950" />
       </div>
     </div>
   )
@@ -282,6 +296,11 @@ function Slide2() {
 
           <div className="flex flex-col gap-4">
             <div className="rounded-2xl border border-olive-950/10 bg-olive-950 p-8 dark:bg-white/5">
+              <img 
+                src="/mike.png" 
+                alt="Mike Mathias" 
+                className="mb-4 h-20 w-20 rounded-full object-cover"
+              />
               <p className="font-display text-xl text-white">Mike Mathias</p>
               <p className="mt-1 text-sm text-white/60">Founder, Kickbord</p>
               <div className="mt-6 flex flex-col gap-3">
@@ -303,6 +322,69 @@ function Slide2() {
             </p>
           </div>
         </div>
+
+        {/* Company logos */}
+        <div className="mt-16 border-t border-olive-950/10 pt-12 dark:border-white/10">
+          <p className="mb-8 text-center text-sm text-olive-500 dark:text-olive-400">
+            Experience from world-class brands
+          </p>
+          <div className="mx-auto grid w-full max-w-4xl grid-cols-3 place-items-center gap-x-8 gap-y-8 sm:grid-cols-6 opacity-60">
+            <Logo>
+              <img
+                src="https://cdn.brandfetch.io/id6O2oGzv-/w/800/h/271/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                alt="Google"
+                width={94}
+                height={32}
+              />
+            </Logo>
+            <Logo>
+              <img
+                src="https://cdn.brandfetch.io/idtEghWGp4/w/800/h/229/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                alt="BBC"
+                width={112}
+                height={32}
+              />
+            </Logo>
+            <Logo>
+              <img
+                src="https://cdn.brandfetch.io/id_0dwKPKT/w/800/h/278/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                alt="Nike"
+                width={92}
+                height={32}
+              />
+            </Logo>
+            <Logo>
+              <img
+                src="https://cdn.brandfetch.io/iduaw_nOnR/w/800/h/122/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                alt="Samsung"
+                width={210}
+                height={32}
+              />
+            </Logo>
+            <Logo>
+              <img
+                src="https://cdn.brandfetch.io/id6htIcs_f/w/90/h/90/theme/dark/id4N0u-dxx.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                alt="Procter & Gamble"
+                width={32}
+                height={32}
+              />
+            </Logo>
+            <Logo>
+              <img
+                src="https://cdn.brandfetch.io/idXhrQrb5t/w/800/h/179/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+                className="grayscale brightness-0 dark:brightness-0 dark:invert"
+                alt="Verizon"
+                width={143}
+                height={32}
+              />
+            </Logo>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -317,30 +399,43 @@ function Slide3() {
   ]
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
-        <div className="mb-10 text-center">
-          <Eyebrow>Who we help</Eyebrow>
-          <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
-            Built for contractors who are<br />already doing the work.
-          </SlideHeadline>
-          <SlideSubhead className="mx-auto mt-4 max-w-2xl">
-            You don't need more hustle. You need better systems to capture what you're already earning.
-          </SlideSubhead>
-        </div>
+    <div className="relative flex h-full w-full overflow-hidden">
+      {/* Image side */}
+      <div className="hidden lg:block relative w-2/5">
+        <img 
+          src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=2070&auto=format&fit=crop" 
+          alt="Contractor reviewing plans" 
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white dark:to-olive-950" />
+      </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {segments.map((s) => (
-            <div key={s.title} className="flex items-start gap-4 rounded-2xl border border-olive-950/10 bg-white p-6 dark:border-white/10 dark:bg-white/5">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-olive-950/5 text-olive-700 dark:bg-white/10 dark:text-olive-300">
-                {s.icon}
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-olive-950 dark:text-white">{s.title}</p>
-                <p className="mt-1 text-sm text-olive-600 dark:text-olive-400">{s.desc}</p>
+      {/* Content side */}
+      <div className="flex w-full lg:w-3/5 flex-col items-center justify-center px-8 py-16">
+        <div className="w-full max-w-3xl">
+          <div className="mb-10 text-center lg:text-left">
+            <Eyebrow>Who we help</Eyebrow>
+            <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
+              Built for contractors who are<br />already doing the work.
+            </SlideHeadline>
+            <SlideSubhead className="mx-auto lg:mx-0 mt-4 max-w-2xl">
+              You don't need more hustle. You need better systems to capture what you're already earning.
+            </SlideSubhead>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {segments.map((s) => (
+              <div key={s.title} className="flex items-start gap-4 rounded-2xl border border-olive-950/10 bg-white p-6 dark:border-white/10 dark:bg-white/5">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-olive-950/5 text-olive-700 dark:bg-white/10 dark:text-olive-300">
+                  {s.icon}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-olive-950 dark:text-white">{s.title}</p>
+                  <p className="mt-1 text-sm text-olive-600 dark:text-olive-400">{s.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -348,12 +443,45 @@ function Slide3() {
 }
 
 function Slide4() {
+  const problems = [
+    { 
+      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=800&auto=format&fit=crop',
+      headline: 'Missed calls = lost revenue',
+      text: 'Homeowners move on within minutes when calls go unanswered.'
+    },
+    { 
+      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
+      headline: 'Slow web lead response',
+      text: 'Leads sit untouched for hours while competitors respond instantly.'
+    },
+    { 
+      image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=800&auto=format&fit=crop',
+      headline: 'First to respond wins',
+      text: 'Homeowners compare multiple contractors — speed determines who gets the job.'
+    },
+    { 
+      image: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800&auto=format&fit=crop',
+      headline: 'Inconsistent reviews',
+      text: 'Happy customers don\'t leave reviews unless you ask at the right time.'
+    },
+    { 
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
+      headline: 'Under-optimized local presence',
+      text: 'Google Business Profile is incomplete, hurting local visibility and rankings.'
+    },
+    { 
+      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop',
+      headline: 'Follow-up breaks down',
+      text: 'Field teams are busy working — no one is managing systematic follow-up.'
+    },
+  ]
+
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(28%_0.03_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 w-full max-w-5xl">
-        <div className="mb-10">
+      <div className="relative z-10 w-full max-w-6xl">
+        <div className="mb-10 text-center">
           <Eyebrow light>The contractor problem</Eyebrow>
           <SlideHeadline light className="mt-3 text-4xl sm:text-5xl">
             You're not losing jobs<br />because of your work.
@@ -363,13 +491,21 @@ function Slide4() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <ProblemItem icon={<ChatBubbleCircleIcon />} text="Missed calls turn directly into lost revenue — homeowners move on within minutes." />
-          <ProblemItem icon={<InboxIcon />} text="Web leads sit untouched for hours or days while competitors respond instantly." />
-          <ProblemItem icon={<ClockIcon />} text="Homeowners compare multiple contractors. First to respond wins most of the time." />
-          <ProblemItem icon={<StarIcon />} text="Review generation is inconsistent — happy customers don't leave reviews unless you ask." />
-          <ProblemItem icon={<MapPinIcon />} text="Google Business Profile is incomplete or under-optimized, hurting local visibility." />
-          <ProblemItem icon={<AlertTriangleIcon />} text="Field teams are busy working — follow-up breaks down because no one is managing it." />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {problems.map((problem) => (
+            <div key={problem.headline} className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-4 overflow-hidden">
+              <div className="relative h-32 -mx-4 -mt-4 mb-1">
+                <img 
+                  src={problem.image} 
+                  alt={problem.headline}
+                  className="absolute inset-0 h-full w-full object-cover opacity-60"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-olive-950" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">{problem.headline}</h3>
+              <p className="text-sm/6 text-white/70">{problem.text}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -377,6 +513,7 @@ function Slide4() {
 }
 
 function Slide5() {
+  const pathId = useId()
   const points = [
     { icon: <LightingBoltIcon />, stat: '78%', label: 'of jobs go to the first contractor to respond', sub: 'Speed-to-lead is your single biggest conversion lever.' },
     { icon: <StarIcon />, stat: '4.5×', label: 'more likely to win when reviews exceed competitors', sub: 'Review quantity and rating directly influence local rankings and trust.' },
@@ -385,8 +522,8 @@ function Slide5() {
   ]
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
+    <div className="relative flex h-full w-full flex-col items-center justify-center px-8 py-16 overflow-hidden">
+      <div className="w-full max-w-5xl relative z-10">
         <div className="mb-10 text-center">
           <Eyebrow>Why this matters</Eyebrow>
           <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
@@ -412,46 +549,112 @@ function Slide5() {
           ))}
         </div>
       </div>
+
+      {/* Graph background */}
+      <div className="pointer-events-none absolute inset-0 opacity-20">
+        <svg
+          className="h-full w-full fill-olive-950/10 stroke-olive-950/40 dark:fill-white/5 dark:stroke-white/20"
+          viewBox="0 0 1200 400"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <clipPath id={pathId}>
+              <path d="M 0 400 L 0 383 C 396 362.7936732276819, 804 264.31672304481856, 1200 60 L 1200 60 L 1200 400 Z" />
+            </clipPath>
+          </defs>
+          <path
+            d="M 0 400 L 0 383 C 396 362.7936732276819, 804 264.31672304481856, 1200 60 L 1200 60 L 1200 400 Z"
+            stroke="none"
+          />
+          <g strokeWidth="1" strokeDasharray="4 3" clipPath={`url(#${pathId})`}>
+            <line x1="0.5" y1="400" x2="0.5" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="92.3076923076923" y1="400" x2="92.3076923076923" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="184.6153846153846" y1="400" x2="184.6153846153846" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="276.9230769230769" y1="400" x2="276.9230769230769" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="369.2307692307692" y1="400" x2="369.2307692307692" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="461.53846153846155" y1="400" x2="461.53846153846155" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="553.8461538461538" y1="400" x2="553.8461538461538" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="646.1538461538462" y1="400" x2="646.1538461538462" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="738.4615384615385" y1="400" x2="738.4615385" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="830.7692307692307" y1="400" x2="830.7692307692307" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="923.0769230769231" y1="400" x2="923.0769230769231" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="1015.3846153846154" y1="400" x2="1015.3846153846154" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="1107.6923076923076" y1="400" x2="1107.6923076923076" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="1199.5" y1="400" x2="1199.5" y2="0" vectorEffect="non-scaling-stroke" />
+          </g>
+          <path
+            d="M 0 383 C 396 362.7936732276819, 804 264.31672304481856, 1200 60"
+            fill="none"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+      </div>
     </div>
   )
 }
 
 function Slide6() {
   const items = [
-    { icon: <UiLayoutIcon />, label: 'Conversion-focused website or landing page' },
-    { icon: <ChatBubbleCircleIcon />, label: 'Missed-call text back' },
-    { icon: <LightingBoltIcon />, label: 'Instant form follow-up' },
-    { icon: <BellIcon />, label: 'SMS lead alerts (not just email)' },
-    { icon: <ChatBubbleRectangleEllipsisIcon />, label: 'Web chat widget' },
-    { icon: <StarIcon />, label: 'Automated review requests' },
-    { icon: <CogIcon />, label: 'Lead routing & conversation routing' },
-    { icon: <InboxIcon />, label: 'Contact database / CRM foundation' },
-    { icon: <ChartBarIcon />, label: 'Basic reporting dashboard' },
-    { icon: <MicrophoneIcon />, label: 'Optional AI voice for after-hours' },
+    'Conversion-focused website or landing page',
+    'Missed-call text back',
+    'Instant form follow-up',
+    'SMS lead alerts (not just email)',
+    'Web chat widget',
+    'Automated review requests',
+    'Lead routing & conversation routing',
+    'Contact database / CRM foundation',
+    'Basic reporting dashboard',
+    'Optional AI voice for after-hours',
   ]
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
-        <div className="mb-10 text-center">
-          <Eyebrow>The system</Eyebrow>
-          <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
-            Everything working together,<br />not a pile of apps.
-          </SlideHeadline>
-          <SlideSubhead className="mx-auto mt-4 max-w-xl">
-            The Kickbord Contractor Growth System is a connected set of tools and workflows built on one platform.
-          </SlideSubhead>
-        </div>
+    <div className="flex h-full w-full items-center justify-center px-8 py-16 bg-white dark:bg-olive-950">
+      <div className="w-full max-w-7xl">
+        {/* Green wallpaper content box */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[oklch(48%_0.09_145)] to-[oklch(42%_0.08_145)] p-8 sm:p-12 lg:p-16">
+          {/* Wallpaper texture overlays */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,oklch(52%_0.1_145)_0%,transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,oklch(40%_0.07_145)_0%,transparent_50%)]" />
+          
+          <div className="relative z-10 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+            {/* Content side */}
+            <div className="flex flex-col gap-6">
+              <div>
+                <Eyebrow light>The system</Eyebrow>
+                <SlideHeadline light className="mt-3 text-4xl sm:text-5xl lg:text-6xl">
+                  Everything working together,<br />not a pile of apps.
+                </SlideHeadline>
+              </div>
+              
+              <div className="flex flex-col gap-3 text-white/90">
+                {items.map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <span className="mt-1 size-4 shrink-0 text-white">
+                      <CheckmarkIcon />
+                    </span>
+                    <p className="text-sm/6">{item}</p>
+                  </div>
+                ))}
+              </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <FeatureChip key={item.label} icon={item.icon} label={item.label} />
-          ))}
-        </div>
+              <p className="mt-2 text-sm text-white/60">
+                All components run on one unified platform — no app juggling, no integration headaches.
+              </p>
+            </div>
 
-        <p className="mt-6 text-center text-sm text-olive-500 dark:text-olive-400">
-          All components run on one unified platform — no app juggling, no integration headaches.
-        </p>
+            {/* Demo image side */}
+            <div className="relative">
+              <div className="relative overflow-hidden rounded-xl shadow-2xl ring-1 ring-white/10 bg-white/95">
+                <img 
+                  src="/images/kickbord_system.png"
+                  alt="Lead-capture & follow-up system diagram"
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useId } from 'react'
 import { clsx } from 'clsx/lite'
 import { ArrowNarrowLeftIcon } from '@/components/icons/arrow-narrow-left-icon'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
@@ -432,7 +432,7 @@ function Slide2({ info }: { info: LeadInfo }) {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-7xl">
         <div className="mb-10">
           <Eyebrow>The rebuild — {company}</Eyebrow>
           <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
@@ -476,7 +476,7 @@ function Slide3({ info }: { info: LeadInfo }) {
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(28%_0.03_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 w-full max-w-5xl">
+      <div className="relative z-10 w-full max-w-7xl">
         <div className="mb-10 text-center">
           <Eyebrow light>The gap</Eyebrow>
           <SlideHeadline light className="mt-3 text-4xl sm:text-5xl">
@@ -515,7 +515,7 @@ function Slide4({ info }: { info: LeadInfo }) {
 
   return (
     <div className="flex h-full w-full items-center justify-center px-8 py-16 bg-white dark:bg-olive-950">
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-7xl">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[oklch(48%_0.09_145)] to-[oklch(42%_0.08_145)] p-8 sm:p-12 lg:p-16">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,oklch(52%_0.1_145)_0%,transparent_50%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,oklch(40%_0.07_145)_0%,transparent_50%)]" />
@@ -557,7 +557,7 @@ function Slide4({ info }: { info: LeadInfo }) {
 function Slide5({ info }: { info: LeadInfo }) {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-7xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           <div className="flex flex-col gap-6">
             <div>
@@ -684,7 +684,7 @@ function Slide7({ info }: { info: LeadInfo }) {
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,oklch(28%_0.03_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 w-full max-w-6xl">
+      <div className="relative z-10 w-full max-w-7xl">
         <div className="mb-10 text-center">
           <Eyebrow light>The contractor problem</Eyebrow>
           <SlideHeadline light className="mt-3 text-4xl sm:text-5xl">
@@ -718,6 +718,7 @@ function Slide7({ info }: { info: LeadInfo }) {
 
 // Slide 8 — Why This Matters
 function Slide8({ info }: { info: LeadInfo }) {
+  const pathId = useId()
   const points = [
     { icon: <LightingBoltIcon />, stat: '78%', label: 'of jobs go to the first contractor to respond', sub: 'Speed-to-lead is your single biggest conversion lever.' },
     { icon: <StarIcon />, stat: '4.5×', label: 'more likely to win when reviews exceed competitors', sub: 'Review quantity and rating directly influence local rankings and trust.' },
@@ -727,7 +728,8 @@ function Slide8({ info }: { info: LeadInfo }) {
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center px-8 py-16 overflow-hidden">
-      <div className="w-full max-w-5xl relative z-10">
+      {/* 👇 CONTAINER WIDTH: Change max-w-7xl to max-w-full for edge-to-edge, or max-w-6xl for narrower */}
+      <div className="w-full max-w-7xl relative z-10">
         <div className="mb-10 text-center">
           <Eyebrow>Why this matters</Eyebrow>
           <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
@@ -753,12 +755,54 @@ function Slide8({ info }: { info: LeadInfo }) {
           ))}
         </div>
       </div>
+
+      {/* Graph background */}
+      <div className="pointer-events-none absolute inset-0 opacity-20">
+        <svg
+          className="h-full w-full fill-olive-950/10 stroke-olive-950/40 dark:fill-white/5 dark:stroke-white/20"
+          viewBox="0 0 1200 400"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <clipPath id={pathId}>
+              <path d="M 0 400 L 0 383 C 396 362.7936732276819, 804 264.31672304481856, 1200 60 L 1200 60 L 1200 400 Z" />
+            </clipPath>
+          </defs>
+          <path
+            d="M 0 400 L 0 383 C 396 362.7936732276819, 804 264.31672304481856, 1200 60 L 1200 60 L 1200 400 Z"
+            stroke="none"
+          />
+          <g strokeWidth="1" strokeDasharray="4 3" clipPath={`url(#${pathId})`}>
+            <line x1="0.5" y1="400" x2="0.5" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="92.3076923076923" y1="400" x2="92.3076923076923" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="184.6153846153846" y1="400" x2="184.6153846153846" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="276.9230769230769" y1="400" x2="276.9230769230769" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="369.2307692307692" y1="400" x2="369.2307692307692" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="461.53846153846155" y1="400" x2="461.53846153846155" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="553.8461538461538" y1="400" x2="553.8461538461538" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="646.1538461538462" y1="400" x2="646.1538461538462" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="738.4615384615385" y1="400" x2="738.4615385" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="830.7692307692307" y1="400" x2="830.7692307692307" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="923.0769230769231" y1="400" x2="923.0769230769231" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="1015.3846153846154" y1="400" x2="1015.3846153846154" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="1107.6923076923076" y1="400" x2="1107.6923076923076" y2="0" vectorEffect="non-scaling-stroke" />
+            <line x1="1199.5" y1="400" x2="1199.5" y2="0" vectorEffect="non-scaling-stroke" />
+          </g>
+          <path
+            d="M 0 383 C 396 362.7936732276819, 804 264.31672304481856, 1200 60"
+            fill="none"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+      </div>
     </div>
   )
 }
 
 // Slide 9 — What the Kickbord System Includes
 function Slide9({ info }: { info: LeadInfo }) {
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const items = [
     'Conversion-focused website or landing page',
     'Missed-call text back',
@@ -773,7 +817,8 @@ function Slide9({ info }: { info: LeadInfo }) {
   ]
 
   return (
-    <div className="flex h-full w-full items-center justify-center px-8 py-16 bg-white dark:bg-olive-950">
+    <div className="relative flex h-full w-full items-center justify-center px-8 py-16 bg-white dark:bg-olive-950 overflow-hidden">
+      {/* 👇 CONTAINER WIDTH: Change max-w-7xl to max-w-full for edge-to-edge, or max-w-6xl for narrower */}
       <div className="w-full max-w-7xl">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[oklch(48%_0.09_145)] to-[oklch(42%_0.08_145)] p-8 sm:p-12 lg:p-16">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,oklch(52%_0.1_145)_0%,transparent_50%)]" />
@@ -802,18 +847,53 @@ function Slide9({ info }: { info: LeadInfo }) {
               </p>
             </div>
 
-            <div className="relative">
-              <div className="relative overflow-hidden rounded-xl shadow-2xl ring-1 ring-white/10 bg-white/95">
+            <div className="relative group">
+              <button
+                onClick={() => setLightboxOpen(true)}
+                className="relative overflow-hidden rounded-xl shadow-2xl ring-1 ring-white/10 bg-white/95 cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98] w-full"
+              >
                 <img
                   src="/images/kickbord_system.png"
                   alt="Kickbord system diagram"
                   className="w-full h-auto"
                 />
-              </div>
+                {/* Expand hint */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-colors">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-white/90 p-3 shadow-lg">
+                    <svg className="size-6 text-olive-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            onClick={() => setLightboxOpen(false)}
+            className="absolute top-4 right-4 flex items-center justify-center size-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+          >
+            <svg className="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <div className="max-w-7xl max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+            <img
+              src="/images/kickbord_system.png"
+              alt="Kickbord system diagram - expanded view"
+              className="w-full h-auto rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -835,7 +915,7 @@ function Slide10({ info }: { info: LeadInfo }) {
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,oklch(28%_0.03_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 w-full max-w-5xl">
+      <div className="relative z-10 w-full max-w-7xl">
         <div className="mb-10">
           <Eyebrow light>Core automations</Eyebrow>
           <SlideHeadline light className="mt-3 text-4xl sm:text-5xl">
@@ -866,7 +946,7 @@ function Slide11({ info }: { info: LeadInfo }) {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-7xl">
         <div className="mb-10 text-center">
           <Eyebrow>Outcomes</Eyebrow>
           <SlideHeadline className="mt-3 text-4xl sm:text-5xl">
@@ -899,7 +979,7 @@ function Slide12({ info }: { info: LeadInfo }) {
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_-10%,oklch(33%_0.03_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 w-full max-w-5xl">
+      <div className="relative z-10 w-full max-w-7xl">
         <div className="mb-12 text-center">
           <Eyebrow light>Pricing</Eyebrow>
           <SlideHeadline light className="mt-3 text-4xl sm:text-5xl">
@@ -945,7 +1025,7 @@ function Slide12({ info }: { info: LeadInfo }) {
 function Slide13({ info }: { info: LeadInfo }) {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-7xl">
         <div className="mb-8">
           <Eyebrow>Launch plan</Eyebrow>
           <SlideHeadline className="mt-3 text-4xl sm:text-5xl">Get the essentials live fast.</SlideHeadline>
@@ -1041,7 +1121,7 @@ function Slide14({ info }: { info: LeadInfo }) {
 function Slide15({ info }: { info: LeadInfo }) {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-7xl">
         <div className="mb-8">
           <Eyebrow>Scale plan</Eyebrow>
           <SlideHeadline className="mt-3 text-4xl sm:text-5xl">Automate the customer<br />journey end to end.</SlideHeadline>
@@ -1081,23 +1161,23 @@ function Slide15({ info }: { info: LeadInfo }) {
 // Slide 16 — Upsells + Quarterly
 function Slide16({ info }: { info: LeadInfo }) {
   const quarters = [
-    { plan: 'Launch', monthly: '$297/mo', quarterly: '$891/qtr', bonuses: ['GBP optimisation included or 50% off', 'Priority onboarding'] },
-    { plan: 'Grow', monthly: '$497/mo', quarterly: '$1,391/qtr', bonuses: ['GBP optimisation included or 50% off', 'Local Services Ads reduced to $400/mo', 'Priority onboarding'] },
-    { plan: 'Scale', monthly: '$797/mo', quarterly: '$2,191/qtr', bonuses: ['GBP optimisation included or 50% off', 'Local Services Ads reduced to $400/mo', 'SEO reduced to $400/mo'] },
+    { plan: 'Launch', monthly: 297, quarterly: 800, bonuses: ['GBP optimization included or 50% off', 'Priority onboarding'] },
+    { plan: 'Grow', monthly: 497, quarterly: 1250, bonuses: ['GBP optimization included or 50% off', 'Local Services Ads reduced to $400/mo', 'Priority onboarding'] },
+    { plan: 'Scale', monthly: 797, quarterly: 1950, bonuses: ['GBP optimization included or 50% off', 'Local Services Ads reduced to $400/mo', 'SEO reduced to $400/mo'] },
   ]
 
   const upsells = [
-    { title: 'Google Business Profile Optimisation', price: '$500 one-time', desc: 'Full GBP audit, optimisation, and setup to improve local search visibility.' },
+    { title: 'Google Business Profile Optimization', price: '$500 one-time', desc: 'Full GBP audit, optimization, and setup to improve local search visibility.' },
     { title: 'Google Local Services Ads Management', price: '$500/mo', desc: 'Managed LSA to put your business at the top of local search results.' },
-    { title: 'SEO / AI SEO', price: '$500/mo', desc: 'Ongoing local SEO and AI search optimisation to strengthen organic visibility.' },
-    { title: 'AI Voice Agent (standalone)', price: '$197–$297/mo', desc: 'After-hours and overflow call handling without committing to Scale.' },
+    { title: 'SEO / AI SEO', price: '$500/mo', desc: 'Ongoing local SEO and AI search optimization to strengthen organic visibility.' },
+    { title: 'AI Voice Agent (standalone)', price: '$199/mo', desc: 'After-hours and overflow call handling without committing to Scale.' },
   ]
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-8 py-12">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_-10%,oklch(33%_0.03_107)_0%,transparent_55%)]" />
 
-      <div className="relative z-10 w-full max-w-6xl">
+      <div className="relative z-10 w-full max-w-7xl">
         <div className="mb-8">
           <Eyebrow light>Add-ons and quarterly incentives</Eyebrow>
           <SlideHeadline light className="mt-3 text-3xl sm:text-4xl">
@@ -1126,22 +1206,29 @@ function Slide16({ info }: { info: LeadInfo }) {
           <div>
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/50">Quarterly prepay bonuses</p>
             <div className="flex flex-col gap-2.5">
-              {quarters.map((q) => (
-                <div key={q.plan} className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex items-baseline justify-between">
-                    <p className="text-sm font-semibold text-white">{q.plan} — {q.quarterly}</p>
-                    <span className="text-xs text-white/40">vs. {q.monthly}</span>
+              {quarters.map((q) => {
+                const monthlyCost = q.monthly * 3
+                const savings = monthlyCost - q.quarterly
+                return (
+                  <div key={q.plan} className="rounded-xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="text-sm font-semibold text-white">{q.plan} — ${q.quarterly}/qtr</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-white/40">vs. ${q.monthly}/mo × 3 = ${monthlyCost}</span>
+                        <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-400 whitespace-nowrap">Save ${savings}</span>
+                      </div>
+                    </div>
+                    <ul className="mt-2 flex flex-col gap-1">
+                      {q.bonuses.map((b) => (
+                        <li key={b} className="flex items-start gap-2 text-xs text-white/65">
+                          <span className="mt-0.5 size-3.5 shrink-0 text-white/35"><CheckmarkIcon /></span>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="mt-2 flex flex-col gap-1">
-                    {q.bonuses.map((b) => (
-                      <li key={b} className="flex items-start gap-2 text-xs text-white/65">
-                        <span className="mt-0.5 size-3.5 shrink-0 text-white/35"><CheckmarkIcon /></span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                )
+              })}
               <p className="text-xs text-white/40 text-center pt-1">Setup fee reduced or waived entirely for quarterly prepay.</p>
             </div>
           </div>
@@ -1163,7 +1250,7 @@ function Slide17({ info }: { info: LeadInfo }) {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-8 py-16">
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-7xl">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
           {/* Setup fees */}
           <div>

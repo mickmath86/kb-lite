@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { clsx } from 'clsx/lite'
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
@@ -18,6 +18,7 @@ const WEBHOOK_URL =
 
 type PlanKey = 'launch' | 'grow'
 type BillingKey = 'monthly' | 'quarterly'
+type ContactMethod = 'email' | 'sms'
 
 interface PlanConfig {
   name: string
@@ -126,19 +127,21 @@ function PayPageInner() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [contactMethod, setContactMethod] = useState<ContactMethod>('email')
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim() || !email.trim() || !phone.trim()) {
+    const contactValue = contactMethod === 'email' ? email.trim() : phone.trim()
+    if (!name.trim() || !contactValue) {
       setErrorMsg('Please fill in all fields.')
       return
     }
     setErrorMsg('')
     setFormState('submitting')
 
-    const payload = {
+    const payload: Record<string, string> = {
       // Plan identification — passed through to GHL
       plan: plan.name,
       plan_key: planKey,
@@ -148,11 +151,16 @@ function PayPageInner() {
       period: plan.period,
       // Contact info
       name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
+      contact_method: contactMethod,
       // Meta
       source: 'kickbord-pitch-deck',
       submitted_at: new Date().toISOString(),
+    }
+
+    if (contactMethod === 'email') {
+      payload.email = email.trim()
+    } else {
+      payload.phone = phone.trim()
     }
 
     try {
@@ -177,6 +185,8 @@ function PayPageInner() {
 
   // ── Success screen ──
   if (formState === 'success') {
+    const contactDisplay = contactMethod === 'email' ? email : phone
+    const contactLabel = contactMethod === 'email' ? 'email' : 'text message'
     return (
       <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-olive-950 px-6 py-20 text-center">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,oklch(33%_0.03_107)_0%,transparent_55%)]" />
@@ -185,13 +195,13 @@ function PayPageInner() {
             <span className="size-8 text-green-400"><CheckmarkIcon /></span>
           </div>
           <div>
-            <p className="font-mono text-xs font-semibold uppercase tracking-widest text-white/40">You're in</p>
+            <p className="font-mono text-xs font-semibold uppercase tracking-widest text-white/40">{"You're in"}</p>
             <h1 className="mt-2 font-display text-4xl text-white">
               {`Welcome to ${plan.name}.`}
             </h1>
           </div>
           <p className="text-base/7 text-white/65">
-            {`We've received your info and will be in touch within one business day to kick off your onboarding. Check your email at ${email}.`}
+            {`We've received your info and will reach out via ${contactLabel} to ${contactDisplay} within one business day to kick off your onboarding.`}
           </p>
           <div className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-left">
             <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-3">Your selection</p>
@@ -335,34 +345,73 @@ function PayPageInner() {
               />
             </div>
 
-            {/* Email */}
+            {/* Contact method toggle */}
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-olive-500 dark:text-olive-400">
-                Email address
+                How should we reach you?
               </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="carlos@yourbusiness.com"
-                className="w-full rounded-xl border border-olive-950/15 bg-white px-4 py-3 text-base text-olive-950 placeholder-olive-300 outline-none transition focus:border-olive-500 focus:ring-2 focus:ring-olive-500/20 dark:border-white/15 dark:bg-white/8 dark:text-white dark:placeholder-white/25 dark:focus:border-white/40"
-              />
-            </div>
+              {/* Pill toggle */}
+              <div className="mb-3 inline-flex rounded-xl border border-olive-950/12 bg-olive-950/4 p-1 dark:border-white/10 dark:bg-white/6">
+                <button
+                  type="button"
+                  onClick={() => setContactMethod('email')}
+                  className={clsx(
+                    'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-150',
+                    contactMethod === 'email'
+                      ? 'bg-white text-olive-950 shadow-sm dark:bg-white/15 dark:text-white'
+                      : 'text-olive-500 hover:text-olive-700 dark:text-white/45 dark:hover:text-white/70'
+                  )}
+                >
+                  {/* Email icon */}
+                  <svg className="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" />
+                    <path d="M1.5 5.5l6.5 4 6.5-4" />
+                  </svg>
+                  Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setContactMethod('sms')}
+                  className={clsx(
+                    'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-150',
+                    contactMethod === 'sms'
+                      ? 'bg-white text-olive-950 shadow-sm dark:bg-white/15 dark:text-white'
+                      : 'text-olive-500 hover:text-olive-700 dark:text-white/45 dark:hover:text-white/70'
+                  )}
+                >
+                  {/* SMS icon */}
+                  <svg className="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M2 2.5h12a1 1 0 011 1v7a1 1 0 01-1 1H5l-3 2.5V3.5a1 1 0 011-1z" />
+                  </svg>
+                  SMS
+                </button>
+              </div>
 
-            {/* Phone */}
-            <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-olive-500 dark:text-olive-400">
-                Phone number
-              </label>
-              <input
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="(805) 555-0123"
-                className="w-full rounded-xl border border-olive-950/15 bg-white px-4 py-3 text-base text-olive-950 placeholder-olive-300 outline-none transition focus:border-olive-500 focus:ring-2 focus:ring-olive-500/20 dark:border-white/15 dark:bg-white/8 dark:text-white dark:placeholder-white/25 dark:focus:border-white/40"
-              />
+              {/* Email input */}
+              {contactMethod === 'email' && (
+                <input
+                  key="email-input"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="carlos@yourbusiness.com"
+                  className="w-full rounded-xl border border-olive-950/15 bg-white px-4 py-3 text-base text-olive-950 placeholder-olive-300 outline-none transition focus:border-olive-500 focus:ring-2 focus:ring-olive-500/20 dark:border-white/15 dark:bg-white/8 dark:text-white dark:placeholder-white/25 dark:focus:border-white/40"
+                />
+              )}
+
+              {/* Phone input */}
+              {contactMethod === 'sms' && (
+                <input
+                  key="phone-input"
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="(805) 555-0123"
+                  className="w-full rounded-xl border border-olive-950/15 bg-white px-4 py-3 text-base text-olive-950 placeholder-olive-300 outline-none transition focus:border-olive-500 focus:ring-2 focus:ring-olive-500/20 dark:border-white/15 dark:bg-white/8 dark:text-white dark:placeholder-white/25 dark:focus:border-white/40"
+                />
+              )}
             </div>
 
             {/* Selected plan summary bar */}
@@ -423,7 +472,9 @@ function PayPageInner() {
             </button>
 
             <p className="text-center text-xs text-olive-400 dark:text-olive-500">
-              By submitting, you agree to receive a follow-up via email or SMS. Reply STOP to opt out of texts. No payment is collected on this form.
+              {contactMethod === 'sms'
+                ? 'By submitting, you agree to receive follow-up via SMS. Reply STOP to opt out. No payment is collected on this form.'
+                : 'By submitting, you agree to receive a follow-up email. No payment is collected on this form.'}
             </p>
           </form>
         </div>

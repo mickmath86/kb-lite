@@ -1073,10 +1073,10 @@ function Slide11({ info }: { info: LeadInfo }) {
       isDark: false,
       monthly: { price: '$297', period: '/mo', cta: 'Start with Launch', href: '/get-started?plan=launch&billing=monthly' },
       quarterly: {
-        price: '$800',
+        price: '$760',
         period: '/qtr',
-        savings: 'Save $91',
-        equivalent: '~$267/mo',
+        savings: 'Save $131',
+        equivalent: '~$253/mo',
         cta: 'Start Launch — quarterly',
         href: '/get-started?plan=launch&billing=quarterly',
         bonus: 'No setup fee + priority onboarding',
@@ -1088,10 +1088,10 @@ function Slide11({ info }: { info: LeadInfo }) {
       isDark: true,
       monthly: { price: '$497', period: '/mo', cta: 'Start with Grow', href: '/get-started?plan=grow&billing=monthly' },
       quarterly: {
-        price: '$1,340',
+        price: '$1,270',
         period: '/qtr',
-        savings: 'Save $151',
-        equivalent: '~$447/mo',
+        savings: 'Save $221',
+        equivalent: '~$423/mo',
         cta: 'Start Grow — quarterly',
         href: '/get-started?plan=grow&billing=quarterly',
         bonus: 'No setup fee + priority onboarding',
@@ -1134,7 +1134,7 @@ function Slide11({ info }: { info: LeadInfo }) {
               Quarterly
               {billingTab !== 'quarterly' && (
                 <span className="absolute -top-1 -right-1 rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
-                  10% off
+                  15% off
                 </span>
               )}
             </button>
@@ -1243,12 +1243,39 @@ function Slide12({ info }: { info: LeadInfo }) {
   const company = info.company || 'your business'
   const owner = info.owner
 
-  const steps = [
-    { num: '01', title: 'Onboarding form', desc: 'Quick form to collect your business info, brand assets, and service details.' },
-    { num: '02', title: 'Build & setup', desc: 'Your AI site, chatbot, and automations are built and configured. Typically 5–10 business days.' },
-    { num: '03', title: 'Review & approve', desc: 'You review everything before anything goes live. We iterate until it looks exactly right.' },
-    { num: '04', title: 'Launch', desc: 'Go live. Leads start coming in and the system starts working automatically.' },
-    { num: '05', title: 'Monthly check-ins', desc: 'We review performance with you monthly and optimise over time.' },
+  // lsa = true for Grow plan context (if trade is set we assume upsell is relevant)
+  const steps: { num: string; title: string; timeframe: string; desc: string; isLsa?: boolean }[] = [
+    {
+      num: '01',
+      title: 'Onboarding form',
+      timeframe: 'Day 1',
+      desc: 'Quick form to collect your business info, brand assets, and service details. Takes about 10 minutes.',
+    },
+    {
+      num: '02',
+      title: 'Build & setup',
+      timeframe: 'Days 2–10',
+      desc: 'Your AI site, chatbot, and automations are built and configured. Typically 5–10 business days.',
+    },
+    {
+      num: '03',
+      title: 'LSA verification (Grow)',
+      timeframe: '1–4 weeks (Google timeline)',
+      desc: 'Google verifies your business for Local Services Ads — this runs in parallel with your build. Google controls this timeline, so we start it immediately and account for the wait.',
+      isLsa: true,
+    },
+    {
+      num: '04',
+      title: 'Review & approve',
+      timeframe: 'Days 10–14',
+      desc: 'You review everything before anything goes live. We iterate until it looks exactly right.',
+    },
+    {
+      num: '05',
+      title: 'Launch',
+      timeframe: 'Week 2–3',
+      desc: 'Site, chatbot, and automations go live. LSA ads activate once Google verification clears.',
+    },
   ]
 
   return (
@@ -1294,13 +1321,13 @@ function Slide12({ info }: { info: LeadInfo }) {
 
             <div className="mt-2 flex flex-col gap-3">
               <a
-                href="/contact"
+                href="/get-started"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-olive-950 transition hover:opacity-90"
               >
-                Book a discovery call <ArrowNarrowRightIcon />
+                Fill out the onboarding form <ArrowNarrowRightIcon />
               </a>
               <p className="text-xs text-white/35 text-center">
-                Or ask about quarterly prepay for a further 10% off.
+                Or ask about quarterly prepay for a further 15% off.
               </p>
             </div>
           </div>
@@ -1308,23 +1335,50 @@ function Slide12({ info }: { info: LeadInfo }) {
           {/* Right — next steps */}
           <div>
             <div className="mb-6">
-              <Eyebrow light>After you sign up</Eyebrow>
-              <p className="mt-2 text-lg text-white/80">From kickoff to live in a matter of weeks.</p>
+              <Eyebrow light>What happens next</Eyebrow>
+              <p className="mt-2 text-lg text-white/80">From onboarding to live in 2–3 weeks.</p>
             </div>
             <div className="relative flex flex-col gap-0">
               {steps.map((s, i) => (
-                <div key={s.num} className="flex items-start gap-6 pb-6">
-                  <div className="flex flex-col items-center gap-0">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white font-mono text-xs font-bold text-olive-950">
+                <div key={s.num} className="flex items-start gap-5 pb-5">
+                  {/* Number + connector line */}
+                  <div className="flex flex-col items-center">
+                    <span
+                      className={clsx(
+                        'flex size-9 shrink-0 items-center justify-center rounded-full font-mono text-xs font-bold',
+                        s.isLsa
+                          ? 'bg-amber-400 text-olive-950'
+                          : 'bg-white text-olive-950'
+                      )}
+                    >
                       {s.num}
                     </span>
                     {i < steps.length - 1 && (
-                      <div className="mt-1 h-full w-px flex-1 bg-white/15" style={{ minHeight: '1.5rem' }} />
+                      <div
+                        className={clsx(
+                          'mt-1 w-px flex-1',
+                          s.isLsa ? 'bg-amber-400/30' : 'bg-white/15'
+                        )}
+                        style={{ minHeight: '1.5rem' }}
+                      />
                     )}
                   </div>
-                  <div className="pb-2">
-                    <p className="text-sm font-semibold text-white">{s.title}</p>
-                    <p className="mt-0.5 text-xs text-white/55">{s.desc}</p>
+                  {/* Content */}
+                  <div className={clsx('pb-2 flex-1', s.isLsa && 'rounded-xl border border-amber-400/25 bg-amber-400/8 p-3 -mt-1')}>
+                    <div className="flex items-start justify-between gap-3 flex-wrap">
+                      <p className={clsx('text-sm font-semibold', s.isLsa ? 'text-amber-300' : 'text-white')}>{s.title}</p>
+                      <span
+                        className={clsx(
+                          'shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold',
+                          s.isLsa
+                            ? 'bg-amber-400/20 text-amber-300'
+                            : 'bg-white/10 text-white/60'
+                        )}
+                      >
+                        {s.timeframe}
+                      </span>
+                    </div>
+                    <p className={clsx('mt-1 text-xs/5', s.isLsa ? 'text-amber-200/65' : 'text-white/55')}>{s.desc}</p>
                   </div>
                 </div>
               ))}
@@ -1344,8 +1398,8 @@ const BASE_LABELS = [
   'About Kickbord',      // 1
   'The System',          // 2
   'Forms to Text',       // 3
-  'AI Chatbot Demo',     // 4
-  'AI Chatbot Features', // 5
+  'AI Chatbot Features', // 4
+  'AI Chatbot Demo',     // 5
   'Feature Recap',       // 6
   '$297 Launch',         // 7
   'LSA — More Leads',    // 8
@@ -1356,7 +1410,7 @@ const BASE_LABELS = [
 ]
 
 const BASE_COMPONENTS = [
-  Slide1, Slide2, Slide3, Slide4, Slide5,
+  Slide1, Slide2, Slide3, Slide5, Slide4,
   Slide6, Slide7, Slide8, Slide9, Slide10,
   Slide11, Slide12,
 ]

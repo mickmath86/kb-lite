@@ -551,7 +551,7 @@ export default function Page() {
               <FooterLink href="/contact">Contact</FooterLink>
             </FooterCategory>
             <FooterCategory title="Legal">
-              <FooterLink href="#">Privacy Policy</FooterLink>
+              <FooterLink href="/privacy">Privacy Policy</FooterLink>
               <FooterLink href="#">Terms of Service</FooterLink>
             </FooterCategory>
           </>

@@ -268,8 +268,8 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="AI Voice Agents"
-                subheadline={<p>Deploy AI-powered receptionists that answer calls, qualify leads, route inquiries, and help your business stay responsive even when your team is busy.</p>}
+                headline="AI Website + Lead System"
+                subheadline={<p>Your new site comes with a built-in AI chatbot, live chat, contact forms, SMS lead notifications, and automated follow-up — so every inquiry gets responded to fast, even when you're on the job.</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
@@ -319,8 +319,8 @@ export default function Page() {
                   </Screenshot>
                 }
                 
-                headline="Websites & Digital Presence"
-                subheadline={<p>Redesign outdated websites and digital touchpoints so your business looks sharper, feels more credible, and supports the way modern customers evaluate who to trust.</p>}
+                headline="Google Visibility & Reputation"
+                subheadline={<p>We set up and manage your Local Services Ads so you appear at the top of Google search, and after every job an automated SMS goes out requesting a review — more qualified leads coming in, more 5-star reviews compounding over time.</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
@@ -369,8 +369,8 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="Marketing Strategy & Systems"
-                subheadline={<p>Clarify your messaging, improve your digital presence, and build stronger marketing systems so your business can operate with more consistency and confidence.</p>}
+                headline="Marketing & Growth Strategy"
+                subheadline={<p>Get a strategic partner who helps you clarify your positioning, tighten your messaging, and build marketing systems that scale — so your business operates with the consistency and confidence of a much larger company.</p>}
               />
               
             </>

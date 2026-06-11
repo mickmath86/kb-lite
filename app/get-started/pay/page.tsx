@@ -14,7 +14,7 @@ import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon
 // ─────────────────────────────────────────────────────────────────────────────
 
 const WEBHOOK_URL =
-  'https://services.leadconnectorhq.com/hooks/FJeizTc6Xn4BiUesMgHQ/webhook-trigger/3a814faf-27f9-4b8d-861d-004b677cbd3d'
+  'https://services.leadconnectorhq.com/hooks/FJeizTc6Xn4BiUesMgHQ/webhook-trigger/e4ba2709-3364-4bf0-a224-0f1fd225c47d'
 
 type PlanKey = 'launch' | 'grow'
 type BillingKey = 'monthly' | 'quarterly'

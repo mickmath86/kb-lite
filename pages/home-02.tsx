@@ -208,10 +208,10 @@ export default function Page() {
         {/* Features */}
         <Features
           id="features"
-          headline="Core services built to modernize how your business grows"
+          headline="Three systems that work together to grow your business"
           subheadline={
             <p>
-             Kickbord helps small and mid-sized businesses improve how they show up, respond, and convert through strategic marketing support, modern website experiences, and AI-powered business systems.
+              Kickbord brings together a modern AI website, Google ad management, and automated reputation-building — all done for you, with no setup fees.
             </p>
           }
           cta={
@@ -225,154 +225,89 @@ export default function Page() {
                 demo={
                   <Screenshot wallpaper="green" placement="bottom-right">
                     <img
-                      src="/images/ai.png?left=1200&top=736"
-                      alt=""
-                      className="bg-white/75 sm:hidden dark:hidden"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Business owner receiving a new lead notification on his phone"
+                      className="sm:hidden"
                       width={1200}
-                      height={736}
+                      height={900}
                     />
                     <img
-                      src="/images/ai.png?left=1200&top=736&color=olive"
-                      alt=""
-                      width={1200}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden sm:hidden"
-                    />
-                    <img
-                      src="/images/ai.png?left=1800&top=736"
-                      alt=""
-                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Business owner receiving a new lead notification on his phone"
+                      className="max-sm:hidden lg:hidden"
                       width={1800}
-                      height={736}
+                      height={1350}
                     />
                     <img
-                      src="/images/ai.png?left=1800&top=736&color=olive"
-                      alt=""
-                      width={1800}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
-                    />
-                    <img
-                      src="/images/ai.png?left=1200&top=736"
-                      alt=""
-                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Business owner receiving a new lead notification on his phone"
+                      className="max-lg:hidden"
                       width={1200}
-                      height={736}
-                    />
-                    <img
-                      src="/images/ai.png?left=1200&top=736&color=olive"
-                      alt=""
-                      width={1200}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden max-lg:hidden"
+                      height={900}
                     />
                   </Screenshot>
                 }
-                headline="AI Voice Agents"
-                subheadline={<p>Deploy AI-powered receptionists that answer calls, qualify leads, route inquiries, and help your business stay responsive even when your team is busy.</p>}
+                headline="AI Website + Lead System"
+                subheadline={<p>Your new site comes with a built-in AI chatbot, live chat, contact forms, SMS lead notifications, and automated follow-up — so every inquiry gets responded to fast, even when you&apos;re on the job.</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="purple" placement="top-left">
+                  <Screenshot wallpaper="brown" placement="top-left">
                     <img
-                      src="/images/ai.png?right=1200&bottom=736"
-                      alt=""
-                      className="bg-white/75 sm:hidden dark:hidden"
+                      src="/images/kb-feature-google-reputation.png"
+                      alt="HVAC business owner smiling behind a laptop showing Google Local Services results"
+                      className="sm:hidden"
                       width={1200}
-                      height={736}
+                      height={900}
                     />
                     <img
-                      src="/images/ai.png?right=1200&bottom=736&color=olive"
-                      alt=""
-                      width={1200}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden sm:hidden"
-                    />
-                    <img
-                      src="/images/ai.png?right=1800&bottom=736"
-                      alt=""
-                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      src="/images/kb-feature-google-reputation.png"
+                      alt="HVAC business owner smiling behind a laptop showing Google Local Services results"
+                      className="max-sm:hidden lg:hidden"
                       width={1800}
-                      height={736}
+                      height={1350}
                     />
                     <img
-                      src="/images/ai.png?right=1800&bottom=736&color=olive"
-                      alt=""
-                      width={1800}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
-                    />
-                    <img
-                      src="/images/ai.png?right=1200&bottom=736"
-                      alt=""
-                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      src="/images/kb-feature-google-reputation.png"
+                      alt="HVAC business owner smiling behind a laptop showing Google Local Services results"
+                      className="max-lg:hidden"
                       width={1200}
-                      height={736}
-                    />
-                    <img
-                      src="/images/ai.png?right=1200&bottom=736&color=olive"
-                      alt=""
-                      width={1200}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden max-lg:hidden"
+                      height={900}
                     />
                   </Screenshot>
                 }
-                
-                headline="Websites & Digital Presence"
-                subheadline={<p>Redesign outdated websites and digital touchpoints so your business looks sharper, feels more credible, and supports the way modern customers evaluate who to trust.</p>}
+                headline="Google Visibility & Reputation"
+                subheadline={<p>We set up and manage your Local Services Ads so you appear at the top of Google, and after every job an automated SMS goes out requesting a review — more qualified leads in, more 5-star reviews compounding over time.</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
                   <Screenshot wallpaper="blue" placement="bottom-left">
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736"
-                      alt=""
-                      className="bg-white/75 sm:hidden dark:hidden"
+                      src="/images/kb-feature-marketing-strategy.png"
+                      alt="Consultant reviewing a marketing report with a small business owner"
+                      className="sm:hidden"
                       width={1200}
-                      height={736}
+                      height={900}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736&color=olive"
-                      alt=""
-                      width={1200}
-                      height={736}
-                      className="bg-black/75 not-dark:hidden sm:hidden"
-                    />
-                    <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1800&top=736"
-                      alt=""
-                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      src="/images/kb-feature-marketing-strategy.png"
+                      alt="Consultant reviewing a marketing report with a small business owner"
+                      className="max-sm:hidden lg:hidden"
                       width={1800}
-                      height={736}
+                      height={1350}
                     />
                     <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1800&top=736&color=olive"
-                      alt=""
-                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={736}
-                    />
-                    <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736"
-                      alt=""
-                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      src="/images/kb-feature-marketing-strategy.png"
+                      alt="Consultant reviewing a marketing report with a small business owner"
+                      className="max-lg:hidden"
                       width={1200}
-                      height={736}
-                    />
-                    <img
-                      src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736&color=olive"
-                      alt=""
-                      className="bg-black/75 not-dark:hidden max-lg:hidden"
-                      width={1200}
-                      height={736}
+                      height={900}
                     />
                   </Screenshot>
                 }
-                headline="Marketing Strategy & Systems"
-                subheadline={<p>Clarify your messaging, improve your digital presence, and build stronger marketing systems so your business can operate with more consistency and confidence.</p>}
+                headline="Marketing & Growth Strategy"
+                subheadline={<p>Get a strategic partner who helps you clarify your positioning, tighten your messaging, and build marketing systems that scale — so your business operates with the consistency and confidence of a much larger company.</p>}
               />
-              
             </>
           }
         />

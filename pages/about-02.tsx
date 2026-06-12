@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { clsx } from 'clsx/lite'
+import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Main } from '@/components/elements/main'
 import { Screenshot } from '@/components/elements/screenshot'
@@ -22,19 +23,61 @@ import {
   NavbarLogo,
   NavbarWithLogoActionsAndCenteredLinks,
 } from '@/components/sections/navbar-with-logo-actions-and-centered-links'
-import { Plan as PlanMulti, PricingMultiTier } from '@/components/sections/pricing-multi-tier'
 import { Stat as Stat3, StatsThreeColumnWithDescription } from '@/components/sections/stats-three-column-with-description'
 
 // ─── Pricing data ────────────────────────────────────────────────────────────
 
-const LAUNCH = {
-  monthly: { price: '$297', period: '/mo', note: 'Billed monthly. Cancel anytime.' },
-  quarterly: { price: '$760', period: '/qtr', note: 'Billed quarterly. Save 15% vs monthly (~$253/mo).' },
-}
-const GROW = {
-  monthly: { price: '$497', period: '/mo', note: 'Billed monthly. Cancel anytime.' },
-  quarterly: { price: '$1,270', period: '/qtr', note: 'Billed quarterly. Save 15% vs monthly (~$423/mo).' },
-}
+const launchFeatures = [
+  'AI website',
+  'Integrated contact forms',
+  'AI chatbot',
+  'Live chat widget',
+  'SMS lead notifications',
+  'Automated lead follow-up',
+  'CRM & contact database',
+  'No setup fees',
+]
+
+const growExtras = [
+  'Local Services Ads setup & management',
+  'Reputation management',
+  'Automated post-job review request SMS',
+]
+
+const enterpriseExtras = [
+  'Dedicated account strategist',
+  'Custom AI integrations',
+  'Multi-location support',
+  'Priority onboarding & support',
+  'Custom reporting',
+]
+
+const pricingPlans = [
+  {
+    key: 'launch',
+    name: 'Kickbord Launch',
+    isDark: false,
+    isEnterprise: false,
+    monthly: { price: '$297', period: '/mo', cta: 'Start with Launch', href: '/get-started/pay?plan=launch&billing=monthly' },
+    quarterly: { price: '$760', period: '/qtr', savings: 'Save $131', equivalent: '~$253/mo', cta: 'Start Launch — quarterly', href: '/get-started/pay?plan=launch&billing=quarterly', bonus: 'No setup fee + priority onboarding' },
+  },
+  {
+    key: 'grow',
+    name: 'Kickbord Grow',
+    isDark: true,
+    isEnterprise: false,
+    monthly: { price: '$497', period: '/mo', cta: 'Start with Grow', href: '/get-started/pay?plan=grow&billing=monthly' },
+    quarterly: { price: '$1,270', period: '/qtr', savings: 'Save $221', equivalent: '~$423/mo', cta: 'Start Grow — quarterly', href: '/get-started/pay?plan=grow&billing=quarterly', bonus: 'No setup fee + priority onboarding' },
+  },
+  {
+    key: 'enterprise',
+    name: 'Enterprise',
+    isDark: false,
+    isEnterprise: true,
+    monthly: { price: 'Custom', period: '', cta: 'Contact us', href: '/contact' },
+    quarterly: { price: 'Custom', period: '', cta: 'Contact us', href: '/contact' },
+  },
+]
 
 export default function Page() {
   const [billing, setBilling] = useState<'monthly' | 'quarterly'>('monthly')
@@ -165,144 +208,168 @@ export default function Page() {
         />
 
         {/* Pricing */}
-        <PricingMultiTier
-          id="pricing"
-          eyebrow="Pricing"
-          headline="Simple pricing. Everything done for you."
-          subheadline="No setup fees. No long-term contracts. Cancel anytime."
-          plans={
-            <>
-              {/* Billing toggle */}
-              <div className="col-span-full mb-2 flex justify-center">
-                <div className="inline-flex rounded-xl border border-olive-950/10 bg-olive-950/4 p-1 dark:border-white/10 dark:bg-white/5">
-                  <button
-                    type="button"
-                    onClick={() => setBilling('monthly')}
-                    className={clsx(
-                      'rounded-lg px-5 py-2 text-sm font-medium transition-all duration-150',
-                      billing === 'monthly'
-                        ? 'bg-white text-olive-950 shadow-sm dark:bg-white/15 dark:text-white'
-                        : 'text-olive-500 hover:text-olive-700 dark:text-white/45 dark:hover:text-white/70'
-                    )}
-                  >
-                    Monthly
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setBilling('quarterly')}
-                    className={clsx(
-                      'flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium transition-all duration-150',
-                      billing === 'quarterly'
-                        ? 'bg-white text-olive-950 shadow-sm dark:bg-white/15 dark:text-white'
-                        : 'text-olive-500 hover:text-olive-700 dark:text-white/45 dark:hover:text-white/70'
-                    )}
-                  >
-                    Quarterly
-                    <span className={clsx(
-                      'rounded-full px-2 py-0.5 text-xs font-semibold',
-                      billing === 'quarterly'
-                        ? 'bg-green-500/15 text-green-700 dark:bg-green-400/20 dark:text-green-400'
-                        : 'bg-olive-950/8 text-olive-500 dark:bg-white/10 dark:text-white/40'
-                    )}>
-                      Save 15%
+        <section id="pricing" className="py-16 bg-white dark:bg-olive-950">
+          <div className="mx-auto w-full max-w-2xl px-6 md:max-w-3xl lg:max-w-7xl lg:px-10">
+            {/* Header */}
+            <div className="mb-10 text-center">
+              <p className="text-sm font-semibold uppercase tracking-widest text-olive-600 dark:text-olive-400">Pricing</p>
+              <h2 className="mt-2 font-display text-[2rem]/10 text-olive-950 sm:text-5xl/14 dark:text-white">
+                Simple pricing. Everything done for you.
+              </h2>
+              <p className="mt-3 text-base/7 text-olive-700 dark:text-olive-400">
+                No setup fees. No long-term contracts. Cancel anytime.
+              </p>
+
+              {/* Tab switcher */}
+              <div className="mt-6 inline-flex rounded-full border border-olive-950/15 bg-olive-950/5 p-1 dark:border-white/15 dark:bg-white/5">
+                <button
+                  type="button"
+                  onClick={() => setBilling('monthly')}
+                  className={clsx(
+                    'rounded-full px-6 py-2 text-sm font-semibold transition-all',
+                    billing === 'monthly'
+                      ? 'bg-olive-950 text-white shadow-sm dark:bg-white dark:text-olive-950'
+                      : 'text-olive-600 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white'
+                  )}
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBilling('quarterly')}
+                  className={clsx(
+                    'relative rounded-full px-6 py-2 text-sm font-semibold transition-all',
+                    billing === 'quarterly'
+                      ? 'bg-olive-950 text-white shadow-sm dark:bg-white dark:text-olive-950'
+                      : 'text-olive-600 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white'
+                  )}
+                >
+                  Quarterly
+                  {billing !== 'quarterly' && (
+                    <span className="absolute -top-1 -right-1 rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                      15% off
                     </span>
-                  </button>
-                </div>
+                  )}
+                </button>
               </div>
+            </div>
 
-              {/* Launch */}
-              <PlanMulti
-                name="Kickbord Launch"
-                price={LAUNCH[billing].price}
-                period={LAUNCH[billing].period}
-                subheadline={
-                  <>
-                    <p>{LAUNCH[billing].note}</p>
-                    <p>Done-for-you website and lead system. We build your AI website, wire up the chatbot, set up automated lead follow-up, and hand you a system that captures and responds to every inquiry.</p>
-                  </>
-                }
-                features={[
-                  'AI website',
-                  'Integrated contact forms',
-                  'AI chatbot',
-                  'Live chat widget',
-                  'SMS lead notifications',
-                  'Automated lead follow-up',
-                  'CRM & contact database',
-                  'No setup fees',
-                ]}
-                cta={
-                  <ButtonLink
-                    href={`/get-started/pay?plan=launch&billing=${billing}`}
-                    size="lg"
-                    className="w-full justify-center"
+            {/* Plan cards */}
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+              {pricingPlans.map((plan) => {
+                const data = billing === 'monthly' ? plan.monthly : plan.quarterly
+                const { isDark, isEnterprise } = plan
+                return (
+                  <div
+                    key={plan.key}
+                    className={clsx(
+                      'relative flex flex-col gap-5 rounded-2xl p-7 transition-all',
+                      isDark
+                        ? 'border-2 border-olive-950 bg-olive-950 dark:border-white/30'
+                        : isEnterprise
+                          ? 'border border-olive-950/15 bg-olive-950/3 dark:border-white/10 dark:bg-white/3'
+                          : 'border border-olive-950/10 bg-white dark:border-white/10 dark:bg-white/5'
+                    )}
                   >
-                    Get started <ArrowNarrowRightIcon />
-                  </ButtonLink>
-                }
-              />
+                    {isDark && (
+                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-olive-950 px-4 py-1 text-xs font-bold text-white dark:bg-white dark:text-olive-950">
+                        Most Popular
+                      </span>
+                    )}
 
-              {/* Grow */}
-              <PlanMulti
-                name="Kickbord Grow"
-                price={GROW[billing].price}
-                period={GROW[billing].period}
-                badge="Most Popular"
-                subheadline={
-                  <>
-                    <p>{GROW[billing].note}</p>
-                    <p>Leads and reputation on autopilot. Everything in Launch plus Google Local Services Ads management and automated post-job review requests so your pipeline and star rating both compound over time.</p>
-                    <p className="rounded-lg bg-yellow-50 px-3 py-2 text-xs text-yellow-700 dark:bg-yellow-400/10 dark:text-yellow-300/80">
-                      Google ad spend is billed separately (typically $300–$1,000/mo).
-                    </p>
-                  </>
-                }
-                features={[
-                  'Everything in Launch',
-                  'Full Local Services Ads setup & management',
-                  'Reputation management',
-                  'Automated post-job review request SMS',
-                  'No setup fees',
-                ]}
-                cta={
-                  <ButtonLink
-                    href={`/get-started/pay?plan=grow&billing=${billing}`}
-                    size="lg"
-                    className="w-full justify-center"
-                  >
-                    Get started <ArrowNarrowRightIcon />
-                  </ButtonLink>
-                }
-              />
+                    {/* Price */}
+                    <div>
+                      <p className={clsx('text-xs font-semibold uppercase tracking-widest', isDark ? 'text-olive-400' : 'text-olive-500')}>
+                        {plan.name}
+                      </p>
+                      <div className="mt-1 flex items-baseline gap-1">
+                        <span className={clsx('font-display text-5xl', isDark ? 'text-white' : 'text-olive-950 dark:text-white')}>
+                          {data.price}
+                        </span>
+                        {data.period && (
+                          <span className={clsx('text-sm', isDark ? 'text-white/50' : 'text-olive-500')}>
+                            {data.period}
+                          </span>
+                        )}
+                      </div>
+                      {billing === 'quarterly' && 'savings' in data && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="rounded-full bg-green-500/20 px-2.5 py-0.5 text-xs font-bold text-green-600 dark:text-green-400">{data.savings}</span>
+                          <span className={clsx('text-xs', isDark ? 'text-white/50' : 'text-olive-500')}>{data.equivalent}</span>
+                        </div>
+                      )}
+                      {isEnterprise && (
+                        <p className={clsx('mt-2 text-sm', 'text-olive-600 dark:text-olive-400')}>
+                          Full-stack marketing partner for businesses ready to scale.
+                        </p>
+                      )}
+                    </div>
 
-              {/* Enterprise */}
-              <PlanMulti
-                name="Enterprise"
-                price="Custom"
-                subheadline={
-                  <p>Full-stack marketing partner. For businesses ready to scale with custom AI integrations, multi-location support, and a dedicated strategist embedded in your operations.</p>
-                }
-                features={[
-                  'Everything in Grow',
-                  'Dedicated account strategist',
-                  'Custom AI integrations',
-                  'Multi-location support',
-                  'Priority onboarding & support',
-                  'Custom reporting',
-                ]}
-                cta={
-                  <ButtonLink
-                    href="/contact"
-                    size="lg"
-                    className="w-full justify-center"
-                  >
-                    Contact us <ArrowNarrowRightIcon />
-                  </ButtonLink>
-                }
-              />
-            </>
-          }
-        />
+                    {/* Quarterly bonus */}
+                    {billing === 'quarterly' && 'bonus' in data && (
+                      <div className={clsx(
+                        'rounded-xl p-3.5',
+                        isDark
+                          ? 'border border-white/15 bg-white/10'
+                          : 'border border-olive-950/10 bg-olive-950/5 dark:border-white/10 dark:bg-white/5'
+                      )}>
+                        <p className={clsx('text-xs font-semibold', isDark ? 'text-white' : 'text-olive-950 dark:text-white')}>Quarterly bonus</p>
+                        <p className={clsx('mt-0.5 text-xs', isDark ? 'text-white/60' : 'text-olive-500')}>{data.bonus}</p>
+                      </div>
+                    )}
+
+                    {/* Features */}
+                    <ul className="flex flex-col gap-2">
+                      {launchFeatures.map((f) => (
+                        <li key={f} className={clsx('flex items-start gap-2.5 text-xs/5', isDark ? 'text-white/80' : 'text-olive-700 dark:text-olive-300')}>
+                          <span className={clsx('mt-0.5 size-3.5 shrink-0', isDark ? 'text-white/40' : 'text-olive-400')}><CheckmarkIcon /></span>
+                          {f}
+                        </li>
+                      ))}
+                      {(isDark || isEnterprise) && (
+                        <>
+                          <li className={clsx('mt-1 border-t pt-2', isDark ? 'border-white/10' : 'border-olive-950/10 dark:border-white/10')}>
+                            <p className={clsx('text-xs font-semibold uppercase tracking-widest mb-1.5', isDark ? 'text-white/40' : 'text-olive-400')}>Also included:</p>
+                          </li>
+                          {(isDark ? growExtras : enterpriseExtras).map((f) => (
+                            <li key={f} className={clsx('flex items-start gap-2.5 text-xs/5', isDark ? 'text-olive-300' : 'text-olive-600 dark:text-olive-300')}>
+                              <span className={clsx('mt-0.5 size-3.5 shrink-0', isDark ? 'text-olive-400' : 'text-olive-400')}><CheckmarkIcon /></span>
+                              {f}
+                            </li>
+                          ))}
+                        </>
+                      )}
+                    </ul>
+
+                    {/* Grow ad spend note */}
+                    {isDark && (
+                      <p className="rounded-xl border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-xs text-yellow-300/80">
+                        Google ad spend is billed separately (typically $300–$1,000/mo).
+                      </p>
+                    )}
+
+                    {/* CTA */}
+                    <a
+                      href={data.href}
+                      className={clsx(
+                        'mt-auto flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition',
+                        isDark
+                          ? 'bg-white text-olive-950 hover:bg-white/90'
+                          : 'border border-olive-950/20 bg-white text-olive-950 hover:bg-olive-950/5 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10'
+                      )}
+                    >
+                      {data.cta}
+                    </a>
+                  </div>
+                )
+              })}
+            </div>
+
+            <p className="mt-6 text-center text-xs text-olive-500 dark:text-olive-400">
+              Grow plan: Google ad spend is a separate budget on top of the monthly fee (typically $300–$1,000/mo). No setup fees on any plan.
+            </p>
+          </div>
+        </section>
 
         {/* Values */}
         <FeaturesThreeColumn

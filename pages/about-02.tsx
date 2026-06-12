@@ -1,18 +1,17 @@
-import { AnnouncementBadge } from '@/components/elements/announcement-badge'
+'use client'
+
+import { useState } from 'react'
+import { clsx } from 'clsx/lite'
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Main } from '@/components/elements/main'
 import { Screenshot } from '@/components/elements/screenshot'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
-import { GitDiffIcon } from '@/components/icons/git-diff-icon'
-import { HeartIcon } from '@/components/icons/heart-icon'
 import { RocketIcon } from '@/components/icons/rocket-icon'
-import { StarIcon } from '@/components/icons/star-icon'
+import { HeartIcon } from '@/components/icons/heart-icon'
 import { TargetIcon } from '@/components/icons/target-icon'
-import { User2Icon } from '@/components/icons/user-2-icon'
+import { SparklesIcon } from '@/components/icons/sparkles-icon'
 
-
-import { BrandCard, BrandsCardsMultiColumn } from '@/components/sections/brands-cards-multi-column'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { Feature, FeaturesThreeColumn } from '@/components/sections/features-three-column'
 import { FooterCategory, FooterLink, FooterWithLinkCategories } from '@/components/sections/footer-with-link-categories'
@@ -25,58 +24,67 @@ import {
 } from '@/components/sections/navbar-with-logo-actions-and-centered-links'
 import { Plan as PlanMulti, PricingMultiTier } from '@/components/sections/pricing-multi-tier'
 import { Stat as Stat3, StatsThreeColumnWithDescription } from '@/components/sections/stats-three-column-with-description'
-import { TeamMember, TeamThreeColumnGrid } from '@/components/sections/team-three-column-grid'
+
+// ─── Pricing data ────────────────────────────────────────────────────────────
+
+const LAUNCH = {
+  monthly: { price: '$297', period: '/mo', note: 'Billed monthly. Cancel anytime.' },
+  quarterly: { price: '$760', period: '/qtr', note: 'Billed quarterly. Save 15% vs monthly (~$253/mo).' },
+}
+const GROW = {
+  monthly: { price: '$497', period: '/mo', note: 'Billed monthly. Cancel anytime.' },
+  quarterly: { price: '$1,270', period: '/qtr', note: 'Billed quarterly. Save 15% vs monthly (~$423/mo).' },
+}
 
 export default function Page() {
+  const [billing, setBilling] = useState<'monthly' | 'quarterly'>('monthly')
+
   return (
     <>
       <NavbarWithLogoActionsAndCenteredLinks
-              id="navbar"
-              links={
-                <>
-                  <NavbarLink href="/about">About</NavbarLink>
-                  <NavbarLink href="/services">Services</NavbarLink>
-                  <NavbarLink href="#">Contact</NavbarLink>
-                  <NavbarLink href="#" className="sm:hidden">
-                    Log in
-                  </NavbarLink>
-                </>
-              }
-              logo={
-                <NavbarLogo href="/">
-                  <img
-                    src="/logos/icon.png"
-                    alt="Kickbord"
-                    className="dark:hidden"
-                    width={85}
-                    height={28}
-                  />
-                  <img
-                    src="/logos/icon.png"
-                    alt="Oatmeal"
-                    className="not-dark:hidden"
-                    width={85}
-                    height={28}
-                  />
-                  {/* <h1 className="text-4xl  font-display">Kickbord</h1> */}
-                </NavbarLogo>
-              }
-              actions={
-                <>
-                  <PlainButtonLink href="#" className="max-sm:hidden">
-                    Log in
-                  </PlainButtonLink>
-                  <ButtonLink href="#">Get started <ArrowNarrowRightIcon /></ButtonLink>
-                </>
-              }
+        id="navbar"
+        links={
+          <>
+            <NavbarLink href="/about">About</NavbarLink>
+            <NavbarLink href="/services">Services</NavbarLink>
+            <NavbarLink href="/contact">Contact</NavbarLink>
+            <NavbarLink href="/get-started" className="sm:hidden">
+              Get started
+            </NavbarLink>
+          </>
+        }
+        logo={
+          <NavbarLogo href="/">
+            <img
+              src="/Logos/icon.svg"
+              alt="Kickbord"
+              className="dark:hidden"
+              width={85}
+              height={28}
             />
+            <img
+              src="/Logos/icon.svg"
+              alt="Kickbord"
+              className="not-dark:hidden"
+              width={85}
+              height={28}
+            />
+          </NavbarLogo>
+        }
+        actions={
+          <>
+            <PlainButtonLink href="/contact" className="max-sm:hidden">
+              Contact
+            </PlainButtonLink>
+            <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
+          </>
+        }
+      />
 
       <Main>
         {/* Hero */}
-        
         <HeroTwoColumnWithPhoto
           id="origin-story"
-          
           headline="Built to give growing businesses bigger-business capability"
           subheadline={
             <p>
@@ -94,7 +102,7 @@ export default function Page() {
               />
               <img
                 className="not-dark:bg-white/75 xl:hidden dark:bg-black/75"
-                src="https://assets.tailwindplus.com/photos/1.webp"
+                src="/images/ventura-kb.jpg"
                 width={1800}
                 height={945}
                 alt=""
@@ -103,205 +111,243 @@ export default function Page() {
           }
         />
 
-        <HeroLeftAlignedWithDemo 
-        eyebrow="Origin Story"
+        {/* Origin story */}
+        <HeroLeftAlignedWithDemo
+          eyebrow="Origin Story"
           headline="From enterprise campaigns to giving growing businesses a real shot"
           subheadline={
-             <>  
-            <p>
-              I spent my career inside top agencies building websites, apps, and social campaigns for Fortune 500 brands, working alongside some of the most creative minds in advertising. I loved the creativity and the scale of that work – like leading the team that rebuilt the entire Google Ads web platform, a product used by tens of millions of people.
-            </p>
-            <p>
-              But the longer I worked at that level, the more a pattern bothered me. Smaller and mid-sized businesses almost never got access to this kind of thinking or execution. They were bootstrapping, hiring whoever they could afford, or trying to figure out marketing, websites, and operations on their own – while the best talent was busy shipping massive campaigns for the biggest companies.
+            <>
+              <p>
+                I spent my career inside top agencies building websites, apps, and social campaigns for Fortune 500 brands, working alongside some of the most creative minds in advertising. I loved the creativity and the scale of that work — like leading the team that rebuilt the entire Google Ads web platform, a product used by tens of millions of people.
               </p>
               <p>
-              While freelancing as a lead producer at R/GA on Google projects, I had a realization: if smaller businesses could see what truly goes into enterprise-level marketing and business consulting, they would be blown away by what’s possible for them. With modern AI tools, one experienced enterprise-level marketer who knows what questions to ask and what problems to solve can now deliver that caliber of strategy, creative, and systems to growing businesses at a fraction of the old cost. Kickbord exists to do exactly that – bringing enterprise-level marketing and business consulting to small and mid-sized businesses that are ready to grow but should not have to do it alone.
-            </p>
-            <p>
-                -Mike M 
-            </p>
+                But the longer I worked at that level, the more a pattern bothered me. Smaller and mid-sized businesses almost never got access to this kind of thinking or execution. They were bootstrapping, hiring whoever they could afford, or trying to figure out marketing, websites, and operations on their own — while the best talent was busy shipping massive campaigns for the biggest companies.
+              </p>
+              <p>
+                While freelancing as a lead producer at R/GA on Google projects, I had a realization: if smaller businesses could see what truly goes into enterprise-level marketing and business consulting, they would be blown away by what is possible for them. With modern AI tools, one experienced enterprise-level marketer who knows what questions to ask and what problems to solve can now deliver that caliber of strategy, creative, and systems to growing businesses at a fraction of the old cost. Kickbord exists to do exactly that.
+              </p>
+              <p>— Mike M</p>
             </>
           }
           demo={
             <Screenshot wallpaper="green" placement="bottom">
-            <img
-              className="not-dark:bg-white/75 max-xl:hidden dark:bg-black/75"
-              src="/images/ventura.jpg"
-              width={1800}
-              height={1600}
-              alt=""
-            />
+              <img
+                className="not-dark:bg-white/75 dark:bg-black/75"
+                src="/images/ventura.jpg"
+                width={1800}
+                height={1600}
+                alt=""
+              />
             </Screenshot>
           }
-          
         />
-        
-        <StatsThreeColumnWithDescription 
-       
-          heading="Who We Help" 
-          description="Kickbord works with growing businesses that need stronger marketing, better digital systems, and a clearer path to scale. These are companies with real opportunity, but not always the time, in-house expertise, or internal infrastructure to turn that opportunity into consistent growth."
+
+        {/* Who We Help */}
+        <StatsThreeColumnWithDescription
+          heading="Who We Help"
+          description="Kickbord is built for local service businesses — the kind that do great work, rely on word of mouth, and are ready to add a system that brings leads in consistently. If you run a crew and want more of the right customers calling you, this is built for you."
           children={
             <>
-              <Stat3 stat="Home services & trades" text="Plumbers, electricians, HVAC, roofers, landscapers, cleaners — businesses that need a steady pipeline of local jobs." />
-              <Stat3 stat="1–50 person companies" text="Small enough that every lead matters, big enough that you're ready to grow with a system behind you." />
-              <Stat3 stat="No marketing team in-house" text="You don't need to hire a CMO. Kickbord is your marketing department — strategy, website, ads, and automation included." />
+              <Stat3
+                stat="Home services & trades"
+                text="Plumbers, electricians, HVAC, roofers, landscapers, cleaners — businesses that need a steady pipeline of local jobs."
+              />
+              <Stat3
+                stat="1–50 person companies"
+                text="Small enough that every lead matters, big enough that you are ready to grow with a real system behind you."
+              />
+              <Stat3
+                stat="No marketing team in-house"
+                text="You do not need to hire a CMO. Kickbord is your marketing department — strategy, website, ads, and automation included."
+              />
             </>
           }
         />
-        
-        <PricingMultiTier 
-        eyebrow="How Kickbord Helps"
-        headline="Strategy, execution, and systems built to move the business forward"
-         plans={
-                      <>
-                        <PlanMulti
-                          name="Strategy"
-                          price="Clarity and direction"
-                          subheadline={<p>Kickbord helps businesses clarify positioning, identify growth opportunities, and make better marketing decisions with a clear plan forward.</p>}
-                          features={['Brand and positioning clarity', 'Growth opportunity mapping', 'Website and funnel strategy', 'Marketing roadmap development']}
-                       
-                        />
-                        <PlanMulti
-                          name="90-Day Sprint"
-                          price="$1,500"
-                          period="/ month"
-                          badge="Most popular"
-                          subheadline={<p>A structured 3-month engagement covering strategy, execution, and ongoing optimization.</p>}
-                          features={['Everything in Strategic Build', 'Monthly strategy sessions', 'Campaign management', 'Performance reporting', 'Priority support']}
-                          
-                        />
-                        <PlanMulti
-                          name="Fractional CMO"
-                          price="$3,000"
-                          period="/ month"
-                          subheadline={<p>Ongoing senior marketing leadership embedded in your business. Full strategic and executional ownership.</p>}
-                          features={['Full CMO responsibilities', 'Weekly check-ins', 'Team management', 'Vendor coordination', 'Board-level reporting']}
-                       
-                        />
-                      </>
-                    }/>
 
-        {/* Team */}
-        <TeamThreeColumnGrid
-          id="team"
-          headline="Our leadership team"
-          subheadline={
-            <p>
-              Oatmeals's leadership team combines decades of experience in private equity, where they honed their skills
-              in cost-cutting and maximizing shareholder value.
-            </p>
+        {/* Pricing */}
+        <PricingMultiTier
+          id="pricing"
+          eyebrow="Pricing"
+          headline="Simple pricing. Everything done for you."
+          subheadline="No setup fees. No long-term contracts. Cancel anytime."
+          plans={
+            <>
+              {/* Billing toggle */}
+              <div className="col-span-full mb-2 flex justify-center">
+                <div className="inline-flex rounded-xl border border-olive-950/10 bg-olive-950/4 p-1 dark:border-white/10 dark:bg-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setBilling('monthly')}
+                    className={clsx(
+                      'rounded-lg px-5 py-2 text-sm font-medium transition-all duration-150',
+                      billing === 'monthly'
+                        ? 'bg-white text-olive-950 shadow-sm dark:bg-white/15 dark:text-white'
+                        : 'text-olive-500 hover:text-olive-700 dark:text-white/45 dark:hover:text-white/70'
+                    )}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBilling('quarterly')}
+                    className={clsx(
+                      'flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium transition-all duration-150',
+                      billing === 'quarterly'
+                        ? 'bg-white text-olive-950 shadow-sm dark:bg-white/15 dark:text-white'
+                        : 'text-olive-500 hover:text-olive-700 dark:text-white/45 dark:hover:text-white/70'
+                    )}
+                  >
+                    Quarterly
+                    <span className={clsx(
+                      'rounded-full px-2 py-0.5 text-xs font-semibold',
+                      billing === 'quarterly'
+                        ? 'bg-green-500/15 text-green-700 dark:bg-green-400/20 dark:text-green-400'
+                        : 'bg-olive-950/8 text-olive-500 dark:bg-white/10 dark:text-white/40'
+                    )}>
+                      Save 15%
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Launch */}
+              <PlanMulti
+                name="Kickbord Launch"
+                price={LAUNCH[billing].price}
+                period={LAUNCH[billing].period}
+                subheadline={
+                  <>
+                    <p>{LAUNCH[billing].note}</p>
+                    <p>Done-for-you website and lead system. We build your AI website, wire up the chatbot, set up automated lead follow-up, and hand you a system that captures and responds to every inquiry.</p>
+                  </>
+                }
+                features={[
+                  'AI website',
+                  'Integrated contact forms',
+                  'AI chatbot',
+                  'Live chat widget',
+                  'SMS lead notifications',
+                  'Automated lead follow-up',
+                  'CRM & contact database',
+                  'No setup fees',
+                ]}
+                cta={
+                  <ButtonLink
+                    href={`/get-started/pay?plan=launch&billing=${billing}`}
+                    size="lg"
+                    className="w-full justify-center"
+                  >
+                    Get started <ArrowNarrowRightIcon />
+                  </ButtonLink>
+                }
+              />
+
+              {/* Grow */}
+              <PlanMulti
+                name="Kickbord Grow"
+                price={GROW[billing].price}
+                period={GROW[billing].period}
+                badge="Most Popular"
+                subheadline={
+                  <>
+                    <p>{GROW[billing].note}</p>
+                    <p>Leads and reputation on autopilot. Everything in Launch plus Google Local Services Ads management and automated post-job review requests so your pipeline and star rating both compound over time.</p>
+                    <p className="rounded-lg bg-yellow-50 px-3 py-2 text-xs text-yellow-700 dark:bg-yellow-400/10 dark:text-yellow-300/80">
+                      Google ad spend is billed separately (typically $300–$1,000/mo).
+                    </p>
+                  </>
+                }
+                features={[
+                  'Everything in Launch',
+                  'Full Local Services Ads setup & management',
+                  'Reputation management',
+                  'Automated post-job review request SMS',
+                  'No setup fees',
+                ]}
+                cta={
+                  <ButtonLink
+                    href={`/get-started/pay?plan=grow&billing=${billing}`}
+                    size="lg"
+                    className="w-full justify-center"
+                  >
+                    Get started <ArrowNarrowRightIcon />
+                  </ButtonLink>
+                }
+              />
+
+              {/* Enterprise */}
+              <PlanMulti
+                name="Enterprise"
+                price="Custom"
+                subheadline={
+                  <p>Full-stack marketing partner. For businesses ready to scale with custom AI integrations, multi-location support, and a dedicated strategist embedded in your operations.</p>
+                }
+                features={[
+                  'Everything in Grow',
+                  'Dedicated account strategist',
+                  'Custom AI integrations',
+                  'Multi-location support',
+                  'Priority onboarding & support',
+                  'Custom reporting',
+                ]}
+                cta={
+                  <ButtonLink
+                    href="/contact"
+                    size="lg"
+                    className="w-full justify-center"
+                  >
+                    Contact us <ArrowNarrowRightIcon />
+                  </ButtonLink>
+                }
+              />
+            </>
           }
-        >
-          <TeamMember
-            img={
-              <img
-                src="https://assets.tailwindplus.com/avatars/1.webp?w=800&h=800"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75"
-                width={800}
-                height={800}
-              />
-            }
-            name="Leslie Alexander"
-            byline="Co-Founder / CEO"
-          />
-          <TeamMember
-            img={
-              <img
-                src="https://assets.tailwindplus.com/avatars/2.webp?w=800&h=800"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75"
-                width={800}
-                height={800}
-              />
-            }
-            name="Michael Foster"
-            byline="Co-Founder / CTO"
-          />
-          <TeamMember
-            img={
-              <img
-                src="https://assets.tailwindplus.com/avatars/7.webp?w=800&h=800"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75"
-                width={800}
-                height={800}
-              />
-            }
-            name="Dries Vincent"
-            byline="Business Relations"
-          />
-        </TeamThreeColumnGrid>
+        />
 
-        {/* Features */}
+        {/* Values */}
         <FeaturesThreeColumn
-          id="features"
-          headline="Our values."
+          id="values"
+          headline="How we work."
           subheadline={
             <p>
-              Work smarter, reply faster, and keep every customer conversation right where it belongs — in one simple
-              inbox, where you can ignore it.
+              Kickbord operates on a small number of principles that shape every engagement — from how we build to how we communicate.
             </p>
           }
           features={
             <>
               <Feature
                 icon={<RocketIcon />}
-                headline="Innovation"
+                headline="Speed without shortcuts"
                 subheadline={
                   <p>
-                    We are constantly pushing the boundaries of what's possible, and legal, in customer support to
-                    deliver cutting-edge solutions for our clients.
+                    We move fast because we have done this at scale before. Speed comes from experience, not from skipping steps that matter.
                   </p>
                 }
               />
               <Feature
                 icon={<HeartIcon />}
-                headline="Integrity"
+                headline="Honest over comfortable"
                 subheadline={
                   <p>
-                    We are driven by a commitment to ethical business practices, transparency, and most of all,
-                    maximizing shareholder value.
+                    We tell clients what we actually think — about their positioning, their site, their strategy. Good advice is only useful if it is accurate.
                   </p>
                 }
               />
               <Feature
-                icon={<GitDiffIcon />}
-                headline="Collaboration"
+                icon={<SparklesIcon />}
+                headline="AI as a multiplier"
                 subheadline={
                   <p>
-                    We believe teamwork makes the dream work, especially when that dream is offshoring local jobs to the
-                    lowest bidder.
-                  </p>
-                }
-              />
-              <Feature
-                icon={<User2Icon />}
-                headline="Diversity"
-                subheadline={
-                  <p>
-                    Diversity can mean many things, but to us it mainly means hiring people from countries with the
-                    lowest labour costs.
+                    We use AI to extend what one experienced person can deliver, not to replace judgment. Every system we build is designed and overseen by someone who knows what good looks like.
                   </p>
                 }
               />
               <Feature
                 icon={<TargetIcon />}
-                headline="Accountability"
+                headline="Outcomes over outputs"
                 subheadline={
                   <p>
-                    Our customers' success is our success and their failure is our failure, except in the legal sense
-                    where our liability is limited.
-                  </p>
-                }
-              />
-              <Feature
-                icon={<StarIcon />}
-                headline="Quality"
-                subheadline={
-                  <p>
-                    We believe that you can move fast without breaking things, unless those things are labour laws in
-                    third world countries.
+                    We measure success by whether leads increase, reviews grow, and the business moves forward — not by how many deliverables we shipped.
                   </p>
                 }
               />
@@ -309,21 +355,20 @@ export default function Page() {
           }
         />
 
-        {/* Call To Action */}
+        {/* CTA */}
         <CallToActionSimple
           id="call-to-action"
-          headline="Have anymore questions?"
+          headline="Ready to see what this looks like for your business?"
           subheadline={
-            <p>Chat to someone on our sales team, who will make promises about our roadmap that we won't keep.</p>
+            <p>Book a free 30-minute walkthrough and we will show you exactly what Kickbord would build for you.</p>
           }
           cta={
             <div className="flex items-center gap-4">
-              <ButtonLink href="#" size="lg">
-                Chat with us
+              <ButtonLink href="/get-started" size="lg">
+                Get started <ArrowNarrowRightIcon />
               </ButtonLink>
-
-              <PlainButtonLink href="#" size="lg">
-                Book a demo <ChevronIcon />
+              <PlainButtonLink href="/contact" size="lg">
+                Contact us <ChevronIcon />
               </PlainButtonLink>
             </div>
           }
@@ -334,36 +379,23 @@ export default function Page() {
         id="footer"
         links={
           <>
-            <FooterCategory title="Product">
-              <FooterLink href="#">Features</FooterLink>
-              <FooterLink href="#">Pricing</FooterLink>
-              <FooterLink href="#">Integrations</FooterLink>
+            <FooterCategory title="Services">
+              <FooterLink href="/ai-voice-agents">AI Voice Agents</FooterLink>
+              <FooterLink href="/websites">Websites</FooterLink>
+              <FooterLink href="/consulting">Consulting</FooterLink>
             </FooterCategory>
             <FooterCategory title="Company">
-              <FooterLink href="#">About</FooterLink>
-              <FooterLink href="#">Careers</FooterLink>
-              <FooterLink href="#">Blog</FooterLink>
-              <FooterLink href="#">Press Kit</FooterLink>
-            </FooterCategory>
-            <FooterCategory title="Resources">
-              <FooterLink href="#">Help Center</FooterLink>
-              <FooterLink href="#">API Docs</FooterLink>
-              <FooterLink href="#">Status</FooterLink>
-              <FooterLink href="#">Contact</FooterLink>
+              <FooterLink href="/about">About</FooterLink>
+              <FooterLink href="/results">Results</FooterLink>
+              <FooterLink href="/contact">Contact</FooterLink>
             </FooterCategory>
             <FooterCategory title="Legal">
-              <FooterLink href="#">Privacy Policy</FooterLink>
+              <FooterLink href="/privacy">Privacy Policy</FooterLink>
               <FooterLink href="#">Terms of Service</FooterLink>
-              <FooterLink href="#">Security</FooterLink>
-            </FooterCategory>
-            <FooterCategory title="Connect">
-              <FooterLink href="#">X</FooterLink>
-              <FooterLink href="#">GitHub</FooterLink>
-              <FooterLink href="#">YouTube</FooterLink>
             </FooterCategory>
           </>
         }
-        fineprint="© 2025 Oatmeal, Inc."
+        fineprint="© 2026 Kickbord. All rights reserved."
       />
     </>
   )

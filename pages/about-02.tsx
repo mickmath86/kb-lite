@@ -87,7 +87,7 @@ export default function Page() {
             <>
               <img
                 className="not-dark:bg-white/75 max-xl:hidden dark:bg-black/75"
-                src="https://assets.tailwindplus.com/photos/1.webp"
+                src="/images/ventura-kb.jpg"
                 width={1800}
                 height={1600}
                 alt=""
@@ -126,7 +126,7 @@ export default function Page() {
             <Screenshot wallpaper="green" placement="bottom">
             <img
               className="not-dark:bg-white/75 max-xl:hidden dark:bg-black/75"
-              src="https://assets.tailwindplus.com/photos/1.webp"
+              src="/images/ventura.jpg"
               width={1800}
               height={1600}
               alt=""
@@ -142,9 +142,9 @@ export default function Page() {
           description="Kickbord works with growing businesses that need stronger marketing, better digital systems, and a clearer path to scale. These are companies with real opportunity, but not always the time, in-house expertise, or internal infrastructure to turn that opportunity into consistent growth."
           children={
             <>
-              <Stat3 stat="Local businesses with momentum" text="Established businesses serving real markets and ready to grow more intentionally." />
-              <Stat3 stat="Lean teams without in-house marketing" text="Companies that need senior-level strategy without building a full internal department." />
-              <Stat3 stat="Owners ready to modernize" text="Businesses looking to improve marketing, websites, systems, and AI adoption in a practical way." />
+              <Stat3 stat="Home services & trades" text="Plumbers, electricians, HVAC, roofers, landscapers, cleaners — businesses that need a steady pipeline of local jobs." />
+              <Stat3 stat="1–50 person companies" text="Small enough that every lead matters, big enough that you're ready to grow with a system behind you." />
+              <Stat3 stat="No marketing team in-house" text="You don't need to hire a CMO. Kickbord is your marketing department — strategy, website, ads, and automation included." />
             </>
           }
         />

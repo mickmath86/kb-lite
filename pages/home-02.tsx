@@ -317,32 +317,31 @@ export default function Page() {
         <StatsWithGraph
           id="stats"
           eyebrow="Why businesses hire Kickbord"
-          headline="Small businesses now have access to capabilities that used to belong to much bigger companies."
+          headline="The numbers behind why Kickbord clients grow faster"
           subheadline={
             <p>
-              AI is giving small and mid-sized businesses new ways to respond faster, automate routine work, and compete more effectively without building a large team. Pair that with a stronger website and clearer digital touchpoints, and there is more opportunity than ever to operate with the speed, credibility, and efficiency customers now expect.
+              Every service Kickbord delivers is built around a measurable outcome — faster lead response, better Google visibility, and a reputation that compounds. Here's what the data shows.
             </p>
           }
         >
-          <Stat stat="21x" text="Businesses are 21 times more likely to qualify a lead when they respond within 5 minutes — which is why AI responders and voice agents can be so valuable when speed matters." source="LeadAngel" sourceLink="https://www.leadangel.com/blog/operations/speed-to-lead-statistics/" />
-          <Stat stat="64%" text="SMB leaders say AI helps level the playing field with larger competitors.  " source="Connected Counsel" sourceLink="https://connectedcouncil.org/wp-content/uploads/2025/03/Digital-Ads-and-AI-Help-Small-Businesses-Navigate-Uncertainty.pdf" />
+          <Stat stat="55%" text="55% of businesses using AI chatbots for marketing report an increase in high-quality leads — and chatbots deliver conversion improvements of 20% or more compared to static contact forms." source="Master of Code / ChatBot.com" sourceLink="https://masterofcode.com/blog/chatbot-statistics" />
+          <Stat stat="93%" text="93% of customers read online reviews before choosing a service provider. Businesses that actively collect and manage reviews see 15–20% higher conversion rates and revenue lifts of up to 18%." source="Wiserreview / SLT Creative" sourceLink="https://www.wiserreview.com/blog/online-review-statistics" />
         </StatsWithGraph>
 
           {/* AI  Agent Feature */}
          
         <HeroTwoColumnWithPhoto
-          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">AI-Powered Solutions</div>}
-          headline="Never miss another opportunity with 24/7 AI voice agents"
+          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
+          headline="Most leads go to whoever responds first. Make sure that's you."
           subheadline={
             <p>
-              Deploy intelligent voice agents that answer calls, qualify leads, and route inquiries automatically. 
-              Keep your business responsive around the clock while your team focuses on closing deals and delivering value.
+              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
             </p>
           }
           cta={
             <div className="flex gap-4">
-              <ButtonLink href="#">Get started</ButtonLink>
-              <PlainButtonLink href="#">Learn more</PlainButtonLink>
+              <ButtonLink href="/get-started">Get started</ButtonLink>
+              <PlainButtonLink href="/services">See how it works <ArrowNarrowRightIcon /></PlainButtonLink>
             </div>
           }
           photo={
@@ -357,43 +356,7 @@ export default function Page() {
 
         {/* web feature section */}
      
-        <FeaturesWithLargeDemo
-          id="web-features"
-          eyebrow="Websites & digital presence"
-          headline="Websites that build credibilty and convert with more confidence."
-          subheadline="For many small and mid-sized businesses, the website is still the first real test of trust. Kickbord helps modernize outdated digital experiences so businesses communicate more clearly, feel more polished, and make it easier for the right customers to take action."
-          demo={
-            <Screenshot wallpaper="blue" placement="bottom">
-              <img
-                src="https://assets.tailwindplus.com/screenshots/1.webp?right=1200&top=736"
-                alt="Modern website design"
-                className="bg-black/75 dark:hidden max-lg:hidden"
-                width={1200}
-                height={736}
-              />
-            </Screenshot>
-          }
-          features={
-            <>
-              <Feature
-                icon={<ChatBubbleCircleIcon />}
-                headline="Clear messaging"
-                subheadline={<p>Make it immediately obvious what the business does, who it helps, and what the next step should be. Clear homepage messaging is a recurring recommendation for professional-service websites.</p>}
-              />
-              <Feature
-                icon={<SparklesIcon />}
-                headline="Credible design"
-                subheadline={<p>A modern visual system helps the business feel trustworthy, established, and worth contacting. First impressions are heavily design-related, and website credibility is closely tied to design quality.</p>}
-              />
-              <Feature
-                icon={<TargetIcon />}
-                headline="Conversion-ready UX"
-                subheadline={<p>Strong structure, mobile responsiveness, speed, and clear calls to action help visitors move from interest to inquiry.</p>}
-              />
-              
-            </>
-          }
-        />
+        
         {/* Testimonial */}
         <HeroTwoColumnWithPhoto
           eyebrow="About Kickbord"

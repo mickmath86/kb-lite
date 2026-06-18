@@ -521,7 +521,6 @@ function Slide4({ info }: { info: LeadInfo }) {
         src="/chatdemo"
         className="flex-1 w-full border-0 pt-[52px]"
         title="Kickbord AI chatbot demo"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       />
     </div>
   )
@@ -1529,7 +1528,7 @@ export default function ContractorPitchDeck() {
         const chatDemoIndex = hasPreview ? 5 : 4
         const isChat = current === chatDemoIndex
         return (
-          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-6 py-5">
+          <div className={clsx('absolute inset-x-0 bottom-0 flex items-center justify-between px-6 py-5', isChat && 'pointer-events-none')}>
             <button
               onClick={prev}
               disabled={current === 0}
@@ -1541,7 +1540,7 @@ export default function ContractorPitchDeck() {
               <span className="size-4"><ArrowNarrowLeftIcon /></span>
             </button>
 
-            <div className="flex items-center gap-1.5">
+            <div className={clsx('flex items-center gap-1.5', isChat && 'pointer-events-auto')}>
               {slideLabels.map((_, i) => (
                 <button
                   key={i}

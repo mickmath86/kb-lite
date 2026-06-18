@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { SparklesIcon } from '@/components/icons/sparkles-icon'
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
 import { MapPinIcon } from '@/components/icons/map-pin-icon'
@@ -234,16 +235,13 @@ export default function ChatDemoPage() {
         </div>
       </footer>
 
-      {/* ── AI Chat Widget Placeholder ── */}
-      {/* In production this is replaced by the GHL chat widget script */}
-      <div
-        className="fixed bottom-5 right-5 z-50 flex size-14 items-center justify-center rounded-full bg-olive-700 text-white shadow-lg transition-transform hover:scale-110 cursor-pointer"
-        title="Chat with us"
-      >
-        <svg className="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      </div>
+      {/* ── GHL Chat Widget ── */}
+      <Script
+        src="https://widgets.leadconnectorhq.com/loader.js"
+        data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+        data-widget-id="6a3329ad81870ee2fd50f81e"
+        strategy="afterInteractive"
+      />
 
     </div>
   )

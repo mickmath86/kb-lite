@@ -1525,42 +1525,48 @@ export default function ContractorPitchDeck() {
       )}
 
       {/* Bottom navigation */}
-      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-6 py-5">
-        <button
-          onClick={prev}
-          disabled={current === 0}
-          className={clsx(
-            'flex size-10 items-center justify-center rounded-full transition-all',
-            current === 0 ? 'pointer-events-none opacity-0' : 'bg-black/20 text-white backdrop-blur-sm hover:bg-black/35'
-          )}
-        >
-          <span className="size-4"><ArrowNarrowLeftIcon /></span>
-        </button>
-
-        <div className="flex items-center gap-1.5">
-          {slideLabels.map((_, i) => (
+      {(() => {
+        const chatDemoIndex = hasPreview ? 5 : 4
+        const isChat = current === chatDemoIndex
+        return (
+          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-6 py-5">
             <button
-              key={i}
-              onClick={() => setCurrent(i)}
+              onClick={prev}
+              disabled={current === 0}
               className={clsx(
-                'rounded-full transition-all duration-300',
-                i === current ? 'h-1.5 w-6 bg-white shadow-sm' : 'h-1.5 w-1.5 bg-white/30 hover:bg-white/60'
+                'flex size-10 items-center justify-center rounded-full transition-all',
+                current === 0 || isChat ? 'pointer-events-none opacity-0' : 'bg-black/20 text-white backdrop-blur-sm hover:bg-black/35'
               )}
-            />
-          ))}
-        </div>
+            >
+              <span className="size-4"><ArrowNarrowLeftIcon /></span>
+            </button>
 
-        <button
-          onClick={next}
-          disabled={current === SLIDE_COUNT - 1}
-          className={clsx(
-            'flex size-10 items-center justify-center rounded-full transition-all',
-            current === SLIDE_COUNT - 1 ? 'pointer-events-none opacity-0' : 'bg-black/20 text-white backdrop-blur-sm hover:bg-black/35'
-          )}
-        >
-          <span className="size-4"><ArrowNarrowRightIcon /></span>
-        </button>
-      </div>
+            <div className="flex items-center gap-1.5">
+              {slideLabels.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrent(i)}
+                  className={clsx(
+                    'rounded-full transition-all duration-300',
+                    i === current ? 'h-1.5 w-6 bg-white shadow-sm' : 'h-1.5 w-1.5 bg-white/30 hover:bg-white/60'
+                  )}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={next}
+              disabled={current === SLIDE_COUNT - 1}
+              className={clsx(
+                'flex size-10 items-center justify-center rounded-full transition-all',
+                current === SLIDE_COUNT - 1 || isChat ? 'pointer-events-none opacity-0' : 'bg-black/20 text-white backdrop-blur-sm hover:bg-black/35'
+              )}
+            >
+              <span className="size-4"><ArrowNarrowRightIcon /></span>
+            </button>
+          </div>
+        )
+      })()}
     </div>
   )
 }

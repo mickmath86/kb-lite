@@ -50,7 +50,7 @@ export default function ConsultingPage() {
         }
         actions={
           <>
-            <PlainButtonLink href="/contact" className="max-sm:hidden">Book a call</PlainButtonLink>
+            <PlainButtonLink href="/booking" className="max-sm:hidden">Book a call</PlainButtonLink>
             <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
           </>
         }
@@ -72,7 +72,7 @@ export default function ConsultingPage() {
               <ButtonLink href="/get-started" size="lg">
                 Get started <ArrowNarrowRightIcon />
               </ButtonLink>
-              <PlainButtonLink href="/contact" size="lg">
+              <PlainButtonLink href="/booking" size="lg">
                 Book a call <ChevronIcon />
               </PlainButtonLink>
             </div>
@@ -225,7 +225,7 @@ export default function ConsultingPage() {
               <ButtonLink href="/get-started" size="lg">
                 Get started <ArrowNarrowRightIcon />
               </ButtonLink>
-              <PlainButtonLink href="/contact" size="lg">
+              <PlainButtonLink href="/booking" size="lg">
                 Book a call <ChevronIcon />
               </PlainButtonLink>
             </div>

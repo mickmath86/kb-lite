@@ -10,6 +10,7 @@ export function HeroTwoColumnWithPhoto({
   subheadline,
   cta,
   photo,
+  direction = 'default',
   className,
   ...props
 }: {
@@ -18,10 +19,16 @@ export function HeroTwoColumnWithPhoto({
   subheadline: ReactNode
   cta?: ReactNode
   photo?: ReactNode
+  direction?: 'default' | 'reverse'
 } & ComponentProps<'section'>) {
   return (
     <section className={clsx('py-16', className)} {...props}>
-      <Container className="flex gap-16 max-xl:flex-col">
+      <Container
+        className={clsx(
+          'flex gap-16',
+          direction === 'reverse' ? 'flex-row-reverse max-xl:flex-col' : 'max-xl:flex-col',
+        )}
+      >
         <div className="flex flex-1 flex-col items-start justify-center gap-6">
           {eyebrow}
           <Heading className="max-w-5xl">{headline}</Heading>

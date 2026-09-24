@@ -5,6 +5,7 @@ import { clsx } from 'clsx/lite'
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Main } from '@/components/elements/main'
+import NavDropDown from '@/components/elements/navbar-dropdown'
 import { Screenshot } from '@/components/elements/screenshot'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
@@ -12,7 +13,10 @@ import { RocketIcon } from '@/components/icons/rocket-icon'
 import { HeartIcon } from '@/components/icons/heart-icon'
 import { TargetIcon } from '@/components/icons/target-icon'
 import { SparklesIcon } from '@/components/icons/sparkles-icon'
+import { User2Icon } from '@/components/icons/user-2-icon'
+import NavbarDropdown2 from '@/components/elements/navbar-dropdown-2'
 
+import { BrandCard, BrandsCardsMultiColumn } from '@/components/sections/brands-cards-multi-column'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { Feature, FeaturesThreeColumn } from '@/components/sections/features-three-column'
 import { FooterCategory, FooterLink, FooterWithLinkCategories } from '@/components/sections/footer-with-link-categories'
@@ -24,7 +28,6 @@ import {
   NavbarWithLogoActionsAndCenteredLinks,
 } from '@/components/sections/navbar-with-logo-actions-and-centered-links'
 import { Stat as Stat3, StatsThreeColumnWithDescription } from '@/components/sections/stats-three-column-with-description'
-
 // ─── Pricing data ────────────────────────────────────────────────────────────
 
 const launchFeatures = [
@@ -79,51 +82,56 @@ const pricingPlans = [
   },
 ]
 
+import { TeamMember, TeamThreeColumnGrid } from '@/components/sections/team-three-column-grid'
+import Link from 'next/link'
+
 export default function Page() {
   const [billing, setBilling] = useState<'monthly' | 'quarterly'>('monthly')
 
   return (
     <>
       <NavbarWithLogoActionsAndCenteredLinks
-        id="navbar"
-        links={
-          <>
-            <NavbarLink href="/about">About</NavbarLink>
-            <NavbarLink href="/services">Services</NavbarLink>
-            <NavbarLink href="/contact">Contact</NavbarLink>
-            <NavbarLink href="/get-started" className="sm:hidden">
-              Get started
-            </NavbarLink>
-          </>
-        }
-        logo={
-          <NavbarLogo href="/">
-            <img
-              src="/Logos/icon.svg"
-              alt="Kickbord"
-              className="dark:hidden"
-              width={85}
-              height={28}
-            />
-            <img
-              src="/Logos/icon.svg"
-              alt="Kickbord"
-              className="not-dark:hidden"
-              width={85}
-              height={28}
-            />
-          </NavbarLogo>
-        }
-        actions={
-          <>
-            <PlainButtonLink href="/contact" className="max-sm:hidden">
-              Contact
-            </PlainButtonLink>
-            <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
-          </>
-        }
-      />
-
+          id="navbar"
+          links={
+            <>
+              
+              <NavDropDown />
+              <NavbarLink href="/services">Pricing</NavbarLink>
+              <NavbarLink href="/ai-voice-agents">Our Work</NavbarLink>
+              <NavbarLink href="/results">Blog</NavbarLink>
+              <NavbarDropdown2 />
+              <NavbarLink href="/get-started" className="sm:hidden">
+                Get started
+              </NavbarLink>
+            </>
+          }
+          logo={
+            <NavbarLogo href="/">
+              <img
+                src="/Logos/icon.svg"
+                alt="Kickbord"
+                className="dark:hidden"
+                width={85}
+                height={28}
+              />
+              <img
+                src="/Logos/icon.svg"
+                className="not-dark:hidden"
+                width={85}
+                height={28}
+              />
+              {/* <h1 className="text-4xl  font-display">Kickbord</h1> */}
+            </NavbarLogo>
+          }
+          actions={
+            <>
+              <PlainButtonLink href="#" className="max-sm:hidden">
+                Log in
+              </PlainButtonLink>
+              <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
+            </>
+          }
+        />
       <Main>
         {/* Hero */}
         <HeroTwoColumnWithPhoto
@@ -153,42 +161,43 @@ export default function Page() {
             </>
           }
         />
-
-        {/* Origin story */}
-        <HeroLeftAlignedWithDemo
-          eyebrow="Origin Story"
-          headline="From enterprise campaigns to giving growing businesses a real shot"
-          subheadline={
-            <>
-              <p>
-                I spent my career inside top agencies building websites, apps, and social campaigns for Fortune 500 brands, working alongside some of the most creative minds in advertising. I loved the creativity and the scale of that work — like leading the team that rebuilt the entire Google Ads web platform, a product used by tens of millions of people.
-              </p>
-              <p>
-                But the longer I worked at that level, the more a pattern bothered me. Smaller and mid-sized businesses almost never got access to this kind of thinking or execution. They were bootstrapping, hiring whoever they could afford, or trying to figure out marketing, websites, and operations on their own — while the best talent was busy shipping massive campaigns for the biggest companies.
-              </p>
-              <p>
-                While freelancing as a lead producer at R/GA on Google projects, I had a realization: if smaller businesses could see what truly goes into enterprise-level marketing and business consulting, they would be blown away by what is possible for them. With modern AI tools, one experienced enterprise-level marketer who knows what questions to ask and what problems to solve can now deliver that caliber of strategy, creative, and systems to growing businesses at a fraction of the old cost. Kickbord exists to do exactly that.
-              </p>
-              <p>— Mike M</p>
-            </>
-          }
-          demo={
-            <Screenshot wallpaper="green" placement="bottom">
-              <img
-                className="not-dark:bg-white/75 dark:bg-black/75"
-                src="/images/ventura.jpg"
-                width={1800}
-                height={1600}
-                alt=""
-              />
-            </Screenshot>
-          }
-        />
+        <HeroTwoColumnWithPhoto
+                  eyebrow="Origin Story"
+                  headline="From enterprise campaigns to giving growing businesses a real shot"
+                  subheadline={
+                      <>  
+                      <p>
+                        I spent my career inside top agencies building websites, apps, and social campaigns for Fortune 500 brands, working alongside some of the most creative minds in advertising. I loved the creativity and the scale of that work – like leading the team that rebuilt the entire Google Ads web platform, a product used by tens of millions of people.
+                      </p>
+                      <p>
+                        But the longer I worked at that level, the more a pattern bothered me. Smaller and mid-sized businesses almost never got access to this kind of thinking or execution. They were bootstrapping, hiring whoever they could afford, or trying to figure out marketing, websites, and operations on their own – while the best talent was busy shipping massive campaigns for the biggest companies.
+                        </p>
+                        <p>
+                        While freelancing as a lead producer at R/GA on Google projects, I had a realization: if smaller businesses could see what truly goes into enterprise-level marketing and business consulting, they would be blown away by what’s possible for them. With modern AI tools, one experienced enterprise-level marketer who knows what questions to ask and what problems to solve can now deliver that caliber of strategy, creative, and systems to growing businesses at a fraction of the old cost. Kickbord exists to do exactly that – bringing enterprise-level marketing and business consulting to small and mid-sized businesses that are ready to grow but should not have to do it alone.
+                      </p>
+                      <p>
+                          -Mike M 
+                      </p>
+                      </>
+                    }
+                  cta={<> <Link href="/contact">Get in Touch <ArrowNarrowRightIcon /></Link>  </>}
+                  photo={
+                    <Screenshot wallpaper="green" placement="bottom">
+                      <img
+                        src="/mike.png"
+                        alt=""
+                        className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
+                        width={2000}
+                        height={160}
+                      />
+                    </Screenshot>
+                  }
+                />
 
         {/* Who We Help */}
         <StatsThreeColumnWithDescription
           heading="Who We Help"
-          description="Kickbord is built for local service businesses — the kind that do great work, rely on word of mouth, and are ready to add a system that brings leads in consistently. If you run a crew and want more of the right customers calling you, this is built for you."
+          description="Kickbord works with growing businesses that need stronger marketing, better digital systems, and a clearer path to scale. These are companies with real opportunity, but not always the time, in-house expertise, or internal infrastructure to turn that opportunity into consistent growth."
           children={
             <>
               <Stat3
@@ -206,7 +215,6 @@ export default function Page() {
             </>
           }
         />
-
         {/* Pricing */}
         <section id="pricing" className="py-16 bg-white dark:bg-olive-950">
           <div className="mx-auto w-full max-w-2xl px-6 md:max-w-3xl lg:max-w-7xl lg:px-10">
@@ -371,7 +379,7 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Values */}
+        {/* Features */}
         <FeaturesThreeColumn
           id="values"
           headline="How we work."
@@ -421,6 +429,11 @@ export default function Page() {
             </>
           }
         />
+      
+
+        
+
+       
 
         {/* CTA */}
         <CallToActionSimple

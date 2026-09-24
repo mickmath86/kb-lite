@@ -90,19 +90,37 @@ export default function ContactPage() {
           <>
             <NavbarLink href="/about">About</NavbarLink>
             <NavbarLink href="/services">Services</NavbarLink>
-            <NavbarLink href="/contact" className="font-semibold text-olive-950 dark:text-white">Contact</NavbarLink>
-            <NavbarLink href="#" className="sm:hidden">Log in</NavbarLink>
+            <NavbarLink href="/ai-voice-agents">AI Voice Agents</NavbarLink>
+            <NavbarLink href="/results">Results</NavbarLink>
+            <NavbarLink href="/contact">Contact</NavbarLink>
+            <NavbarLink href="/get-started" className="sm:hidden">
+              Get started
+            </NavbarLink>
           </>
         }
         logo={
           <NavbarLogo href="/">
-            <img src="/Logos/icon.svg" alt="Kickbord" className="dark:hidden" width={85} height={28} />
-            <img src="/Logos/icon.svg" className="not-dark:hidden" width={85} height={28} />
+            <img
+              src="/Logos/icon.svg"
+              alt="Kickbord"
+              className="dark:hidden"
+              width={85}
+              height={28}
+            />
+            <img
+              src="/Logos/icon.svg"
+              className="not-dark:hidden"
+              width={85}
+              height={28}
+            />
+            {/* <h1 className="text-4xl  font-display">Kickbord</h1> */}
           </NavbarLogo>
         }
         actions={
           <>
-            <PlainButtonLink href="#" className="max-sm:hidden">Log in</PlainButtonLink>
+            <PlainButtonLink href="#" className="max-sm:hidden">
+              Log in
+            </PlainButtonLink>
             <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
           </>
         }

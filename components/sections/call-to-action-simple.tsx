@@ -28,7 +28,7 @@ export function CallToActionSimple({
           </div>
           {subheadline && <Text className="flex max-w-3xl flex-col gap-4 text-pretty">{subheadline}</Text>}
         </div>
-        {cta}
+        <div className="flex ">{cta}</div>
       </Container>
     </section>
   )

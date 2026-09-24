@@ -1,5 +1,6 @@
 import { clsx } from 'clsx/lite'
 import type { ComponentProps, ReactNode } from 'react'
+import { Button } from '../elements/button'
 import { Section } from '../elements/section'
 
 export function FeatureThreeColumnWithDemos({
@@ -7,11 +8,13 @@ export function FeatureThreeColumnWithDemos({
   headline,
   subheadline,
   className,
+
   ...props
 }: {
   demo: ReactNode
   headline: ReactNode
   subheadline: ReactNode
+  
 } & ComponentProps<'div'>) {
   return (
     <div className={clsx('rounded-lg bg-olive-950/2.5 p-2 dark:bg-white/5', className)} {...props}>
@@ -28,11 +31,13 @@ export function FeatureThreeColumnWithDemos({
 
 export function Features({
   features,
+  cta,
   ...props
-}: { features: ReactNode } & Omit<ComponentProps<typeof Section>, 'children'>) {
+}: { features: ReactNode; cta?: ReactNode } & Omit<ComponentProps<typeof Section>, 'children'>) {
   return (
     <Section {...props}>
       <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">{features}</div>
+      <div className="mt-8 text-center">{cta}</div>
     </Section>
   )
 }

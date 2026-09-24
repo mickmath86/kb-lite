@@ -1,5 +1,5 @@
 import { AnnouncementBadge } from '@/components/elements/announcement-badge'
-import { Button, ButtonLink, PlainButtonLink, SoftButtonLink } from '@/components/elements/button'
+import { Button, ButtonLink, PlainButton, PlainButtonLink, SoftButtonLink } from '@/components/elements/button'
 import { EmailSignupForm } from '@/components/elements/email-signup-form'
 import { Link } from '@/components/elements/link'
 import { Logo, LogoGrid } from '@/components/elements/logo-grid'
@@ -28,52 +28,16 @@ import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-wi
 import { HeroSimpleLeftAligned } from '@/components/sections/hero-simple-left-aligned'
 import { HeroLeftAlignedWithPhoto } from '@/components/sections/hero-left-aligned-with-photo'
 import { TestimonialTwoColumnWithLargePhoto } from '@/components/sections/testimonial-two-column-with-large-photo'
-
+import NavDropDown from '@/components/elements/navbar-dropdown'
+import NavbarDropdown2 from '@/components/elements/navbar-dropdown-2'
+import { FeaturesStackedAlternatingWithDemos, Feature as FeatureStacked } from '@/components/sections/features-stacked-alternating-with-demos'
+import MainNav from '@/components/sections/main-nav'
+import { ThemedSection } from '@/components/elements/themed-section'
 
 export default function Page() {
   return (
     <>
-      <NavbarWithLogoActionsAndCenteredLinks
-        id="navbar"
-        links={
-          <>
-            <NavbarLink href="/about">About</NavbarLink>
-            <NavbarLink href="/services">Services</NavbarLink>
-            <NavbarLink href="/ai-voice-agents">AI Voice Agents</NavbarLink>
-            <NavbarLink href="/results">Results</NavbarLink>
-            <NavbarLink href="/contact">Contact</NavbarLink>
-            <NavbarLink href="/get-started" className="sm:hidden">
-              Get started
-            </NavbarLink>
-          </>
-        }
-        logo={
-          <NavbarLogo href="/">
-            <img
-              src="/Logos/icon.svg"
-              alt="Kickbord"
-              className="dark:hidden"
-              width={85}
-              height={28}
-            />
-            <img
-              src="/Logos/icon.svg"
-              className="not-dark:hidden"
-              width={85}
-              height={28}
-            />
-            {/* <h1 className="text-4xl  font-display">Kickbord</h1> */}
-          </NavbarLogo>
-        }
-        actions={
-          <>
-            <PlainButtonLink href="#" className="max-sm:hidden">
-              Log in
-            </PlainButtonLink>
-            <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
-          </>
-        }
-      />
+      <MainNav />
 
       <Main>
         {/* Hero */}
@@ -82,22 +46,17 @@ export default function Page() {
           eyebrow={
             <AnnouncementBadge href="/about" text="Built from experience across Google, Nike, Samsung, Verizon, BBC, and more" cta="Learn more" variant="overlay" />
           }
-          headline="Bring enterprise-level digital marketing to your business"
+          headline="Marketing Systems for Home Service Businesses"
           subheadline={
             <p>
-              Kickbord helps small and mid-sized businesses modernize their marketing, websites, and customer-facing systems with strategic consulting, AI voice agents, and hands-on digital execution.
+              Kickbord helps small and mid-sized businesses grow with AI-powered websites that capture and follow up with leads instantly, Google visibility that drives qualified traffic, and strategic marketing systems that scale.
             </p>
           }
           cta={
-            <EmailSignupForm
-              className="max-w-full"
-              variant="overlay"
-              cta={
-                <>
-                  Book a Strategy Call <ArrowNarrowRightIcon />
-                </>
-              }
-            />
+           <div className="flex flex-wrap gap-4">
+            <Button color="light" size="lg">Book a free call</Button>
+            <PlainButton color="light" size="lg">See how it works <ArrowNarrowRightIcon /></PlainButton>
+          </div>
           }
           demo={
             <>
@@ -204,20 +163,151 @@ export default function Page() {
             </LogoGrid>
           }
         />
-
+        {/* Header */}
+        <ThemedSection theme="dark">
+          <HeroSimpleLeftAligned
+            eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
+            headline="One-Click Marketing Campaigns"
+            subheadline={
+              <p>
+                Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
+              </p>
+            }
+            
+          />
+        </ThemedSection>
         {/* Features */}
+        
+
+       
+
+      
+         {/* Functional Websites Feature */}
+        <HeroTwoColumnWithPhoto
+          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
+          headline="Functional Websites"
+          subheadline={
+          <> 
+            <p>
+              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
+              
+            </p>
+            <ul>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Live AI chatbot</li>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> SMS lead notifications</li>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Automated follow-up</li>
+              </ul>
+          </>
+          }
+          cta={
+            <div className="flex gap-4">
+              
+              <PlainButtonLink href="/services">See short demo<ArrowNarrowRightIcon /></PlainButtonLink>
+            </div>
+          }
+          photo={
+              <Screenshot wallpaper="purple" placement="bottom-left">
+              <img
+                src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
+                alt=""
+                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
+                width={2000}
+                height={160}
+              />
+            </Screenshot>
+           
+          }
+         
+        />  
+        {/* Missed Call Text Back Feature */}
+        <HeroTwoColumnWithPhoto
+          direction="reverse"
+          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
+          headline="Missed Call Text Back"
+          subheadline={
+          <> 
+            <p>
+              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
+              
+            </p>
+            <ul>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Live AI chatbot</li>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> SMS lead notifications</li>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Automated follow-up</li>
+              </ul>
+          </>
+          }
+          cta={
+            <div className="flex gap-4">
+              
+              <PlainButtonLink href="/services">See short demo<ArrowNarrowRightIcon /></PlainButtonLink>
+            </div>
+          }
+          photo={
+              <Screenshot wallpaper="blue" placement="bottom-left">
+              <img
+                src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
+                alt=""
+                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
+                width={2000}
+                height={160}
+              />
+            </Screenshot>
+           
+          }
+         
+        />  
+          {/* One-Click Marketing Campaign Feature */}
+        <HeroTwoColumnWithPhoto
+          
+          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
+          headline="One-Click Marketing Campaigns"
+          subheadline={
+          <> 
+            <p>
+              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
+              
+            </p>
+            <ul>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Live AI chatbot</li>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> SMS lead notifications</li>
+                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Automated follow-up</li>
+              </ul>
+          </>
+          }
+          cta={
+            <div className="flex gap-4">
+              
+              <PlainButtonLink href="/services">See short demo<ArrowNarrowRightIcon /></PlainButtonLink>
+            </div>
+          }
+          photo={
+              <Screenshot wallpaper="green" placement="bottom-right">
+              <img
+                src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
+                alt=""
+                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
+                width={2000}
+                height={160}
+              />
+            </Screenshot>
+           
+          }
+         
+        />  
+
         <Features
-          id="features"
-          headline="Three systems that work together to grow your business"
+          id="trades"
+          headline="Trades we work with"
           subheadline={
             <p>
               Kickbord brings together a modern AI website, Google ad management, and automated reputation-building — all done for you, with no setup fees.
             </p>
           }
           cta={
-            <Link href="/services">
-              See how it works <ArrowNarrowRightIcon />
-            </Link>
+            <ButtonLink href="/about/trades-we-serve" className="flex mt-2 items-center text-foregroundgap-2">
+              See all trades <ArrowNarrowRightIcon />
+            </ButtonLink>
           }
           features={
             <>
@@ -226,155 +316,209 @@ export default function Page() {
                   <Screenshot wallpaper="green" placement="bottom-right">
                     <img
                       src="/images/kb-feature-ai-website.png"
-                      alt="Business owner receiving a new lead notification on his phone"
+                      alt="General contractor website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
                       src="/images/kb-feature-ai-website.png"
-                      alt="Business owner receiving a new lead notification on his phone"
+                      alt="General contractor website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
                       src="/images/kb-feature-ai-website.png"
-                      alt="Business owner receiving a new lead notification on his phone"
+                      alt="General contractor website"
                       className="max-lg:hidden"
                       width={1200}
                       height={900}
                     />
                   </Screenshot>
                 }
-                headline="AI Voice Agents"
-                subheadline={<p>Deploy AI-powered receptionists that answer calls, qualify leads, route inquiries, and help your business stay responsive even when your team is busy.</p>}
+                headline="General Contractors"
+                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="brown" placement="top-left">
+                  <Screenshot wallpaper="green" placement="bottom-right">
                     <img
-                      src="/images/kb-feature-google-reputation.png"
-                      alt="HVAC business owner smiling behind a laptop showing Google Local Services results"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Landscaping business website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-google-reputation.png"
-                      alt="HVAC business owner smiling behind a laptop showing Google Local Services results"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Landscaping business website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-google-reputation.png"
-                      alt="HVAC business owner smiling behind a laptop showing Google Local Services results"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Landscaping business website"
                       className="max-lg:hidden"
                       width={1200}
                       height={900}
                     />
                   </Screenshot>
                 }
-                
-                headline="Websites & Digital Presence"
-                subheadline={<p>Redesign outdated websites and digital touchpoints so your business looks sharper, feels more credible, and supports the way modern customers evaluate who to trust.</p>}
+                headline="Landscapers"
+                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
               />
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="blue" placement="bottom-left">
+                  <Screenshot wallpaper="green" placement="bottom-left">
                     <img
-                      src="/images/kb-feature-marketing-strategy.png"
-                      alt="Consultant reviewing a marketing report with a small business owner"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Roofing business website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-marketing-strategy.png"
-                      alt="Consultant reviewing a marketing report with a small business owner"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Roofing business website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-marketing-strategy.png"
-                      alt="Consultant reviewing a marketing report with a small business owner"
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Roofing business website"
                       className="max-lg:hidden"
                       width={1200}
                       height={900}
                     />
                   </Screenshot>
                 }
-                headline="Marketing & Growth Strategy"
-                subheadline={<p>Get a strategic partner who helps you clarify your positioning, tighten your messaging, and build marketing systems that scale — so your business operates with the consistency and confidence of a much larger company.</p>}
+                headline="Roofing"
+                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+              />
+              <FeatureThreeColumnWithDemos
+                demo={
+                  <Screenshot wallpaper="green" placement="top-right">
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Plumbing business website"
+                      className="sm:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Plumbing business website"
+                      className="max-sm:hidden lg:hidden"
+                      width={1800}
+                      height={1350}
+                    />
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Plumbing business website"
+                      className="max-lg:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                  </Screenshot>
+                }
+                headline="Plumbing"
+                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+              />
+              <FeatureThreeColumnWithDemos
+                demo={
+                  <Screenshot wallpaper="green" placement="top-left">
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Electrical business website"
+                      className="sm:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Electrical business website"
+                      className="max-sm:hidden lg:hidden"
+                      width={1800}
+                      height={1350}
+                    />
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="Electrical business website"
+                      className="max-lg:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                  </Screenshot>
+                }
+                headline="Electricians"
+                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+              />
+              <FeatureThreeColumnWithDemos
+                demo={
+                  <Screenshot wallpaper="green" placement="top-right">
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="HVAC business website"
+                      className="sm:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="HVAC business website"
+                      className="max-sm:hidden lg:hidden"
+                      width={1800}
+                      height={1350}
+                    />
+                    <img
+                      src="/images/kb-feature-ai-website.png"
+                      alt="HVAC business website"
+                      className="max-lg:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                  </Screenshot>
+                }
+                headline="HVAC"
+                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
               />
             </>
           }
+         
         />
-
-        {/* Stats */}
-        <StatsWithGraph
-          id="stats"
-          eyebrow="Why businesses hire Kickbord"
-          headline="The numbers behind why Kickbord clients grow faster"
-          subheadline={
-            <p>
-              Every service Kickbord delivers is built around a measurable outcome — faster lead response, better Google visibility, and a reputation that compounds. Here's what the data shows.
-            </p>
-          }
-        >
-          <Stat stat="55%" text="55% of businesses using AI chatbots for marketing report an increase in high-quality leads — and chatbots deliver conversion improvements of 20% or more compared to static contact forms." source="Master of Code / ChatBot.com" sourceLink="https://masterofcode.com/blog/chatbot-statistics" />
-          <Stat stat="93%" text="93% of customers read online reviews before choosing a service provider. Businesses that actively collect and manage reviews see 15–20% higher conversion rates and revenue lifts of up to 18%." source="Wiserreview / SLT Creative" sourceLink="https://www.wiserreview.com/blog/online-review-statistics" />
-        </StatsWithGraph>
-
-          {/* AI  Agent Feature */}
-         
-        <HeroTwoColumnWithPhoto
-          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
-          headline="Most leads go to whoever responds first. Make sure that's you."
-          subheadline={
-            <p>
-              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
-            </p>
-          }
-          cta={
-            <div className="flex gap-4">
-              <ButtonLink href="/get-started">Get started</ButtonLink>
-              <PlainButtonLink href="/services">See how it works <ArrowNarrowRightIcon /></PlainButtonLink>
-            </div>
-          }
-          photo={
-            <img
-              src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1200&h=800&fit=crop"
-              alt="AI voice agent dashboard"
-              className="w-full h-full"
-            />
-          }
-         
-        />  
-
-        {/* web feature section */}
      
+        <FeaturesStackedAlternatingWithDemos
+                    eyebrow="How it works"
+                    headline="From kickoff to live in three steps."
+                    features={
+                      <>
+                        <FeatureStacked
+                          headline="Step 1 — Demo Call (20 Mins)"
+                          subheadline={<p>We start by understanding your business, your customers, and your goals. This shapes every decision that follows.</p>}
+                          cta={<PlainButtonLink href="#" size="md">Start here <ArrowNarrowRightIcon /></PlainButtonLink>}
+                          demo={<DemoPlaceholder label="discovery session visual" />}
+                        />
+                        <FeatureStacked
+                          headline="Step 2 — Build & Configure (7-10 Days)"
+                          subheadline={<p>We build your website, configure your AI agent, or execute your campaign strategy — fast, with full transparency.</p>}
+                          cta={<PlainButtonLink href="#" size="md">See the process <ArrowNarrowRightIcon /></PlainButtonLink>}
+                          demo={<DemoPlaceholder label="build process visual" />}
+                        />
+                        <FeatureStacked
+                          headline="Step 3 — Launch & Optimize (Ongoing)"
+                          subheadline={<p>Your deliverable goes live with performance checks and a clear handoff. We stay available for questions and iteration.</p>}
+                          cta={<PlainButtonLink href="#" size="md">Get started <ArrowNarrowRightIcon /></PlainButtonLink>}
+                          demo={<DemoPlaceholder label="launch visual" />}
+                        />
+                      </>
+                    }
+                  />
         
         {/* Testimonial */}
-        <HeroTwoColumnWithPhoto
-          eyebrow="About Kickbord"
-          headline="Built to bring bigger-business digital capability to smaller companies"
-          subheadline="Kickbord is led by Mike Mathias, digital strategist and builder with experience across major brands including Google, Nike, Samsung, Verizon, and BBC. The goal is to bring that level of digital thinking, execution, and modernization to small and mid-sized businesses that need to compete more effectively online."
-          cta={<> <Link href="/contact">Get in Touch <ArrowNarrowRightIcon /></Link>  </>}
-          photo={
-            <Screenshot wallpaper="green" placement="bottom">
-              <img
-                src="/mike.png"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
-                width={2000}
-                height={160}
-              />
-            </Screenshot>
-          }
-        />
+        
         
 
         {/* FAQs */}
@@ -382,32 +526,32 @@ export default function Page() {
           <Faq
             id="faq-1"
             question="What kinds of businesses does Kickbord work with?"
-            answer="Kickbord works with small and mid-sized businesses that want a stronger digital presence, better customer response systems, and more modern ways of operating online."
+            answer="Kickbord works with home service businesses and trades (plumbers, electricians, HVAC, roofers, landscapers, cleaners) — typically 1-50 person companies that need a steady pipeline of local jobs but don't have an in-house marketing team."
           />
           <Faq
             id="faq-2"
-            question="Do you only do AI voice agents?"
-            answer="No. AI voice agents are one featured offer, but Kickbord also helps businesses improve websites, digital systems, messaging, and broader customer-facing workflows."
+            question="What's included in the AI Website + Lead System?"
+            answer="Your new website comes with a built-in AI chatbot, live chat, contact forms, SMS lead notifications, and automated follow-up sequences — so every inquiry gets an instant response, even when you're on a job."
           />
           <Faq
             id="faq-3"
-            question="What is an AI voice agent, exactly?"
-            answer="An AI voice agent is a conversational phone assistant that can answer calls, qualify leads, answer common questions, route inquiries, and support scheduling more intelligently than a traditional phone menu."
+            question="How does Google Visibility & Reputation work?"
+            answer="We set up and manage your Google Local Services Ads so you appear at the top of search results for your area. After every completed job, an automated SMS goes out requesting a review — driving more qualified leads and building your 5-star reputation over time."
           />
           <Faq
             id="faq-4"
-            question="Can AI really help a small business?"
-            answer="Yes. For many smaller teams, AI is most useful when it improves responsiveness, reduces repetitive work, and helps the business operate with more consistency and efficiency."
+            question="What does Marketing & Growth Strategy include?"
+            answer="You get a strategic partner who helps clarify your positioning, tighten your messaging, and build marketing systems that scale — so your business operates with the consistency and confidence of a much larger company."
           />
           <Faq
             id="faq-5"
-            question="Do you also redesign websites?"
-            answer="Yes. Kickbord redesigns websites for businesses that need a more credible, modern, and conversion-aware digital presence."
+            question="Do I need all three services?"
+            answer="No. Many businesses start with just the AI Website + Lead System to fix their response time problem, then add Google Visibility & Reputation or Marketing Strategy as they grow. We'll help you figure out what makes the most sense for where you are now."
           />
           <Faq
             id="faq-6"
-            question="What if I am not sure what I need yet?"
-            answer="That is exactly what the first conversation is for. Kickbord can help identify whether the biggest opportunity is in AI, website improvements, digital strategy, or a broader systems upgrade."
+            question="What if I'm not sure what I need yet?"
+            answer="That's exactly what the first conversation is for. We'll look at your current setup, identify the biggest opportunity (website, Google visibility, or broader strategy), and recommend a clear starting point."
           />
         </FAQsTwoColumnAccordion>
 
@@ -427,7 +571,7 @@ export default function Page() {
               <ButtonLink href="/get-started" size="lg">
                 Get started <ArrowNarrowRightIcon />
               </ButtonLink>
-              <PlainButtonLink href="/contact" size="lg">
+              <PlainButtonLink href="/booking" size="lg">
                 Book a call <ChevronIcon />
               </PlainButtonLink>
             </div>
@@ -458,5 +602,14 @@ export default function Page() {
         fineprint="© 2026 Kickbord. All rights reserved."
       />
     </>
+  )
+}
+
+
+function DemoPlaceholder({ label }: { label: string }) {
+  return (
+    <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-olive-950/5 dark:bg-white/5">
+      <p className="text-sm text-olive-500 dark:text-olive-400">{label}</p>
+    </div>
   )
 }

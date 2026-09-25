@@ -6,6 +6,8 @@ import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon";
 import { StarIcon } from "@/components/icons/star-icon";
 import { UiLayoutIcon } from "@/components/icons/ui-layout-icon";
 import { ChatBubbleCircleIcon } from "@/components/icons/chat-bubble-circle-icon";
+import { CallToActionSimple } from "@/components/sections/call-to-action-simple";
+import { ButtonLink } from "@/components/elements/button";
 
 export default function FunctionalWebsite() {
   return (
@@ -64,6 +66,12 @@ export default function FunctionalWebsite() {
           text="We aim to create SMS conversations with potential customers, eliminating the need for email back-and-forths for quotes. Each of our websites includes functional quote forms and a chat widget that instantly starts a text conversation with" 
         />
       </StatsFourColumns>
+      <CallToActionSimple 
+        eyebrow="Ready to Get Started?"
+        headline="Book a Call Today"
+        subheadline="Let's discuss how we can help your business grow with a functional website."
+        cta={<ButtonLink href="/booking">Book a Call</ButtonLink>}
+      />
     </>
   )
 }

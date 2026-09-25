@@ -2,6 +2,7 @@ import { clsx } from 'clsx/lite'
 import type { ComponentProps, ReactNode } from 'react'
 import { Section } from '../elements/section'
 import { CheckmarkIcon } from '../icons/checkmark-icon'
+import { CheckBadgeIcon } from '@heroicons/react/20/solid'
 
 export function Plan({
   name,
@@ -31,28 +32,32 @@ export function Plan({
       <div className="self-stretch">
         <div className="flex items-center justify-between">
           {badge && (
-            <div className="order-last inline-flex rounded-full bg-olive-950/10 px-2 text-xs/6 font-medium text-olive-950 dark:bg-white/10 dark:text-white">
+            <div className="order-last inline-flex rounded-full bg-olive-950/10 px-4 text-md/6 font-medium text-white dark:bg-white/10 dark:text-white">
+              <CheckBadgeIcon className="h-lh shrink-0 stroke-olive-200 dark:stroke-white" />
               {badge}
             </div>
           )}
 
-          <h3 className="text-2xl/8 tracking-tight text-olive-950 dark:text-white">{name}</h3>
+          <h3 className="text-2xl/8 font-semibold tracking-tight text-white dark:text-white">{name}</h3>
         </div>
         <p className="mt-1 inline-flex gap-1 text-base/7">
-          <span className="text-olive-950 dark:text-white">{price}</span>
-          {period && <span className="text-olive-500 dark:text-olive-500">{period}</span>}
+          <span className="text-white text-lg font-bold dark:text-white">{price}</span>
+          {period && <span className="text-white/95 dark:text-olive-500">{period}</span>}
         </p>
-        <div className="mt-4 flex flex-col gap-4 text-sm/6 text-olive-700 dark:text-olive-400">{subheadline}</div>
-        <ul className="mt-4 space-y-2 text-sm/6 text-olive-700 dark:text-olive-400">
+        <div className="mt-4 flex flex-col gap-4 text-lg/6 text-white dark:text-olive-400">{subheadline}</div>
+        <ul className="mt-4 space-y-2 text-md/6 text-white dark:text-olive-400">
           {features.map((feature, index) => (
             <li key={index} className="flex gap-4">
-              <CheckmarkIcon className="h-lh shrink-0 stroke-olive-950 dark:stroke-white" />
+              <CheckmarkIcon className="h-lh shrink-0 stroke-olive-200 dark:stroke-white" />
               <p>{feature}</p>
             </li>
           ))}
         </ul>
       </div>
-      {cta && cta}
+      
+        {cta && cta}
+      
+     
     </div>
   )
 }

@@ -33,6 +33,7 @@ import NavbarDropdown2 from '@/components/elements/navbar-dropdown-2'
 import { FeaturesStackedAlternatingWithDemos, Feature as FeatureStacked } from '@/components/sections/features-stacked-alternating-with-demos'
 import MainNav from '@/components/sections/main-nav'
 import { ThemedSection } from '@/components/elements/themed-section'
+import { FadeInSection } from '@/components/elements/fade-in-section'
 
 export default function Page() {
   return (
@@ -164,10 +165,12 @@ export default function Page() {
           }
         />
         {/* Header */}
+        <FadeInSection>
         <ThemedSection theme="dark">
           <HeroSimpleLeftAligned
             eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
             headline="One-Click Marketing Campaigns"
+            color="light"
             subheadline={
               <p>
                 Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
@@ -176,6 +179,7 @@ export default function Page() {
             
           />
         </ThemedSection>
+        </FadeInSection>
         {/* Features */}
         
 
@@ -183,6 +187,7 @@ export default function Page() {
 
       
          {/* Functional Websites Feature */}
+        <FadeInSection delay={100}>
         <HeroTwoColumnWithPhoto
           eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
           headline="Functional Websites"
@@ -219,7 +224,9 @@ export default function Page() {
           }
          
         />  
+        </FadeInSection>
         {/* Missed Call Text Back Feature */}
+        <FadeInSection delay={200}>
         <HeroTwoColumnWithPhoto
           direction="reverse"
           eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
@@ -257,7 +264,9 @@ export default function Page() {
           }
          
         />  
+        </FadeInSection>
           {/* One-Click Marketing Campaign Feature */}
+        <FadeInSection delay={100}>
         <HeroTwoColumnWithPhoto
           
           eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
@@ -295,7 +304,9 @@ export default function Page() {
           }
          
         />  
+        </FadeInSection>
 
+        <FadeInSection delay={100}>
         <Features
           id="trades"
           headline="Trades we work with"
@@ -489,7 +500,9 @@ export default function Page() {
           }
          
         />
+        </FadeInSection>
      
+        <FadeInSection delay={100}>
         <FeaturesStackedAlternatingWithDemos
                     eyebrow="How it works"
                     headline="From kickoff to live in three steps."
@@ -516,12 +529,14 @@ export default function Page() {
                       </>
                     }
                   />
+        </FadeInSection>
         
         {/* Testimonial */}
         
         
 
         {/* FAQs */}
+        <FadeInSection delay={100}>
         <FAQsTwoColumnAccordion id="faqs" headline="Questions & Answers">
           <Faq
             id="faq-1"
@@ -554,10 +569,12 @@ export default function Page() {
             answer="That's exactly what the first conversation is for. We'll look at your current setup, identify the biggest opportunity (website, Google visibility, or broader strategy), and recommend a clear starting point."
           />
         </FAQsTwoColumnAccordion>
+        </FadeInSection>
 
       
 
         {/* Call To Action */}
+        <FadeInSection delay={100}>
         <CallToActionSimple
           id="call-to-action"
           headline="Ready to bring enterprise-level marketing to your business?"
@@ -577,6 +594,7 @@ export default function Page() {
             </div>
           }
         />
+        </FadeInSection>
       </Main>
 
       <FooterWithLinkCategories

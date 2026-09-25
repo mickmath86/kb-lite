@@ -117,8 +117,8 @@ type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
 function PayPageInner() {
   const params = useSearchParams()
-  const rawPlan = params.get('plan') ?? 'launch'
-  const rawBilling = params.get('billing') ?? 'monthly'
+  const rawPlan = params?.get('plan') ?? 'launch'
+  const rawBilling = params?.get('billing') ?? 'monthly'
 
   const planKey: PlanKey = rawPlan === 'grow' ? 'grow' : 'launch'
   const billingKey: BillingKey = rawBilling === 'quarterly' ? 'quarterly' : 'monthly'

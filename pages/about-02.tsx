@@ -55,7 +55,24 @@ const enterpriseExtras = [
   'Custom reporting',
 ]
 
-const pricingPlans = [
+type PlanBilling = {
+  price: string
+  period: string
+  cta: string
+  href: string
+  savings?: string
+  equivalent?: string
+  bonus?: string
+}
+
+const pricingPlans: {
+  key: string
+  name: string
+  isDark: boolean
+  isEnterprise: boolean
+  monthly: PlanBilling
+  quarterly: PlanBilling
+}[] = [
   {
     key: 'launch',
     name: 'Kickbord Launch',
@@ -300,7 +317,7 @@ export default function Page() {
                           </span>
                         )}
                       </div>
-                      {billing === 'quarterly' && 'savings' in data && (
+                      {billing === 'quarterly' && data.savings && (
                         <div className="mt-2 flex items-center gap-2">
                           <span className="rounded-full bg-green-500/20 px-2.5 py-0.5 text-xs font-bold text-green-600 dark:text-green-400">{data.savings}</span>
                           <span className={clsx('text-xs', isDark ? 'text-white/50' : 'text-olive-500')}>{data.equivalent}</span>
@@ -314,7 +331,7 @@ export default function Page() {
                     </div>
 
                     {/* Quarterly bonus */}
-                    {billing === 'quarterly' && 'bonus' in data && (
+                    {billing === 'quarterly' && data.bonus && (
                       <div className={clsx(
                         'rounded-xl p-3.5',
                         isDark

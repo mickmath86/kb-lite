@@ -1065,7 +1065,23 @@ function Slide11({ info }: { info: LeadInfo }) {
     'Reputation management',
   ]
 
-  const plans = [
+  type PlanBilling = {
+    price: string
+    period: string
+    cta: string
+    href: string
+    savings?: string
+    equivalent?: string
+    bonus?: string
+  }
+
+  const plans: {
+    name: string
+    key: string
+    isDark: boolean
+    monthly: PlanBilling
+    quarterly: PlanBilling
+  }[] = [
     {
       name: 'Kickbord Launch',
       key: 'launch',
@@ -1171,7 +1187,7 @@ function Slide11({ info }: { info: LeadInfo }) {
                       {data.period}
                     </span>
                   </div>
-                  {billingTab === 'quarterly' && 'savings' in data && (
+                  {billingTab === 'quarterly' && data.savings && (
                     <div className="mt-2 flex items-center gap-2">
                       <span className="rounded-full bg-green-500/20 px-2.5 py-0.5 text-xs font-bold text-green-500">{data.savings}</span>
                       <span className={clsx('text-xs', isDark ? 'text-white/50' : 'text-olive-500')}>{data.equivalent}</span>
@@ -1179,7 +1195,7 @@ function Slide11({ info }: { info: LeadInfo }) {
                   )}
                 </div>
 
-                {billingTab === 'quarterly' && 'bonus' in data && (
+                {billingTab === 'quarterly' && data.bonus && (
                   <div className={clsx('rounded-xl p-3.5', isDark ? 'border border-white/15 bg-white/10' : 'border border-olive-950/10 bg-olive-950/5 dark:border-white/10 dark:bg-white/5')}>
                     <p className={clsx('text-xs font-semibold', isDark ? 'text-white' : 'text-olive-950 dark:text-white')}>Quarterly bonus</p>
                     <p className={clsx('mt-0.5 text-xs', isDark ? 'text-white/60' : 'text-olive-500')}>{data.bonus}</p>

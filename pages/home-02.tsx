@@ -34,6 +34,7 @@ import { FeaturesStackedAlternatingWithDemos, Feature as FeatureStacked } from '
 import MainNav from '@/components/sections/main-nav'
 import { ThemedSection } from '@/components/elements/themed-section'
 import { FadeInSection } from '@/components/elements/fade-in-section'
+import { ArrowRightIcon } from '@heroicons/react/16/solid'
 
 export default function Page() {
   return (
@@ -168,12 +169,12 @@ export default function Page() {
         <FadeInSection>
         <ThemedSection theme="dark">
           <HeroSimpleLeftAligned
-            eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
-            headline="One-Click Marketing Campaigns"
+            eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">The Kickbord system</div>}
+            headline="Every lead captured. Every follow-up handled. Every campaign one click away."
             color="light"
             subheadline={
               <p>
-                Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
+                Kickbord replaces the patchwork of agencies, tools, and DIY marketing with one system built for home service businesses — a website that converts, instant responses to every lead, reviews on autopilot, and campaigns that fill your calendar. No marketing team required.
               </p>
             }
             
@@ -181,166 +182,38 @@ export default function Page() {
         </ThemedSection>
         </FadeInSection>
         {/* Features */}
-        
-
-       
-
-      
-         {/* Functional Websites Feature */}
-        <FadeInSection delay={100}>
-        <HeroTwoColumnWithPhoto
-          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
-          headline="Functional Websites"
-          subheadline={
-          <> 
-            <p>
-              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
-              
-            </p>
-            <ul>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Live AI chatbot</li>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> SMS lead notifications</li>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Automated follow-up</li>
-              </ul>
-          </>
-          }
-          cta={
-            <div className="flex gap-4">
-              
-              <PlainButtonLink href="/services">See short demo<ArrowNarrowRightIcon /></PlainButtonLink>
-            </div>
-          }
-          photo={
-              <Screenshot wallpaper="purple" placement="bottom-left">
-              <img
-                src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
-                width={2000}
-                height={160}
-              />
-            </Screenshot>
-           
-          }
-         
-        />  
-        </FadeInSection>
-        {/* Missed Call Text Back Feature */}
-        <FadeInSection delay={200}>
-        <HeroTwoColumnWithPhoto
-          direction="reverse"
-          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
-          headline="Missed Call Text Back"
-          subheadline={
-          <> 
-            <p>
-              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
-              
-            </p>
-            <ul>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Live AI chatbot</li>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> SMS lead notifications</li>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Automated follow-up</li>
-              </ul>
-          </>
-          }
-          cta={
-            <div className="flex gap-4">
-              
-              <PlainButtonLink href="/services">See short demo<ArrowNarrowRightIcon /></PlainButtonLink>
-            </div>
-          }
-          photo={
-              <Screenshot wallpaper="blue" placement="bottom-left">
-              <img
-                src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
-                width={2000}
-                height={160}
-              />
-            </Screenshot>
-           
-          }
-         
-        />  
-        </FadeInSection>
-          {/* One-Click Marketing Campaign Feature */}
-        <FadeInSection delay={100}>
-        <HeroTwoColumnWithPhoto
-          
-          eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">Your business, always on</div>}
-          headline="One-Click Marketing Campaigns"
-          subheadline={
-          <> 
-            <p>
-              Your Kickbord website includes a live AI chatbot, SMS lead notifications, and automated follow-up — so when someone lands on your site at 10pm on a Tuesday, they get an instant response. Not a voicemail. Not a form that goes nowhere.
-              
-            </p>
-            <ul>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Live AI chatbot</li>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> SMS lead notifications</li>
-                <li> <ArrowNarrowRightIcon className="inline w-4 h-4 mr-1" /> Automated follow-up</li>
-              </ul>
-          </>
-          }
-          cta={
-            <div className="flex gap-4">
-              
-              <PlainButtonLink href="/services">See short demo<ArrowNarrowRightIcon /></PlainButtonLink>
-            </div>
-          }
-          photo={
-              <Screenshot wallpaper="green" placement="bottom-right">
-              <img
-                src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
-                alt=""
-                className="not-dark:bg-white/75 dark:bg-black/75 grayscale"
-                width={2000}
-                height={160}
-              />
-            </Screenshot>
-           
-          }
-         
-        />  
-        </FadeInSection>
-
-        <FadeInSection delay={100}>
+         <FadeInSection delay={100}>
         <Features
-          id="trades"
-          headline="Trades we work with"
+          id="products"
+          headline="Our Systems"
           subheadline={
             <p>
               Kickbord brings together a modern AI website, Google ad management, and automated reputation-building — all done for you, with no setup fees.
             </p>
           }
-          cta={
-            <ButtonLink href="/about/trades-we-serve" className="flex mt-2 items-center text-foregroundgap-2">
-              See all trades <ArrowNarrowRightIcon />
-            </ButtonLink>
-          }
+         
           features={
             <>
+            {/* Functional Website */}
               <FeatureThreeColumnWithDemos
                 demo={
                   <Screenshot wallpaper="green" placement="bottom-right">
                     <img
-                      src="/images/kb-feature-ai-website.png"
+                      src="/images/website.png"
                       alt="General contractor website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
+                      src="/images/website.png"
                       alt="General contractor website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
+                      src="/images/website.png"
                       alt="General contractor website"
                       className="max-lg:hidden"
                       width={1200}
@@ -348,57 +221,85 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="General Contractors"
-                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+                headline="Functional Website"
+                subheadline={
+                  <>
+                    <p>Your website should be your hardest-working employee — capturing every visitor’s info and following up before they ever think to call a competitor.</p>
+                    <ul>
+                      <li className="list-disc list-inside">Instant answers for visitors, day or night</li>
+                      <li className="list-disc list-inside">Custom forms that capture every lead</li>
+                      <li className="list-disc list-inside">Automatic text & email follow-up on every inquiry</li>
+                    </ul>
+                  </>
+                }
+                                cta={
+                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                }
               />
+
+              {/* Fallback Voice Receptionist */}
+              <FeatureThreeColumnWithDemos
+                demo={
+                  <Screenshot wallpaper="purple" placement="top-left">
+                    <img
+                      src="/images/ai-receptionist.png"
+                      alt="Landscaping business website"
+                      className="sm:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                    <img
+                      src="/images/ai-receptionist.png"
+                      alt="Landscaping business website"
+                      className="max-sm:hidden lg:hidden"
+                      width={1800}
+                      height={1350}
+                    />
+                    <img
+                      src="/images/ai-receptionist.png"
+                      alt="Landscaping business website"
+                      className="max-lg:hidden"
+                      width={1200}
+                      height={900}
+                    />
+                  </Screenshot>
+                }
+                headline="Fallback AI Voice Receptionist"
+                subheadline={
+                  <>
+                    <p>Every missed call is a customer dialing the next name on Google. When you can’t pick up, your AI receptionist answers on your existing number — so the job still goes to you.</p>
+                    <ul>
+                      <li className="list-disc list-inside">Answers missed calls instantly</li>
+                      <li className="list-disc list-inside">Books jobs and answers questions for you</li>
+                      <li className="list-disc list-inside">Sends you the transcript and lead details</li>
+                    </ul>
+                  </>
+                }
+                                cta={
+                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                }
+              />
+
+              {/* 5-Star Review Funnel */}
               <FeatureThreeColumnWithDemos
                 demo={
                   <Screenshot wallpaper="green" placement="bottom-right">
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Landscaping business website"
-                      className="sm:hidden"
-                      width={1200}
-                      height={900}
-                    />
-                    <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Landscaping business website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
-                    />
-                    <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Landscaping business website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
-                    />
-                  </Screenshot>
-                }
-                headline="Landscapers"
-                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
-              />
-              <FeatureThreeColumnWithDemos
-                demo={
-                  <Screenshot wallpaper="green" placement="bottom-left">
-                    <img
-                      src="/images/kb-feature-ai-website.png"
+                      src="/images/reviews.png"
                       alt="Roofing business website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
+                      src="/images/reviews.png"
                       alt="Roofing business website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
+                      src="/images/reviews.png"
                       alt="Roofing business website"
                       className="max-lg:hidden"
                       width={1200}
@@ -406,96 +307,151 @@ export default function Page() {
                     />
                   </Screenshot>
                 }
-                headline="Roofing"
-                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+                headline="5-Star Review Funnel"
+                subheadline={
+                  <>
+                    <p>Happy customers rarely think to leave reviews — and asking is easy to forget. We ask automatically the moment the job is done, building the reputation that wins your next job.</p>
+                    <ul>
+                      <li className="list-disc list-inside">Review requests sent automatically after every job</li>
+                      <li className="list-disc list-inside">More Google reviews means higher local rankings</li>
+                      <li className="list-disc list-inside">New customers see proof before they ever call</li>
+                    </ul>
+                  </>
+                }
+                              cta={
+                <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+              }
               />
+              
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="green" placement="top-right">
+                  <Screenshot wallpaper="blue" placement="bottom-right">
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Plumbing business website"
+                      src="/images/local-seo.png"
+                      alt="General contractor website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Plumbing business website"
+                      src="/images/local-seo.png"
+                      alt="General contractor website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Plumbing business website"
+                      src="/images/local-seo.png"
+                      alt="General contractor website"
                       className="max-lg:hidden"
                       width={1200}
                       height={900}
                     />
                   </Screenshot>
                 }
-                headline="Plumbing"
-                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+                headline="Local SEO"
+                subheadline={
+                  <>
+                    <p>When someone nearby searches for your service, the businesses on page one get the calls. We make sure that’s you.</p>
+                    <ul>
+                      <li className="list-disc list-inside">Rank higher in local search and Google Maps</li>
+                      <li className="list-disc list-inside">Show up for the services you actually offer</li>
+                      <li className="list-disc list-inside">Steady leads without paying for every click</li>
+                    </ul>
+                  </>
+                }
+                                cta={
+                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                }
               />
-              <FeatureThreeColumnWithDemos
+
+                {/* One click marketing Campaigns */}
+               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="green" placement="top-left">
+                  <Screenshot wallpaper="brown" placement="top-right">
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Electrical business website"
+                      src="/images/oc-marketing.png"
+                      alt="General contractor website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Electrical business website"
+                      src="/images/oc-marketing.png"
+                      alt="General contractor website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="Electrical business website"
+                      src="/images/oc-marketing.png"
+                      alt="General contractor website"
                       className="max-lg:hidden"
                       width={1200}
                       height={900}
                     />
                   </Screenshot>
                 }
-                headline="Electricians"
-                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+                headline="One-Click Marketing Campaigns"
+                subheadline={
+                  <>
+                    <p>Your past customer list is the cheapest source of new work you have. Launch an SMS or email promotion in one click and fill a slow week fast.</p>
+                    <ul>
+                      <li className="list-disc list-inside">Text and email promos to your whole contact list</li>
+                      <li className="list-disc list-inside">Seasonal offers and win-back campaigns ready to go</li>
+                      <li className="list-disc list-inside">Turn slow weeks into booked-out ones</li>
+                    </ul>
+                  </>
+                }
+                                cta={
+                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                }
               />
+              {/* end oneclick marketing campaigns */}
+
+              {/* LSA Ads  */}
               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="green" placement="top-right">
+                  <Screenshot wallpaper="green" placement="bottom-right">
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="HVAC business website"
+                      src="/images/lsa.png"
+                      alt="General contractor website"
                       className="sm:hidden"
                       width={1200}
                       height={900}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="HVAC business website"
+                      src="/images/lsa.png"
+                      alt="General contractor website"
                       className="max-sm:hidden lg:hidden"
                       width={1800}
                       height={1350}
                     />
                     <img
-                      src="/images/kb-feature-ai-website.png"
-                      alt="HVAC business website"
+                      src="/images/lsa.png"
+                      alt="General contractor website"
                       className="max-lg:hidden"
                       width={1200}
                       height={900}
                     />
                   </Screenshot>
                 }
-                headline="HVAC"
-                subheadline={<p>AI chatbot, live chat, contact forms, SMS lead notifications, automated follow-up</p>}
+                headline="Google Local Service Ads"
+                subheadline={
+                  <>
+                    <p>LSAs put you at the very top of Google — above regular ads — with the Google Guaranteed badge customers trust. And you only pay when a real customer actually calls.</p>
+                    <ul>
+                      <li className="list-disc list-inside">Placement at the very top of Google</li>
+                      <li className="list-disc list-inside">Google Guaranteed badge builds instant trust</li>
+                      <li className="list-disc list-inside">Pay per lead, not per click</li>
+                    </ul>
+                  </>
+                }
+                                cta={
+                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                }
               />
+            
             </>
           }
          

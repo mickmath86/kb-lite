@@ -12,27 +12,31 @@ import {
   PopoverGroup,
   PopoverPanel,
 } from '@headlessui/react'
+import { Button } from '../elements/button'
 import {
-  ArrowPathIcon,
   Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
+  GlobeAltIcon,
+  MagnifyingGlassIcon,
+  MegaphoneIcon,
+  PhoneArrowDownLeftIcon,
+  ShieldCheckIcon,
+  StarIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { PlainButtonLink } from '../elements/button'
 
-const products = [
-  { name: 'Analytics', description: 'Get a better understanding of your traffic', href: '#', icon: ChartPieIcon },
-  { name: 'Engagement', description: 'Speak directly to your customers', href: '#', icon: CursorArrowRaysIcon },
-  { name: 'Security', description: 'Your customers’ data will be safe and secure', href: '#', icon: FingerPrintIcon },
-  { name: 'Integrations', description: 'Connect with third-party tools', href: '#', icon: SquaresPlusIcon },
-  { name: 'Automations', description: 'Build strategic funnels that will convert', href: '#', icon: ArrowPathIcon },
+const systems = [
+  { name: 'Functional Website', description: 'Captures every visitor and follows up automatically', href: '/systems/functional-website', icon: GlobeAltIcon },
+  { name: 'Fallback AI Receptionist', description: 'Answers missed calls so leads don’t call a competitor', href: '/systems/ai-receptionist', icon: PhoneArrowDownLeftIcon },
+  { name: '5-Star Review Funnel', description: 'Automatic review requests the moment the job is done', href: '/systems/5-star-review-funnel', icon: StarIcon },
+  { name: 'Local SEO', description: 'Show up at the top when locals search for you', href: '#', icon: MagnifyingGlassIcon },
+  { name: 'One-Click Campaigns', description: 'Fill slow weeks with one-click SMS & email promos', href: '#', icon: MegaphoneIcon },
+  { name: 'Local Service Ads', description: 'Top of Google, Guaranteed badge, pay per lead', href: '#', icon: ShieldCheckIcon },
 ]
 const callsToAction = [
-  { name: 'Watch demo', href: '#', icon: PlayCircleIcon },
-  { name: 'Contact sales', href: '#', icon: PhoneIcon },
+  { name: 'Watch demo', href: '/ai-agent-demo', icon: PlayCircleIcon },
+  { name: 'Book a call', href: '/booking', icon: PhoneIcon },
 ]
 
 export default function MainNav() {
@@ -46,13 +50,13 @@ export default function MainNav() {
             <span className="sr-only">Kickbord</span>
             <img
               alt=""
-              src="/images/logos/kb-icon-white.png"
-              className="h-8 w-auto dark:hidden"
+              src="/logos/kb-icon-blk.png"
+              className="h-12 w-auto dark:hidden"
             />
             <img
               alt=""
-              src="/images/logos/kb-icon-white.png"
-              className="h-8 w-auto not-dark:hidden"
+              src="/logos/kb-icon-white.png"
+              className="h-12 w-auto not-dark:hidden"
             />
           </a>
         </div>
@@ -69,7 +73,7 @@ export default function MainNav() {
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900 dark:text-white">
-              Product
+              Systems
               <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400 dark:text-gray-500" />
             </PopoverButton>
 
@@ -78,7 +82,7 @@ export default function MainNav() {
               className="absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-xl bg-white shadow-lg outline-1 outline-gray-900/5 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
             >
               <div className="p-4">
-                {products.map((item) => (
+                {systems.map((item) => (
                   <div
                     key={item.name}
                     className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -86,7 +90,7 @@ export default function MainNav() {
                     <div className="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white dark:bg-gray-700/50 dark:group-hover:bg-gray-700">
                       <item.icon
                         aria-hidden="true"
-                        className="size-6 text-gray-600 group-hover:text-indigo-600 dark:text-gray-400 dark:group-hover:text-white"
+                        className="size-6 text-gray-600 group-hover:text-[#9CA88F] dark:text-gray-400 dark:group-hover:text-white"
                       />
                     </div>
                     <div className="flex-auto">
@@ -114,20 +118,26 @@ export default function MainNav() {
             </PopoverPanel>
           </Popover>
 
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
-            Features
+          <a href="/pricing" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            Pricing
           </a>
           <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
             Marketplace
           </a>
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
-            Company
+          <a href="/about" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            About Us
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <div> 
+              <Button size="md" className="mr-4">  <a href="/booking"> Book a Call</a></Button>
+       
           <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
+
+          </div>
+         
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -135,15 +145,15 @@ export default function MainNav() {
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-900 dark:sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              <span className="sr-only">Kickbord</span>
               <img
                 alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+                src="/logos/kb-icon-blk.png"
                 className="h-8 w-auto dark:hidden"
               />
               <img
                 alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                src="/logos/kb-icon-white.png"
                 className="h-8 w-auto not-dark:hidden"
               />
             </a>
@@ -161,11 +171,11 @@ export default function MainNav() {
               <div className="space-y-2 py-6">
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5">
-                    Product
+                    Systems
                     <ChevronDownIcon aria-hidden="true" className="size-5 flex-none group-data-open:rotate-180" />
                   </DisclosureButton>
                   <DisclosurePanel className="mt-2 space-y-2">
-                    {[...products, ...callsToAction].map((item) => (
+                    {[...systems, ...callsToAction].map((item) => (
                       <DisclosureButton
                         key={item.name}
                         as="a"
@@ -178,10 +188,10 @@ export default function MainNav() {
                   </DisclosurePanel>
                 </Disclosure>
                 <a
-                  href="#"
+                  href="/pricing"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  Features
+                  Pricing
                 </a>
                 <a
                   href="#"
@@ -190,13 +200,17 @@ export default function MainNav() {
                   Marketplace
                 </a>
                 <a
-                  href="#"
+                  href="/about"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  Company
+                  About Us
                 </a>
               </div>
               <div className="py-6">
+                <Button >
+                 <a href="/booking">  Book a Call</a>
+                
+                </Button>
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"

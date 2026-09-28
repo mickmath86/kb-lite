@@ -13,7 +13,7 @@ const products = [
   {
     name: 'Functional Website',
     description: 'A fast, mobile-friendly site built to turn visitors into booked jobs',
-    href: '/products/functional-website',
+    href: '/systems/functional-website',
     icon: GlobeAltIcon,
   },
   {
@@ -31,7 +31,7 @@ const products = [
   {
     name: '5-Star Google Business Review Funnel',
     description: 'Automatically turn happy customers into 5-star Google reviews',
-    href: '#',
+    href: '/systems/5-star-review-funnel',
     icon: StarIcon,
   },
   {

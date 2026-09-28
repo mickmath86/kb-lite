@@ -756,7 +756,7 @@ subheadline={
                       />
                     </>
                   }
-                />
+      />
         <FadeInSection delay={100}>
         <FeaturesStackedAlternatingWithDemos
                     eyebrow="How it works"
@@ -767,26 +767,49 @@ subheadline={
                           headline="Step 1 — Demo Call (20 Mins)"
                           subheadline={<p>We start by understanding your business, your customers, and your goals. This shapes every decision that follows.</p>}
                           cta={<PlainButtonLink href="#" size="md">Start here <ArrowNarrowRightIcon /></PlainButtonLink>}
-                          demo={<DemoPlaceholder label="discovery session visual" />}
+                          demo={
+                            
+                              <img
+                                src="/images/zoom-call.png"
+                                alt=""
+                                width={1500}
+                                height={1240}
+                              />
+                          
+                          }
                         />
                         <FeatureStacked
                           headline="Step 2 — Build & Configure (7-10 Days)"
                           subheadline={<p>We build your website, configure your AI agent, or execute your campaign strategy — fast, with full transparency.</p>}
                           cta={<PlainButtonLink href="#" size="md">See the process <ArrowNarrowRightIcon /></PlainButtonLink>}
-                          demo={<DemoPlaceholder label="build process visual" />}
+                          demo={
+                            <img
+                              src="/images/build.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          }
                         />
                         <FeatureStacked
                           headline="Step 3 — Launch & Optimize (Ongoing)"
                           subheadline={<p>Your deliverable goes live with performance checks and a clear handoff. We stay available for questions and iteration.</p>}
                           cta={<PlainButtonLink href="#" size="md">Get started <ArrowNarrowRightIcon /></PlainButtonLink>}
-                          demo={<DemoPlaceholder label="launch visual" />}
+                          demo={
+                            <img
+                              src="/images/review.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          }
                         />
                       </>
                     }
                   />
         </FadeInSection>
         
-        {/* Testimonial */}
+       
         
         
 
@@ -795,33 +818,43 @@ subheadline={
         <FAQsTwoColumnAccordion id="faqs" headline="Questions & Answers">
           <Faq
             id="faq-1"
-            question="What kinds of businesses does Kickbord work with?"
-            answer="Kickbord works with home service businesses and trades (plumbers, electricians, HVAC, roofers, landscapers, cleaners) — typically 1-50 person companies that need a steady pipeline of local jobs but don't have an in-house marketing team."
+            question="How much does this cost?"
+            answer="Plans start at $297/mo. No setup fees, no long-term contracts — cancel anytime. Quarterly billing saves you about 15% and includes priority onboarding. Most clients cover the monthly cost with a single booked job."
           />
           <Faq
             id="faq-2"
-            question="What's included in the AI Website + Lead System?"
-            answer="Your new website comes with a built-in AI chatbot, live chat, contact forms, SMS lead notifications, and automated follow-up sequences — so every inquiry gets an instant response, even when you're on a job."
+            question="How much of my time does this take?"
+            answer="Almost none. One 20-minute call to understand your business, then we build everything — website, follow-up automation, review funnel, ads. Most clients are live in 7–10 days and spend zero hours managing it after that."
           />
           <Faq
             id="faq-3"
-            question="How does Google Visibility & Reputation work?"
-            answer="We set up and manage your Google Local Services Ads so you appear at the top of search results for your area. After every completed job, an automated SMS goes out requesting a review — driving more qualified leads and building your 5-star reputation over time."
+            question="Is this another shared-lead service like Angi or HomeAdvisor?"
+            answer="No — and that's the point. Every lead comes through your own assets: your website, your Google profile, your phone number. Nothing is resold or shared with competitors. You're building equity in your own pipeline instead of renting theirs."
           />
           <Faq
             id="faq-4"
-            question="What does Marketing & Growth Strategy include?"
-            answer="You get a strategic partner who helps clarify your positioning, tighten your messaging, and build marketing systems that scale — so your business operates with the consistency and confidence of a much larger company."
+            question="Do I have to change my phone number or website?"
+            answer="No. The AI receptionist works on your existing number and only picks up when you can't. If you have a site you like, we can plug the lead system into it — or replace it if it's costing you jobs."
           />
           <Faq
             id="faq-5"
-            question="Do I need all three services?"
-            answer="No. Many businesses start with just the AI Website + Lead System to fix their response time problem, then add Google Visibility & Reputation or Marketing Strategy as they grow. We'll help you figure out what makes the most sense for where you are now."
+            question="How fast will I see results?"
+            answer="Instant response starts the day we launch — missed-call text back and automated follow-up work immediately. Local Service Ads can put you at the top of Google in days. SEO and reviews compound over 60–90 days into a pipeline that doesn't depend on ad spend."
           />
           <Faq
             id="faq-6"
-            question="What if I'm not sure what I need yet?"
-            answer="That's exactly what the first conversation is for. We'll look at your current setup, identify the biggest opportunity (website, Google visibility, or broader strategy), and recommend a clear starting point."
+            question="What if the AI says the wrong thing to a customer?"
+            answer="It's trained on your business — your services, pricing approach, service area, and booking rules — and it escalates anything it can't handle to you with the full transcript. You see every conversation."
+          />
+          <Faq
+            id="faq-7"
+            question="How do I know it's actually working?"
+            answer="Every call, text, form fill, and review request is tracked in your dashboard — with recordings and transcripts. You'll see exactly which jobs came from which channel, so there's no guessing about ROI."
+          />
+          <Faq
+            id="faq-8"
+            question="What happens if I cancel? Do I lose everything?"
+            answer="Your Google Business Profile and every review you've earned stay with you — always. Since there are no contracts, you can leave anytime. Most clients stay because the system keeps paying for itself."
           />
         </FAQsTwoColumnAccordion>
         </FadeInSection>

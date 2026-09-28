@@ -12,7 +12,10 @@ import { SparklesIcon } from '@/components/icons/sparkles-icon'
 import { TargetIcon } from '@/components/icons/target-icon'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { FAQsTwoColumnAccordion, Faq } from '@/components/sections/faqs-two-column-accordion'
-import { FeatureThreeColumnWithDemos, Features } from '@/components/sections/features-three-column-with-demos'
+import {
+  FeatureThreeColumnWithDemos,
+  Features as FeaturesThreeColWithDemos,
+} from '@/components/sections/features-three-column-with-demos'
 import { FooterCategory, FooterLink, FooterWithLinkCategories } from '@/components/sections/footer-with-link-categories'
 import { HeroWithDemoOnBackground } from '@/components/sections/hero-with-demo-on-background'
 import {
@@ -166,62 +169,23 @@ export default function Page() {
           }
         />
         {/* Header */}
-        <FadeInSection>
-        <ThemedSection theme="dark">
-          <HeroSimpleLeftAligned
-            eyebrow={<div className="text-sm font-semibold text-olive-600 dark:text-olive-400">The Kickbord system</div>}
-            headline="Every lead captured. Every follow-up handled. Every campaign one click away."
-            color="light"
-            subheadline={
-              <p>
-                Kickbord replaces the patchwork of agencies, tools, and DIY marketing with one system built for home service businesses — a website that converts, instant responses to every lead, reviews on autopilot, and campaigns that fill your calendar. No marketing team required.
-              </p>
-            }
-            
-          />
-        </ThemedSection>
-        </FadeInSection>
+     
         {/* Features */}
-         <FadeInSection delay={100}>
-        <Features
-          id="products"
-          headline="Our Systems"
+
+{/* Features */}
+        <FeaturesStackedAlternatingWithDemos
+          id="features"
+          headline="Everything you need to deliver personal, organized, and delightful support."
           subheadline={
             <p>
-              Kickbord brings together a modern AI website, Google ad management, and automated reputation-building — all done for you, with no setup fees.
+              Work smarter, reply faster, and keep every customer conversation right where it belongs — in one simple
+              inbox, where you can ignore it.
             </p>
           }
-         
           features={
             <>
-            {/* Functional Website */}
-              <FeatureThreeColumnWithDemos
-                demo={
-                  <Screenshot wallpaper="green" placement="bottom-right">
-                    <img
-                      src="/images/website.png"
-                      alt="General contractor website"
-                      className="sm:hidden"
-                      width={1200}
-                      height={900}
-                    />
-                    <img
-                      src="/images/website.png"
-                      alt="General contractor website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
-                    />
-                    <img
-                      src="/images/website.png"
-                      alt="General contractor website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
-                    />
-                  </Screenshot>
-                }
-                headline="Functional Website"
+              <FeatureStacked
+                headline="Functional Websites"
                 subheadline={
                   <>
                     <p>Your website should be your hardest-working employee — capturing every visitor’s info and following up before they ever think to call a competitor.</p>
@@ -232,40 +196,61 @@ export default function Page() {
                     </ul>
                   </>
                 }
-                                cta={
-                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                cta={
+                  <Link href="#">
+                    See short Demo<ChevronIcon />
+                  </Link>
                 }
-              />
-
-              {/* Fallback Voice Receptionist */}
-              <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="purple" placement="top-left">
+                  <Screenshot wallpaper="blue" placement="bottom-right">
                     <img
-                      src="/images/ai-receptionist.png"
-                      alt="Landscaping business website"
-                      className="sm:hidden"
+                      src="/images/website.png"
+                      alt=""
+                      className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
-                      height={900}
+                      height={736}
                     />
                     <img
-                      src="/images/ai-receptionist.png"
-                      alt="Landscaping business website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
+                      src="/images/website.png"
+                      alt=""
+                      width={1200}
+                      height={736}
+                      className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="/images/ai-receptionist.png"
-                      alt="Landscaping business website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
+                      src="/images/website.png"
+                      alt=""
+                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      width={1500}
+                      height={680}
+                    />
+                    <img
+                      width={1500}
+                      height={680}
+                      src="/images/website.png"
+                      alt=""
+                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
+                    />
+                    <img
+                      src="/images/website.png"
+                      alt=""
+                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      width={1500}
+                      height={1240}
+                    />
+                    <img
+                      width={1500}
+                      height={1240}
+                      src="/images/website.png"
+                      alt=""
+                      className="bg-black/75 not-dark:hidden max-lg:hidden"
                     />
                   </Screenshot>
                 }
+              />
+              <FeatureStacked
                 headline="Fallback AI Voice Receptionist"
-                subheadline={
+subheadline={
                   <>
                     <p>Every missed call is a customer dialing the next name on Google. When you can’t pick up, your AI receptionist answers on your existing number — so the job still goes to you.</p>
                     <ul>
@@ -274,40 +259,60 @@ export default function Page() {
                       <li className="list-disc list-inside">Sends you the transcript and lead details</li>
                     </ul>
                   </>
+                }                cta={
+                  <Link href="#">
+                    Learn more <ChevronIcon />
+                  </Link>
                 }
-                                cta={
-                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
-                }
-              />
-
-              {/* 5-Star Review Funnel */}
-              <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="green" placement="bottom-right">
+                  <Screenshot wallpaper="purple" placement="top-left">
                     <img
-                      src="/images/reviews.png"
-                      alt="Roofing business website"
-                      className="sm:hidden"
+                      src="/images/ai-receptionist.png"
+                      alt=""
+                      className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
-                      height={900}
+                      height={736}
                     />
                     <img
-                      src="/images/reviews.png"
-                      alt="Roofing business website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
+                      src="/images/ai-receptionist.png"
+                      alt=""
+                      width={1200}
+                      height={736}
+                      className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="/images/reviews.png"
-                      alt="Roofing business website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
+                      src="/images/ai-receptionist.png"
+                      alt=""
+                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      width={1500}
+                      height={680}
+                    />
+                    <img
+                      src="/images/ai-receptionist.png"
+                      alt=""
+                      width={1500}
+                      height={680}
+                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
+                    />
+                    <img
+                      src="/images/ai-receptionist.png"
+                      alt=""
+                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      width={1500}
+                      height={1240}
+                    />
+                    <img
+                      src="/images/ai-receptionist.png"
+                      width={1500}
+                      height={1240}
+                      alt=""
+                      className="bg-black/75 not-dark:hidden max-lg:hidden"
                     />
                   </Screenshot>
                 }
-                headline="5-Star Review Funnel"
+              />
+              <FeatureStacked
+                headline="5-Star Google Review Funnel"
                 subheadline={
                   <>
                     <p>Happy customers rarely think to leave reviews — and asking is easy to forget. We ask automatically the moment the job is done, building the reputation that wins your next job.</p>
@@ -317,38 +322,60 @@ export default function Page() {
                       <li className="list-disc list-inside">New customers see proof before they ever call</li>
                     </ul>
                   </>
+                }                cta={
+                  <Link href="#">
+                   See short Demo <ChevronIcon />
+                  </Link>
                 }
-                              cta={
-                <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
-              }
-              />
-              
-              <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="blue" placement="bottom-right">
+                  <Screenshot wallpaper="brown" placement="bottom-left">
                     <img
-                      src="/images/local-seo.png"
-                      alt="General contractor website"
-                      className="sm:hidden"
+                      src="/images/reviews.png"
+                      alt=""
+                      className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
-                      height={900}
+                      height={736}
                     />
                     <img
-                      src="/images/local-seo.png"
-                      alt="General contractor website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
+                      src="/images/reviews.png"
+                      alt=""
+                      width={1200}
+                      height={736}
+                      className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="/images/local-seo.png"
-                      alt="General contractor website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
+                      src="/images/reviews.png"
+                      alt=""
+                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      width={1500}
+                      height={680}
+                    />
+                    <img
+                      src="/images/reviews.png"
+                      alt=""
+                      width={1500}
+                      height={680}
+                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
+                    />
+                    <img
+                      src="/images/reviews.png"
+                      alt=""
+                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      width={1500}
+                      height={1240}
+                    />
+                    <img
+                      src="/images/reviews.png"
+                      alt=""
+                      width={1500}
+                      height={1240}
+                      className="bg-black/75 not-dark:hidden max-lg:hidden"
                     />
                   </Screenshot>
                 }
+              />
+
+              <FeatureStacked
                 headline="Local SEO"
                 subheadline={
                   <>
@@ -360,38 +387,59 @@ export default function Page() {
                     </ul>
                   </>
                 }
-                                cta={
-                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                cta={
+                  <Link href="#">
+                   See short Demo <ChevronIcon />
+                  </Link>
                 }
-              />
-
-                {/* One click marketing Campaigns */}
-               <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="brown" placement="top-right">
+                  <Screenshot wallpaper="green" placement="bottom-left">
                     <img
-                      src="/images/oc-marketing.png"
-                      alt="General contractor website"
-                      className="sm:hidden"
+                      src="/images/local-seo.png"
+                      alt=""
+                      className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
-                      height={900}
+                      height={736}
                     />
                     <img
-                      src="/images/oc-marketing.png"
-                      alt="General contractor website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
+                      src="/images/local-seo.png"
+                      alt=""
+                      width={1200}
+                      height={736}
+                      className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="/images/oc-marketing.png"
-                      alt="General contractor website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
+                      src="/images/local-seo.png"
+                      alt=""
+                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      width={1500}
+                      height={680}
+                    />
+                    <img
+                      src="/images/local-seo.png"
+                      alt=""
+                      width={1500}
+                      height={680}
+                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
+                    />
+                    <img
+                      src="/images/local-seo.png"
+                      alt=""
+                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      width={1500}
+                      height={1240}
+                    />
+                    <img
+                      src="/images/local-seo.png"
+                      alt=""
+                      width={1500}
+                      height={1240}
+                      className="bg-black/75 not-dark:hidden max-lg:hidden"
                     />
                   </Screenshot>
                 }
+              />
+              <FeatureStacked
                 headline="One-Click Marketing Campaigns"
                 subheadline={
                   <>
@@ -403,39 +451,59 @@ export default function Page() {
                     </ul>
                   </>
                 }
-                                cta={
-                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                cta={
+                  <Link href="#">
+                   See short Demo <ChevronIcon />
+                  </Link>
                 }
-              />
-              {/* end oneclick marketing campaigns */}
-
-              {/* LSA Ads  */}
-              <FeatureThreeColumnWithDemos
                 demo={
-                  <Screenshot wallpaper="green" placement="bottom-right">
+                  <Screenshot wallpaper="blue" placement="bottom-left">
                     <img
-                      src="/images/lsa.png"
-                      alt="General contractor website"
-                      className="sm:hidden"
+                      src="/images/oc-marketing.png"
+                      alt=""
+                      className="bg-white/75 sm:hidden dark:hidden"
                       width={1200}
-                      height={900}
+                      height={736}
                     />
                     <img
-                      src="/images/lsa.png"
-                      alt="General contractor website"
-                      className="max-sm:hidden lg:hidden"
-                      width={1800}
-                      height={1350}
+                      src="/images/oc-marketing.png"
+                      alt=""
+                      width={1200}
+                      height={736}
+                      className="bg-black/75 not-dark:hidden sm:hidden"
                     />
                     <img
-                      src="/images/lsa.png"
-                      alt="General contractor website"
-                      className="max-lg:hidden"
-                      width={1200}
-                      height={900}
+                      src="/images/oc-marketing.png"
+                      alt=""
+                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      width={1500}
+                      height={680}
+                    />
+                    <img
+                      src="/images/oc-marketing.png"
+                      alt=""
+                      width={1500}
+                      height={680}
+                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
+                    />
+                    <img
+                      src="/images/oc-marketing.png"
+                      alt=""
+                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      width={1500}
+                      height={1240}
+                    />
+                    <img
+                      src="/images/oc-marketing.png"
+                      alt=""
+                      width={1500}
+                      height={1240}
+                      className="bg-black/75 not-dark:hidden max-lg:hidden"
                     />
                   </Screenshot>
                 }
+              />
+              <FeatureStacked
                 headline="Google Local Service Ads"
                 subheadline={
                   <>
@@ -447,17 +515,248 @@ export default function Page() {
                     </ul>
                   </>
                 }
-                                cta={
-                  <PlainButtonLink href="/contact">See short demo <ArrowRightIcon className="h-4 w-4" /></PlainButtonLink>
+                cta={
+                  <Link href="#">
+                   See short Demo <ChevronIcon />
+                  </Link>
+                }
+                demo={
+                  <Screenshot wallpaper="purple" placement="bottom-left">
+                    <img
+                      src="/images/lsa.png"
+                      alt=""
+                      className="bg-white/75 sm:hidden dark:hidden"
+                      width={1200}
+                      height={736}
+                    />
+                    <img
+                      src="/images/lsa.png"
+                      alt=""
+                      width={1200}
+                      height={736}
+                      className="bg-black/75 not-dark:hidden sm:hidden"
+                    />
+                    <img
+                      src="/images/lsa.png"
+                      alt=""
+                      className="bg-white/75 max-sm:hidden lg:hidden dark:hidden"
+                      width={1500}
+                      height={680}
+                    />
+                    <img
+                      src="/images/lsa.png"
+                      alt=""
+                      width={1500}
+                      height={680}
+                      className="bg-black/75 not-dark:hidden max-sm:hidden lg:hidden"
+                    />
+                    <img
+                      src="/images/lsa.png"
+                      alt=""
+                      className="bg-white/75 max-lg:hidden dark:hidden"
+                      width={1500}
+                      height={1240}
+                    />
+                    <img
+                      src="/images/lsa.png"
+                      alt=""
+                      width={1500}
+                      height={1240}
+                      className="bg-black/75 not-dark:hidden max-lg:hidden"
+                    />
+                  </Screenshot>
                 }
               />
-            
             </>
           }
-         
         />
-        </FadeInSection>
-     
+<StatsWithGraph 
+  id="stats"
+  eyebrow="Our Impact"
+  headline="Real results from real trades"
+  subheadline="See how we help crews grow revenue and build sustainable marketing systems."
+/>
+      <FeaturesThreeColWithDemos
+                  id="trades"
+                  eyebrow="Who we serve"
+                  headline="Trades we work with"
+                  subheadline="If you run a crew and do great work, we build the marketing system that keeps the jobs coming."
+                  features={
+                    <>
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="green" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/general-contractor.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                        }
+                        headline="General Contractors"
+                        subheadline={<p>Remodels, additions, renovations, and project management.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                         <Screenshot wallpaper="blue" placement="bottom-right">
+                          <img
+                            src="/images/trade-images/plumber.png"
+                            alt=""
+                            width={1500}
+                            height={1240}
+                          />
+                         </Screenshot>
+                        }
+                        headline="Plumbers"
+                        subheadline={<p>Repairs, drain cleaning, water heaters, repipes, and emergency calls.</p>}
+                       
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="purple" placement="bottom-right">
+                          <img
+                            src="/images/trade-images/electrician.png"
+                            alt=""
+                            width={1500}
+                            height={1240}
+                          />
+                          </Screenshot>
+                        }
+                        headline="Electricians"
+                        subheadline={<p>Panels, rewiring, EV chargers, lighting, and troubleshooting.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="brown" placement="bottom-right">
+                          <img
+                            src="/images/trade-images/hvac.png"
+                            alt=""
+                            width={1500}
+                            height={1240}
+                          />
+                          </Screenshot>
+                        }
+                        headline="HVAC Contractors"
+                        subheadline={<p>Air conditioning, heating, ductwork, tune-ups, and replacements.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="green" placement="bottom-right">
+                              <img
+                                src="/images/trade-images/roofer.png"
+                                alt=""
+                                width={1500}
+                                height={1240}
+                              />
+                          </Screenshot>
+                        }
+                        headline="Roofers"
+                        subheadline={<p>Inspections, leak repairs, replacements, and gutters.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="green" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/landscape.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                        }
+                        headline="Landscapers & Hardscapers"
+                        subheadline={<p>Landscape design, irrigation, pavers, turf, and outdoor lighting.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="blue" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/painter.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                          
+
+                        }
+                        headline="Painters"
+                        subheadline={<p>Interior/exterior painting, cabinet refinishing, and commercial painting.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="purple" placement="bottom-right">
+                          <img
+                            src="/images/trade-images/remodeler.png"
+                            alt=""
+                            width={1500}
+                            height={1240}
+                          />
+                          </Screenshot>
+                        }
+                        headline="Remodelers"
+                        subheadline={<p>Kitchen, bath, ADU, and whole-home renovation specialists.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="green" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/mason.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                        }
+                        headline="Concrete & Masonry Contractors"
+                        subheadline={<p>Driveways, patios, foundations, retaining walls, and stonework.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="brown" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/flooring.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                        }
+                        headline="Flooring Contractors"
+                        subheadline={<p>Hardwood, tile, carpet, vinyl, refinishing, and installation.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="purple" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/garage.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                        }
+                        headline="Garage Door Contractors"
+                        subheadline={<p>Repairs, replacements, openers, and emergency service.</p>}
+                      />
+                      <FeatureThreeColumnWithDemos
+                        demo={
+                          <Screenshot wallpaper="blue" placement="bottom-right">
+                            <img
+                              src="/images/trade-images/pest-control.png"
+                              alt=""
+                              width={1500}
+                              height={1240}
+                            />
+                          </Screenshot>
+                        }
+                        headline="Pest Control Companies"
+                        subheadline={<p>Inspections, treatment plans, exclusion, and recurring maintenance.</p>}
+                      />
+                    </>
+                  }
+                />
         <FadeInSection delay={100}>
         <FeaturesStackedAlternatingWithDemos
                     eyebrow="How it works"

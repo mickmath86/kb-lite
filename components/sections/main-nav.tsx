@@ -79,7 +79,7 @@ export default function MainNav() {
 
             <PopoverPanel
               transition
-              className="absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-xl bg-white shadow-lg outline-1 outline-gray-900/5 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+              className="absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-sm bg-white shadow-lg outline-1 outline-gray-900/5 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in dark:bg-[#243a42] dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
             >
               <div className="p-4">
                 {systems.map((item) => (
@@ -121,8 +121,8 @@ export default function MainNav() {
           <a href="/pricing" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
             Pricing
           </a>
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
-            Marketplace
+          <a href="/how-it-works" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            How it Works
           </a>
           <a href="/about" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
             About Us
@@ -130,7 +130,7 @@ export default function MainNav() {
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div> 
-              <Button size="md" className="mr-4">  <a href="/booking"> Book a Call</a></Button>
+              <Button size="md" className="mr-4">  <a href="/lp/booking"> Book a Call</a></Button>
        
           <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
             Log in <span aria-hidden="true">&rarr;</span>
@@ -194,10 +194,10 @@ export default function MainNav() {
                   Pricing
                 </a>
                 <a
-                  href="#"
+                  href="/how-it-works"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
-                  Marketplace
+                  How it Works
                 </a>
                 <a
                   href="/about"

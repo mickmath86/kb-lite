@@ -37,6 +37,7 @@ export default function FunctionalWebsite() {
       />
       <StatsWithGraph  
       headline="The Numbers Don't Lie"
+      className="overflow-hidden"
       eyebrow="Why Your Website Matters"
       subheadline="Here's what happens when you actually follow up on every lead."
       >

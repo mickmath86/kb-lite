@@ -4,6 +4,7 @@ import type { ComponentProps } from 'react'
 const sizes = {
   md: 'px-3 py-1',
   lg: 'px-4 py-2',
+  xl: 'px-10 py-4 text-2xl '
 }
 
 export function Button({
@@ -47,7 +48,7 @@ export function ButtonLink({
     <a
       href={href}
       className={clsx(
-        'inline-flex shrink-0 items-center justify-center gap-1 rounded-full text-sm/7 font-medium',
+        'inline-flex shrink-0 items-center justify-center gap-1 text-sm/7 rounded-full ',
         color === 'dark/light' &&
           'bg-olive-950 text-white hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200',
         color === 'light' && 'hover bg-white text-olive-950 hover:bg-olive-100 dark:bg-olive-100 dark:hover:bg-white',

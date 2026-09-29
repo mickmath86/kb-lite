@@ -14,6 +14,9 @@ import {
 } from '@/components/sections/features-three-column-with-demos'
 import { Screenshot } from "@/components/elements/screenshot";
 import { TryReceptionist } from "@/components/elements/try-receptionist";
+import { HeroLeftAlignedWithDemo } from "@/components/sections/hero-left-aligned-with-demo";
+import { MissedCallCalculator } from "@/components/elements/missed-call-calculator";
+import { HeroLeftAlignedWithPhoto } from "@/components/sections/hero-left-aligned-with-photo";
 
 export default function AIReceptionist() {
   return (
@@ -37,8 +40,12 @@ export default function AIReceptionist() {
         }
       />
       <TryReceptionist />
+
+     
+
       <StatsWithGraph  
       headline="Missed calls are lost jobs"
+      className="overflow-hidden"
       eyebrow="The Cost of Not Answering"
       subheadline="Here's what really happens when a customer calls and nobody picks up."
       >
@@ -46,6 +53,12 @@ export default function AIReceptionist() {
         <StatGraph stat="62%" text="of calls to small businesses go unanswered during the workday" />
         <StatGraph stat="80%" text="of callers who hit voicemail hang up without leaving a message" />
       </StatsWithGraph>
+
+      <HeroLeftAlignedWithPhoto
+        headline="What are missed calls actually costing you?"
+        subheadline={<p>Every unanswered call is a customer dialing the next name on Google. Run your own numbers — the results usually surprise people.</p>}
+        photo={<MissedCallCalculator />}
+      />
 
       <StatsFourColumns 
       headline="More Than an Answering Machine"
@@ -73,6 +86,10 @@ export default function AIReceptionist() {
           text="The moment the call ends you get the transcript, the caller's details, and what they need — so when you call back, you already know the job." 
         />
       </StatsFourColumns>
+
+      
+          
+      
 
       
       <FeaturesThreeColWithDemos

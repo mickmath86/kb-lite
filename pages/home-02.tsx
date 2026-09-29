@@ -1,15 +1,11 @@
 import { AnnouncementBadge } from '@/components/elements/announcement-badge'
-import { Button, ButtonLink, PlainButton, PlainButtonLink, SoftButtonLink } from '@/components/elements/button'
-import { EmailSignupForm } from '@/components/elements/email-signup-form'
+import { Button, ButtonLink, PlainButton, PlainButtonLink } from '@/components/elements/button'
 import { Link } from '@/components/elements/link'
 import { Logo, LogoGrid } from '@/components/elements/logo-grid'
 import { Main } from '@/components/elements/main'
 import { Screenshot } from '@/components/elements/screenshot'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
-import { ChatBubbleCircleIcon } from '@/components/icons/chat-bubble-circle-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
-import { SparklesIcon } from '@/components/icons/sparkles-icon'
-import { TargetIcon } from '@/components/icons/target-icon'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
 import { FAQsTwoColumnAccordion, Faq } from '@/components/sections/faqs-two-column-accordion'
 import {
@@ -18,26 +14,11 @@ import {
 } from '@/components/sections/features-three-column-with-demos'
 import { FooterCategory, FooterLink, FooterWithLinkCategories } from '@/components/sections/footer-with-link-categories'
 import { HeroWithDemoOnBackground } from '@/components/sections/hero-with-demo-on-background'
-import {
-  NavbarLink,
-  NavbarLogo,
-  NavbarWithLogoActionsAndCenteredLinks,
-} from '@/components/sections/navbar-with-logo-actions-and-centered-links'
-import { Plan, PricingMultiTier } from '@/components/sections/pricing-multi-tier'
 import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
-import { TestimonialLargeQuote } from '@/components/sections/testimonial-with-large-quote'
-import { Feature, FeaturesWithLargeDemo } from '@/components/sections/features-with-large-demo'
-import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo'
-import { HeroSimpleLeftAligned } from '@/components/sections/hero-simple-left-aligned'
-import { HeroLeftAlignedWithPhoto } from '@/components/sections/hero-left-aligned-with-photo'
-import { TestimonialTwoColumnWithLargePhoto } from '@/components/sections/testimonial-two-column-with-large-photo'
-import NavDropDown from '@/components/elements/navbar-dropdown'
-import NavbarDropdown2 from '@/components/elements/navbar-dropdown-2'
 import { FeaturesStackedAlternatingWithDemos, Feature as FeatureStacked } from '@/components/sections/features-stacked-alternating-with-demos'
 import MainNav from '@/components/sections/main-nav'
-import { ThemedSection } from '@/components/elements/themed-section'
 import { FadeInSection } from '@/components/elements/fade-in-section'
-import { ArrowRightIcon } from '@heroicons/react/16/solid'
+
 
 export default function Page() {
   return (
@@ -59,8 +40,8 @@ export default function Page() {
           }
           cta={
            <div className="flex flex-wrap gap-4">
-            <Button color="light" size="lg">Book a free call</Button>
-            <PlainButton color="light" size="lg">See how it works <ArrowNarrowRightIcon /></PlainButton>
+            <a href="/lp/booking"><Button color="light" size="lg">Book a free call</Button></a>
+            <a href="/lp/how-it-works"><PlainButton color="light" size="lg">See how it works <ArrowNarrowRightIcon /></PlainButton></a>
           </div>
           }
           demo={
@@ -197,7 +178,7 @@ export default function Page() {
                   </>
                 }
                 cta={
-                  <Link href="#">
+                  <Link href="/systems/functional-website">
                     See short Demo<ChevronIcon />
                   </Link>
                 }
@@ -250,7 +231,7 @@ export default function Page() {
               />
               <FeatureStacked
                 headline="Fallback AI Voice Receptionist"
-subheadline={
+                subheadline={
                   <>
                     <p>Every missed call is a customer dialing the next name on Google. When you can’t pick up, your AI receptionist answers on your existing number — so the job still goes to you.</p>
                     <ul>
@@ -260,7 +241,7 @@ subheadline={
                     </ul>
                   </>
                 }                cta={
-                  <Link href="#">
+                  <Link href="/systems/ai-receptionist">
                     Learn more <ChevronIcon />
                   </Link>
                 }
@@ -323,7 +304,7 @@ subheadline={
                     </ul>
                   </>
                 }                cta={
-                  <Link href="#">
+                  <Link href="/systems/5-star-review-funnel">
                    See short Demo <ChevronIcon />
                   </Link>
                 }
@@ -876,7 +857,7 @@ subheadline={
               <ButtonLink href="/get-started" size="lg">
                 Get started <ArrowNarrowRightIcon />
               </ButtonLink>
-              <PlainButtonLink href="/booking" size="lg">
+              <PlainButtonLink href="/lp/booking" size="lg">
                 Book a call <ChevronIcon />
               </PlainButtonLink>
             </div>
@@ -911,11 +892,3 @@ subheadline={
   )
 }
 
-
-function DemoPlaceholder({ label }: { label: string }) {
-  return (
-    <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-olive-950/5 dark:bg-white/5">
-      <p className="text-sm text-olive-500 dark:text-olive-400">{label}</p>
-    </div>
-  )
-}

@@ -7,8 +7,8 @@ import { Button, ButtonLink } from './button'
 import { Container } from './container'
 
 // TODO: replace with the real demo line
-const DEMO_NUMBER = '(805) 555-0142'
-const DEMO_NUMBER_TEL = 'tel:+18055550142'
+const DEMO_NUMBER = '1 (805) 716-5613'
+const DEMO_NUMBER_TEL = 'tel:+18057165613'
 
 export function TryReceptionist() {
   const [open, setOpen] = useState(false)

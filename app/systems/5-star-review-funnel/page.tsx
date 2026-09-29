@@ -38,6 +38,7 @@ export default function ReviewFunnel() {
       <StatsWithGraph  
       headline="Reviews decide who gets the call"
       eyebrow="Why Reputation Wins Jobs"
+      className="overflow-hidden"
       subheadline="Before a customer ever contacts you, they've already compared your stars to your competitors'."
       >
         <StatGraph stat="98%" text="of consumers read online reviews before choosing a local business" />

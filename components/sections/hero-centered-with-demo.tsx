@@ -9,6 +9,7 @@ export function HeroCenteredWithDemo({
   headline,
   subheadline,
   cta,
+  cta2,
   demo,
   footer,
   className,
@@ -20,6 +21,7 @@ export function HeroCenteredWithDemo({
   cta?: ReactNode
   demo?: ReactNode
   footer?: ReactNode
+  cta2?:ReactNode
 } & ComponentProps<'section'>) {
   return (
     <section className={clsx('py-16', className)} {...props}>
@@ -34,6 +36,7 @@ export function HeroCenteredWithDemo({
             {cta}
           </div>
           {demo}
+          <div>{cta2}</div>
         </div>
         {footer}
       </Container>

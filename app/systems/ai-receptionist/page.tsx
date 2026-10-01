@@ -17,6 +17,8 @@ import { TryReceptionist } from "@/components/elements/try-receptionist";
 import { HeroLeftAlignedWithDemo } from "@/components/sections/hero-left-aligned-with-demo";
 import { MissedCallCalculator } from "@/components/elements/missed-call-calculator";
 import { HeroLeftAlignedWithPhoto } from "@/components/sections/hero-left-aligned-with-photo";
+import { FooterWithLinkCategories } from "@/components/sections/footer-with-link-categories";
+import FooterMain from "@/components/sections/footer-main";
 
 export default function AIReceptionist() {
   return (
@@ -40,7 +42,7 @@ export default function AIReceptionist() {
         }
       />
       <TryReceptionist />
-
+        
      
 
       <StatsWithGraph  
@@ -193,8 +195,9 @@ export default function AIReceptionist() {
         eyebrow="Stop Losing Jobs to Voicemail"
         headline="Every missed call is money out the door"
         subheadline="Book a call and we'll show you exactly how the AI receptionist handles calls for your business."
-        cta={<ButtonLink href="/booking">Book a Call</ButtonLink>}
+        cta={<ButtonLink href="/lp/booking">Book a Call</ButtonLink>}
       />
+    <FooterMain/>
     </>
   )
 }

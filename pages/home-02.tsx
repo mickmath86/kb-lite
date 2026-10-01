@@ -18,6 +18,7 @@ import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
 import { FeaturesStackedAlternatingWithDemos, Feature as FeatureStacked } from '@/components/sections/features-stacked-alternating-with-demos'
 import MainNav from '@/components/sections/main-nav'
 import { FadeInSection } from '@/components/elements/fade-in-section'
+import FooterMain from '@/components/sections/footer-main'
 
 
 export default function Page() {
@@ -866,29 +867,8 @@ export default function Page() {
         </FadeInSection>
       </Main>
 
-      <FooterWithLinkCategories
-        id="footer"
-        links={
-          <>
-            <FooterCategory title="Services">
-              <FooterLink href="/ai-voice-agents">AI Voice Agents</FooterLink>
-              <FooterLink href="/websites">Websites &amp; Redesigns</FooterLink>
-              <FooterLink href="/consulting">Consulting &amp; Strategy</FooterLink>
-            </FooterCategory>
-            <FooterCategory title="Company">
-              <FooterLink href="/about">About</FooterLink>
-              <FooterLink href="/results">Results</FooterLink>
-              <FooterLink href="/contact">Contact</FooterLink>
-            </FooterCategory>
-            <FooterCategory title="Legal">
-              <FooterLink href="/privacy">Privacy Policy</FooterLink>
-              <FooterLink href="#">Terms of Service</FooterLink>
-            </FooterCategory>
-          </>
-        }
-        fineprint="© 2026 Kickbord. All rights reserved."
-      />
+      <FooterMain />
     </>
-  )
+  ) 
 }
 

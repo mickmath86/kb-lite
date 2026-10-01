@@ -13,6 +13,7 @@ import {
   Features as FeaturesThreeColWithDemos,
 } from '@/components/sections/features-three-column-with-demos'
 import { Screenshot } from "@/components/elements/screenshot";
+import FooterMain from "@/components/sections/footer-main";
 
 export default function ReviewFunnel() {
   return (
@@ -176,6 +177,7 @@ export default function ReviewFunnel() {
         subheadline="Book a call and we'll show you how the funnel turns finished work into a reputation that sells for you."
         cta={<ButtonLink href="/booking">Book a Call</ButtonLink>}
       />
+      <FooterMain />
     </>
   )
 }

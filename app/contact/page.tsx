@@ -1,4 +1,5 @@
 'use client'
+import { trackMetaEvent } from '@/lib/meta-pixel'
 
 import { useState } from 'react'
 import { Button, ButtonLink, PlainButtonLink } from '@/components/elements/button'
@@ -72,6 +73,7 @@ export default function ContactPage() {
         body: JSON.stringify({ ...form, source: 'kickbord-contact-form' }),
       })
 
+      trackMetaEvent('Lead', { content_name: 'contact-form' })
       setStatus('success')
     } catch {
       setStatus('error')

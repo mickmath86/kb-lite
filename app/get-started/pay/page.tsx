@@ -1,4 +1,5 @@
 'use client'
+import { trackMetaEvent, priceToNumber } from '@/lib/meta-pixel'
 
 import React, { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -170,6 +171,12 @@ function PayPageInner() {
         body: JSON.stringify(payload),
       })
       if (res.ok) {
+        trackMetaEvent('InitiateCheckout', {
+          content_name: `${plan.name} (${billingKey})`,
+          content_ids: [`${planKey}-${billingKey}`],
+          value: priceToNumber(plan.price),
+          currency: 'USD',
+        })
         setFormState('success')
       } else {
         setFormState('error')

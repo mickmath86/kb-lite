@@ -94,23 +94,44 @@ export function LeadQualifierModal({
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [inputValue, setInputValue] = useState('')
   const [error, setError] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const isContractor = answers.workType !== NOT_CONTRACTOR
   const activeSteps = isContractor ? STEPS : STEPS.filter((_, i) => i === 0 || i >= 4)
   const step = activeSteps[stepIndex]
   const isLast = stepIndex === activeSteps.length - 1
 
-  function advance(value: string) {
+  async function advance(value: string) {
     const next = { ...answers, [step.key]: value }
     setAnswers(next)
     setInputValue('')
     setError(false)
+    setSubmitError('')
     if (isLast) {
-      setOpen(false)
-      setStepIndex(0)
-      setAnswers({})
-      const params = new URLSearchParams(next)
-      router.push(`/lp/booking?${params.toString()}`)
+      setSubmitting(true)
+
+      try {
+        const response = await fetch('/api/lead-qualifier', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(next),
+        })
+
+        if (!response.ok) {
+          throw new Error('Submission failed')
+        }
+
+        setOpen(false)
+        setStepIndex(0)
+        setAnswers({})
+        const params = new URLSearchParams(next)
+        router.push(`/lp/booking?${params.toString()}`)
+      } catch {
+        setSubmitError('We could not submit your information. Please try again.')
+      } finally {
+        setSubmitting(false)
+      }
       return
     }
     setStepIndex(stepIndex + 1)
@@ -128,6 +149,8 @@ export function LeadQualifierModal({
     setAnswers({})
     setInputValue('')
     setError(false)
+    setSubmitError('')
+    setSubmitting(false)
   }
 
   const inputStep = step.type === 'input' ? step : null
@@ -210,8 +233,13 @@ export function LeadQualifierModal({
                     Please enter a valid {step.key}.
                   </p>
                 )}
-                <Button type="submit" size="lg" className="mt-4 w-full">
-                  {isLast ? 'Yes, I want more jobs' : 'Continue'}
+                {submitError && (
+                  <p className="mt-2 text-sm/6 text-red-600 dark:text-red-400">
+                    {submitError}
+                  </p>
+                )}
+                <Button type="submit" size="lg" className="mt-4 w-full" disabled={submitting}>
+                  {submitting ? 'Submitting…' : isLast ? 'Yes, I want more jobs' : 'Continue'}
                 </Button>
               </form>
             )}

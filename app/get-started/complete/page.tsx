@@ -1,7 +1,7 @@
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
-import { CalendarIcon } from '@/components/icons/calendar-icon'
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
+import Script from 'next/script'
 import {
   NavbarLink,
   NavbarLogo,
@@ -23,13 +23,13 @@ export default function GetStartedCompletePage() {
         links={<></>}
         logo={
           <NavbarLogo href="/">
-            <img src="/Logos/icon.svg" alt="Kickbord" className="dark:hidden" width={85} height={28} />
-            <img src="/Logos/icon.svg" className="not-dark:hidden" width={85} height={28} />
+            <img src="/logos/kb-icon-white.png" alt="Kickbord" className="dark:hidden" width={85} height={28} />
+            <img src="/logos/kb-icon-blk.png" className="not-dark:hidden" width={85} height={28} />
           </NavbarLogo>
         }
         actions={
-          <ButtonLink href="/contact" size="md">
-            Contact us
+          <ButtonLink href="/lp/booking" size="md">
+            Book a Call
           </ButtonLink>
         }
       />
@@ -155,49 +155,15 @@ export default function GetStartedCompletePage() {
                 </p>
               </div>
 
-              {/* GoHighLevel / Calendly Booking Embed placeholder */}
               <div className="overflow-hidden rounded-2xl border border-olive-950/10 bg-white dark:border-white/10 dark:bg-olive-900">
-                {/*
-                  ──────────────────────────────────────────────────────────────
-                  BOOKING EMBED PLACEHOLDER
-                  Replace this div with your GoHighLevel calendar embed:
-
-                  Option A — GoHighLevel inline calendar:
-                  <iframe
-                    src="https://api.leadconnectorhq.com/widget/booking/{your-calendar-id}"
-                    className="w-full"
-                    style={{ minHeight: '700px', border: 'none' }}
-                    scrolling="no"
-                  />
-
-                  Option B — Calendly inline widget:
-                  <div
-                    className="calendly-inline-widget w-full"
-                    data-url="https://calendly.com/kickbord/discovery"
-                    style={{ minHeight: '700px' }}
-                  />
-                  (Also add the Calendly script to layout.tsx)
-
-                  Option C — GoHighLevel widget script:
-                  Drop their embed script tag here or in layout.tsx
-                  ──────────────────────────────────────────────────────────────
-                */}
-                <div className="flex min-h-96 flex-col items-center justify-center gap-5 p-10 text-center">
-                  <div className="flex size-14 items-center justify-center rounded-full bg-olive-950/10 text-olive-950 dark:bg-white/10 dark:text-white">
-                    <CalendarIcon />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-olive-950 dark:text-white">Calendar booking embed</p>
-                    <p className="mt-2 max-w-xs text-sm text-olive-600 dark:text-olive-400">
-                      Replace this placeholder with your GoHighLevel or Calendly inline booking widget.
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center gap-3 text-sm text-olive-500 dark:text-olive-400">
-                    <code className="rounded bg-olive-950/5 px-3 py-1 font-mono text-xs dark:bg-white/5">
-                      GoHighLevel calendar embed goes here
-                    </code>
-                  </div>
-                </div>
+                <iframe
+                  src="https://calendar.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4"
+                  allow="payment"
+                  style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '600px' }}
+                  scrolling="yes"
+                  id="PA9BL9KS5PxCkzn4C6f4_complete"
+                  title="Kickbord Booking Calendar"
+                />
               </div>
             </div>
 
@@ -209,23 +175,31 @@ export default function GetStartedCompletePage() {
               While you wait, explore what Kickbord can do
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <PlainButtonLink href="/ai-voice-agents" size="md">
-                AI Voice Agents <ArrowNarrowRightIcon />
+              <PlainButtonLink href="/systems/functional-website" size="md">
+                Functional Website <ArrowNarrowRightIcon />
               </PlainButtonLink>
-              <PlainButtonLink href="/websites" size="md">
-                Website Redesigns <ArrowNarrowRightIcon />
+              <PlainButtonLink href="/systems/ai-receptionist" size="md">
+                Fallback AI Receptionist <ArrowNarrowRightIcon />
               </PlainButtonLink>
-              <PlainButtonLink href="/consulting" size="md">
-                Marketing Strategy <ArrowNarrowRightIcon />
+              <PlainButtonLink href="/systems/5-star-review-funnel" size="md">
+                5-Star Review Funnel <ArrowNarrowRightIcon />
               </PlainButtonLink>
-              <PlainButtonLink href="/results" size="md">
-                Client Results <ArrowNarrowRightIcon />
+              <PlainButtonLink href="/systems/one-click-campaigns" size="md">
+                One-Click Campaigns <ArrowNarrowRightIcon />
+              </PlainButtonLink>
+              <PlainButtonLink href="/systems/local-seo" size="md">
+                Local SEO <ArrowNarrowRightIcon />
+              </PlainButtonLink>
+              <PlainButtonLink href="/systems/local-service-ads" size="md">
+                Local Service Ads <ArrowNarrowRightIcon />
               </PlainButtonLink>
             </div>
           </div>
 
         </div>
       </Main>
+
+      <Script src="https://links.kickbord.com/js/form_embed.js" strategy="lazyOnload" />
 
       {/* ── Footer ─────────────────────────────────────────────────────── */}
       <FooterWithLinkCategories

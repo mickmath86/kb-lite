@@ -1,5 +1,6 @@
 'use client'
 import { trackMetaEvent } from '@/lib/meta-pixel'
+import posthog from 'posthog-js'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -369,6 +370,9 @@ export default function GetStartedPage() {
       })
 
       trackMetaEvent('Lead', { content_name: 'get-started-questionnaire' })
+      if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+        posthog.capture('get_started_questionnaire_submitted')
+      }
       router.push('/get-started/complete')
     } catch {
       setSubmitting(false)

@@ -4,6 +4,7 @@ import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import posthog from 'posthog-js'
 import { Button } from './button'
 
 type Step =
@@ -122,6 +123,9 @@ export function LeadQualifierModal({
           throw new Error('Submission failed')
         }
 
+        if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+          posthog.capture('lead_qualifier_submitted')
+        }
         setOpen(false)
         setStepIndex(0)
         setAnswers({})
@@ -157,7 +161,16 @@ export function LeadQualifierModal({
 
   return (
     <>
-      <Button size="lg" className={triggerClassName} onClick={() => setOpen(true)}>
+      <Button
+        size="lg"
+        className={triggerClassName}
+        onClick={() => {
+          if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+            posthog.capture('lead_qualifier_started')
+          }
+          setOpen(true)
+        }}
+      >
         {triggerLabel}
       </Button>
 

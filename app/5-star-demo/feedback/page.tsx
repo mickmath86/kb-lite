@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import posthog from 'posthog-js'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -39,6 +40,9 @@ export default function FeedbackPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, source: 'kickbord-low-rating-feedback' }),
       })
+      if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+        posthog.capture('feedback_submitted')
+      }
       setStatus('success')
     } catch {
       setStatus('error')

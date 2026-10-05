@@ -10,7 +10,8 @@ export default function LpBookingPage() {
   return (
     <div>
       <div className="w-full flex items-center justify-center my-12">
-        <img src="/logos/kb-icon-white.png" className="h-16" alt="Kickbord Logo" />
+        <img src="/logos/kb-icon-white.png" className="h-16 not-dark:hidden" alt="Kickbord Logo" />
+        <img src="/logos/kb-icon-blk.png" className="h-16 dark:hidden" alt="Kickbord Logo" />
       </div>
      
       <HeroCenteredWithDemo

@@ -1,4 +1,26 @@
-import { NextResponse } from 'next/server'
+import { SeverityNumber } from '@opentelemetry/api-logs'
+import { after, NextResponse } from 'next/server'
+
+import { loggerProvider, posthogLogger } from '@/instrumentation'
+
+function logLeadQualifierOutcome(
+  body: string,
+  severityNumber: SeverityNumber,
+  attributes: Record<string, string | number> = {},
+) {
+  posthogLogger?.emit({
+    body,
+    severityNumber,
+    attributes: {
+      endpoint: '/api/lead-qualifier',
+      ...attributes,
+    },
+  })
+
+  after(async () => {
+    await loggerProvider?.forceFlush()
+  })
+}
 
 const ALLOWED_FIELDS = [
   'workType',
@@ -15,6 +37,7 @@ export async function POST(request: Request) {
   const webhookUrl = process.env.LEAD_QUALIFIER_WEBHOOK_URL
 
   if (!webhookUrl) {
+    logLeadQualifierOutcome('lead_qualifier_webhook_unconfigured', SeverityNumber.ERROR)
     return NextResponse.json({ error: 'Webhook is not configured.' }, { status: 503 })
   }
 
@@ -54,11 +77,18 @@ export async function POST(request: Request) {
     })
 
     if (!response.ok) {
+      logLeadQualifierOutcome('lead_qualifier_webhook_rejected', SeverityNumber.WARN, {
+        webhook_status: response.status,
+      })
       return NextResponse.json({ error: 'Webhook rejected the submission.' }, { status: 502 })
     }
 
+    logLeadQualifierOutcome('lead_qualifier_submission_forwarded', SeverityNumber.INFO, {
+      webhook_status: response.status,
+    })
     return NextResponse.json({ success: true })
   } catch {
+    logLeadQualifierOutcome('lead_qualifier_webhook_unreachable', SeverityNumber.ERROR)
     return NextResponse.json({ error: 'Webhook could not be reached.' }, { status: 502 })
   }
 }

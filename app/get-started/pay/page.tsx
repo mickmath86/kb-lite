@@ -1,5 +1,6 @@
 'use client'
 import { trackMetaEvent, priceToNumber } from '@/lib/meta-pixel'
+import posthog from 'posthog-js'
 
 import React, { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -177,6 +178,12 @@ function PayPageInner() {
           value: priceToNumber(plan.price),
           currency: 'USD',
         })
+        if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+          posthog.capture('plan_onboarding_requested', {
+            billing_period: billingKey,
+            plan: planKey,
+          })
+        }
         setFormState('success')
       } else {
         setFormState('error')

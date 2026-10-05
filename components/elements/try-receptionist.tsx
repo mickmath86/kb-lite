@@ -3,6 +3,7 @@
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { PhoneIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
+import posthog from 'posthog-js'
 import { Button, ButtonLink } from './button'
 import { Container } from './container'
 
@@ -12,6 +13,12 @@ const DEMO_NUMBER_TEL = 'tel:+18057165613'
 
 export function TryReceptionist() {
   const [open, setOpen] = useState(false)
+
+  function captureDemoCallStarted() {
+    if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+      posthog.capture('ai_receptionist_demo_call_started')
+    }
+  }
 
   return (
     <section className="py-16">
@@ -30,7 +37,15 @@ export function TryReceptionist() {
             line, pretend you&rsquo;re a customer, and hear what your callers
             would experience when you can&rsquo;t pick up.
           </p>
-          <Button size="lg" onClick={() => setOpen(true)}>
+          <Button
+            size="lg"
+            onClick={() => {
+              if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+                posthog.capture('ai_receptionist_demo_opened')
+              }
+              setOpen(true)
+            }}
+          >
             <PhoneIcon className="size-4" /> Try the AI receptionist
           </Button>
         </div>
@@ -60,6 +75,7 @@ export function TryReceptionist() {
             </p>
             <a
               href={DEMO_NUMBER_TEL}
+              onClick={captureDemoCallStarted}
               className="mt-6 block font-display text-4xl/10 text-olive-950 hover:text-olive-700 dark:text-white dark:hover:text-olive-300"
             >
               {DEMO_NUMBER}
@@ -69,7 +85,7 @@ export function TryReceptionist() {
               what your customers would get.
             </p>
             <div className="mt-6 flex justify-center">
-              <ButtonLink href={DEMO_NUMBER_TEL} size="lg">
+              <ButtonLink href={DEMO_NUMBER_TEL} size="lg" onClick={captureDemoCallStarted}>
                 <PhoneIcon className="size-4" /> Call now
               </ButtonLink>
             </div>

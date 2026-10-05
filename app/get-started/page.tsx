@@ -1,4 +1,5 @@
 'use client'
+import { trackMetaEvent } from '@/lib/meta-pixel'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -367,6 +368,7 @@ export default function GetStartedPage() {
         }),
       })
 
+      trackMetaEvent('Lead', { content_name: 'get-started-questionnaire' })
       router.push('/get-started/complete')
     } catch {
       setSubmitting(false)

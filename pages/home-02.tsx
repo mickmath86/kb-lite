@@ -42,7 +42,7 @@ export default function Page() {
           cta={
            <div className="flex flex-wrap gap-4">
             <a href="/lp/booking"><Button color="light" size="lg">Book a free call</Button></a>
-            <a href="/lp/how-it-works"><PlainButton color="light" size="lg">See how it works <ArrowNarrowRightIcon /></PlainButton></a>
+            <a href="/how-it-works"><PlainButton color="light" size="lg">See how it works <ArrowNarrowRightIcon /></PlainButton></a>
           </div>
           }
           demo={

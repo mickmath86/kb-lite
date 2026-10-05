@@ -30,9 +30,9 @@ const systems = [
   { name: 'Functional Website', description: 'Captures every visitor and follows up automatically', href: '/systems/functional-website', icon: GlobeAltIcon },
   { name: 'Fallback AI Receptionist', description: 'Answers missed calls so leads don’t call a competitor', href: '/systems/ai-receptionist', icon: PhoneArrowDownLeftIcon },
   { name: '5-Star Review Funnel', description: 'Automatic review requests the moment the job is done', href: '/systems/5-star-review-funnel', icon: StarIcon },
-  { name: 'Local SEO', description: 'Show up at the top when locals search for you', href: '#', icon: MagnifyingGlassIcon },
-  { name: 'One-Click Campaigns', description: 'Fill slow weeks with one-click SMS & email promos', href: '#', icon: MegaphoneIcon },
-  { name: 'Local Service Ads', description: 'Top of Google, Guaranteed badge, pay per lead', href: '#', icon: ShieldCheckIcon },
+  { name: 'Local SEO', description: 'Show up at the top when locals search for you', href: '/systems/local-seo', icon: MagnifyingGlassIcon },
+  { name: 'One-Click Campaigns', description: 'Fill slow weeks with one-click SMS & email promos', href: '/systems/one-click-campaigns', icon: MegaphoneIcon },
+  { name: 'Local Service Ads', description: 'Top of Google, Guaranteed badge, pay per lead', href: '/systems/local-service-ads', icon: ShieldCheckIcon },
 ]
 const callsToAction = [
   { name: 'Watch demo', href: '/ai-agent-demo', icon: PlayCircleIcon },

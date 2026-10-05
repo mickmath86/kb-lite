@@ -1,8 +1,7 @@
 // Meta (Facebook) Pixel helpers.
-// The pixel ID comes from NEXT_PUBLIC_META_PIXEL_ID. If it is not set, every
-// helper is a no-op, so local dev and preview builds stay clean.
 
-export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''
+// Pixel IDs are public (they appear in page source), so a default is safe.
+export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1737190990690900'
 
 type FbqParams = Record<string, string | number | boolean | string[] | undefined>
 

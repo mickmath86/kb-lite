@@ -9,6 +9,7 @@ declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void
     _fbq?: unknown
+    dataLayer?: Record<string, unknown>[]
   }
 }
 
@@ -19,11 +20,28 @@ function newEventId() {
     : `${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
 
-/** Fire a standard Meta event (Lead, Schedule, InitiateCheckout, ...). Returns the eventID. */
+// Meta event -> GTM dataLayer event name, so GA4 / Google Ads tags in GTM
+// can trigger on the same confirmed conversions.
+const DATALAYER_EVENTS: Record<string, string> = {
+  Lead: 'kb_lead',
+  InitiateCheckout: 'kb_begin_checkout',
+  Schedule: 'kb_booking_complete',
+}
+
+function pushDataLayer(event: string, params: FbqParams, eventID: string) {
+  const name = DATALAYER_EVENTS[event]
+  if (!name || typeof window === 'undefined') return
+  window.dataLayer = window.dataLayer || []
+  window.dataLayer.push({ event: name, event_id: eventID, ...params })
+}
+
+/** Fire a standard Meta event (Lead, Schedule, InitiateCheckout, ...) and mirror
+ *  conversions to the GTM dataLayer. Returns the eventID. */
 export function trackMetaEvent(event: string, params: FbqParams = {}): string | undefined {
-  if (!META_PIXEL_ID || typeof window === 'undefined' || !window.fbq) return
+  if (typeof window === 'undefined') return
   const eventID = newEventId()
-  window.fbq('track', event, params, { eventID })
+  if (META_PIXEL_ID && window.fbq) window.fbq('track', event, params, { eventID })
+  pushDataLayer(event, params, eventID)
   return eventID
 }
 

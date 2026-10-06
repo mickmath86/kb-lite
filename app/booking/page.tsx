@@ -66,11 +66,12 @@ export default function BookingPage() {
 
           {/* Booking iframe embed */}
           <div className="rounded-2xl border border-olive-950/10 bg-white p-6 dark:border-white/10 dark:bg-white/5 sm:p-8">
-            <iframe 
-              src="https://links.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4" 
-              style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '600px' }} 
-              scrolling="no" 
-              id="PA9BL9KS5PxCkzn4C6f4_1781655117360"
+            <iframe
+              src="https://calendar.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4"
+              allow="payment"
+              style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '600px' }}
+              scrolling="yes"
+              id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
               title="Kickbord Booking Calendar"
             />
           </div>

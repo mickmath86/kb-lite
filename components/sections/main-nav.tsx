@@ -36,7 +36,7 @@ const systems = [
 ]
 const callsToAction = [
   { name: 'Watch demo', href: '/ai-agent-demo', icon: PlayCircleIcon },
-  { name: 'Book a call', href: '/booking', icon: PhoneIcon },
+  { name: 'Book a call', href: '/lp/booking', icon: PhoneIcon },
 ]
 
 export default function MainNav() {
@@ -208,7 +208,7 @@ export default function MainNav() {
               </div>
               <div className="py-6">
                 <Button >
-                 <a href="/booking">  Book a Call</a>
+                 <a href="/lp/booking">  Book a Call</a>
                 
                 </Button>
                 <a

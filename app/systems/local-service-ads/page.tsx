@@ -28,12 +28,17 @@ export default function FunctionalWebsite() {
             </p>
           </>
         }
-        photo={
-          <wistia-player 
-            media-id="docfron0i3" 
-            aspect="1.7777777777777777"
-            className="w-full h-full"
-          />
+         photo={<>
+           {/* 
+           <wistia-player 
+          //   media-id="docfron0i3" 
+          //   aspect="1.7777777777777777"
+          //   className="w-full h-full"
+          // /> 
+          // */}
+
+          <img src="/images/lsa.png" alt="Review Funnel" className="w-full h-full" />
+        </> 
         }
       />
       <StatsWithGraph  

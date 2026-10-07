@@ -32,7 +32,7 @@ const systems = [
   { name: '5-Star Review Funnel', description: 'Automatic review requests the moment the job is done', href: '/systems/5-star-review-funnel', icon: StarIcon },
   { name: 'Local SEO', description: 'Show up at the top when locals search for you', href: '/systems/local-seo', icon: MagnifyingGlassIcon },
   { name: 'One-Click Campaigns', description: 'Fill slow weeks with one-click SMS & email promos', href: '/systems/one-click-campaigns', icon: MegaphoneIcon },
-  { name: 'Local Service Ads', description: 'Top of Google, Guaranteed badge, pay per lead', href: '/systems/local-service-ads', icon: ShieldCheckIcon },
+  { name: 'Local Service Ads', description: 'Top of Google, Google Verified badge, pay per lead', href: '/systems/local-service-ads', icon: ShieldCheckIcon },
 ]
 const callsToAction = [
   { name: 'Watch demo', href: '/ai-agent-demo', icon: PlayCircleIcon },

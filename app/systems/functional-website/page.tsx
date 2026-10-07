@@ -13,9 +13,9 @@ import {
   Features as FeaturesThreeColWithDemos,
 } from '@/components/sections/features-three-column-with-demos'
 import { Screenshot } from "@/components/elements/screenshot";
-import { FooterLink, FooterWithLinksAndSocialIcons } from "@/components/sections/footer-with-links-and-social-icons";
+import FooterMain from "@/components/sections/footer-main";
 
-export default function FunctionalWebsite() {
+export default function FunctionalWebsitePage() {
   return (
     <>
       <MainNav /> 
@@ -37,7 +37,7 @@ export default function FunctionalWebsite() {
           // /> 
           // */}
 
-          <img src="/images/website.png" alt="Review Funnel" className="w-full h-full" />
+          <img src="/images/website.png" alt="Kickbord functional website example" className="w-full h-full" />
         </> 
         }
       />
@@ -45,7 +45,7 @@ export default function FunctionalWebsite() {
       headline="The Numbers Don't Lie"
       className="overflow-hidden"
       eyebrow="Why Your Website Matters"
-      subheadline="Here's what happens when you actually follow up on every lead."
+      subheadline="Your website is often the first impression a customer gets. Here's why it has to work, not just look good."
       >
         <StatGraph stat="75%" text="of people judge a company's credibility based on their website" />
         <StatGraph stat="78%" text="of small business owners say a website has boosted their growth." />
@@ -75,7 +75,7 @@ export default function FunctionalWebsite() {
         <Stat 
           icon={<ChatBubbleCircleIcon className="size-6 text-olive-500 dark:text-white" />}
           stat="Instantly Starts SMS Conversations" 
-          text="We aim to create SMS conversations with potential customers, eliminating the need for email back-and-forths for quotes. Each of our websites includes functional quote forms and a chat widget that instantly starts a text conversation with" 
+          text="We aim to create SMS conversations with potential customers, eliminating the need for email back-and-forths for quotes. Each of our websites includes functional quote forms and a chat widget that instantly starts a text conversation with your customer, so quotes happen over SMS instead of a slow email chain." 
         />
       </StatsFourColumns>
 
@@ -180,20 +180,9 @@ export default function FunctionalWebsite() {
         eyebrow="Ready to Get Started?"
         headline="Book a Call Today"
         subheadline="Let's discuss how we can help your business grow with a functional website."
-        cta={<ButtonLink href="/booking">Book a Call</ButtonLink>}
+        cta={<ButtonLink href="/lp/booking">Book a Call</ButtonLink>}
       />
-      <FooterWithLinksAndSocialIcons
-        links={
-          <>
-            <FooterLink href="/systems/ai-receptionist">AI Receptionist</FooterLink>
-            <FooterLink href="/systems/functional-website">Functional Website</FooterLink>
-            <FooterLink href="/systems/ai-lead-generation">AI Lead Generation</FooterLink>
-            <FooterLink href="/systems/ai-lead-nurturing">AI Lead Nurturing</FooterLink>
-            <FooterLink href="/systems/ai-lead-handoff">AI Lead Handoff</FooterLink>
-          </>
-        }
-        fineprint="© 2025 Kickbord. All rights reserved."
-        />
+      <FooterMain />
     </>
   )
 }

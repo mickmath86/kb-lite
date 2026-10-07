@@ -37,7 +37,7 @@ export default function ReviewFunnel() {
           // /> 
           // */}
 
-          <img src="/images/reviews.png" alt="Review Funnel" className="w-full h-full" />
+          <img src="/images/reviews.png" alt="5-star review funnel" className="w-full h-full" />
         </> 
         }
       />

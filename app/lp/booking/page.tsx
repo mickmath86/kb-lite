@@ -24,7 +24,7 @@ export default function LpBookingPage() {
                     <h3 className="text-3xl text-white bg-[#637c86] rounded px-4 py-2">Step 1: Watch this video</h3>
                     <Screenshot wallpaper="blue" placement="bottom" className="w-full">
                         <wistia-player
-                        media-id="docfron0i3"
+                        media-id="e3b8vgs3q0"
                         aspect="1.7777777777777777"
                         className="w-full h-full"
                         />
@@ -39,16 +39,16 @@ export default function LpBookingPage() {
       subheadline="Book a free consultation with our team to discover how Kickbord can help your business grow."
       
       photo={
-       
-        <iframe
-          src="https://calendar.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4"
-          allow="payment"
-          style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '600px' }}
-          scrolling="yes"
-          id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
-          title="Kickbord Booking Calendar"
-        />
-       
+        <div className="w-full min-h-150">
+          <iframe
+            src="https://calendar.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4"
+            allow="payment"
+            style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden', minHeight: '600px' }}
+            scrolling="yes"
+            id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
+            title="Kickbord Booking Calendar"
+          />
+        </div>
       }
     />
       <Script

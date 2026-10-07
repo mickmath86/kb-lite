@@ -135,7 +135,7 @@ const systems = [
   },
   {
     headline: 'Google Local Service Ads',
-    body: 'Top-of-Google placement with the Guaranteed badge. Pay per real lead.',
+    body: 'Top-of-Google placement with the Google Verified badge. Pay per real lead.',
     href: '/systems/local-service-ads',
     image: '/images/lsa.png',
     wallpaper: 'green' as const,

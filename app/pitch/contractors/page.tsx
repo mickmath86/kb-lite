@@ -814,7 +814,7 @@ function Slide8({ info }: { info: LeadInfo }) {
                       <p className="text-sm font-semibold text-blue-700 truncate">{info.company || 'Green Valley Landscaping'}</p>
                       <span className="inline-flex items-center gap-0.5 rounded-sm bg-green-50 border border-green-200 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 shrink-0">
                         <svg className="size-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                        Google Guaranteed
+                        Google Verified
                       </span>
                     </div>
                     <div className="flex items-center gap-1 mt-0.5">
@@ -864,7 +864,7 @@ function Slide8({ info }: { info: LeadInfo }) {
               {[
                 { icon: <MapPinIcon />, title: 'Top of Google — above everything', desc: 'LSA appears above regular ads and the map pack. The first thing homeowners see.' },
                 { icon: <LightingBoltIcon />, title: 'Pay per verified lead, not per click', desc: 'You only pay when a real customer calls directly through the ad — not for wasted impressions.' },
-                { icon: <StarIcon />, title: 'Google Guaranteed badge', desc: 'Displays a trust badge next to your name. Homeowners are more likely to call a Google-backed business.' },
+                { icon: <StarIcon />, title: 'Google Verified badge', desc: 'Shows a trust badge next to your name once Google screens your business. Homeowners are more likely to call a business Google has checked.' },
                 { icon: <TargetIcon />, title: 'Managed for you', desc: `Kickbord handles setup, verification, and ongoing bid optimisation for ${company}.` },
               ].map((item) => (
                 <div key={item.title} className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/5 p-4">

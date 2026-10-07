@@ -14,10 +14,8 @@ import {
 } from '@/components/sections/features-three-column-with-demos'
 import { Screenshot } from "@/components/elements/screenshot";
 import { TryReceptionist } from "@/components/elements/try-receptionist";
-import { HeroLeftAlignedWithDemo } from "@/components/sections/hero-left-aligned-with-demo";
 import { MissedCallCalculator } from "@/components/elements/missed-call-calculator";
 import { HeroLeftAlignedWithPhoto } from "@/components/sections/hero-left-aligned-with-photo";
-import { FooterWithLinkCategories } from "@/components/sections/footer-with-link-categories";
 import FooterMain from "@/components/sections/footer-main";
 
 export default function AIReceptionist() {
@@ -29,7 +27,7 @@ export default function AIReceptionist() {
         subheadline={
           <>
             <p>
-              When you can't pick up — on a roof, under a house, mid-job with a customer — your AI receptionist answers on your existing number, handles the conversation, and books the job. Your caller talks to you instead of dialing the next competitor on Google.
+              When you can’t pick up — on a roof, under a house, mid-job with a customer — your AI receptionist answers on your existing number, handles the conversation, and books the job. Your caller talks to you instead of dialing the next competitor on Google.
             </p>
           </>
         }
@@ -42,7 +40,7 @@ export default function AIReceptionist() {
           // /> 
           // */}
 
-          <img src="/images/ai-receptionist.png" alt="Review Funnel" className="w-full h-full" />
+          <img src="/images/ai-receptionist.png" alt="AI receptionist answering a call" className="w-full h-full" />
         </> 
         }
       />

@@ -90,65 +90,65 @@ export default function Page() {
               />
             </>
           }
-          footer={
-            <LogoGrid>
-              <Logo>
-                <img
-                  src="https://cdn.brandfetch.io/id6O2oGzv-/w/800/h/271/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
-                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
-                  alt="Google"
-                  width={94}
-                  height={32}
-                />
-              </Logo>
-              <Logo>
-                <img
-                  src="https://cdn.brandfetch.io/idtEghWGp4/w/800/h/229/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
-                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
-                  alt="BBC"
-                  width={112}
-                  height={32}
-                />
-              </Logo>
-              <Logo>
-                <img
-                  src="https://cdn.brandfetch.io/id_0dwKPKT/w/800/h/278/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
-                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
-                  alt="Nike"
-                  width={92}
-                  height={32}
-                />
-              </Logo>
-              <Logo>
-                <img
-                  src="https://cdn.brandfetch.io/iduaw_nOnR/w/800/h/122/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
-                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
-                  alt="Samsung"
-                  width={210}
-                  height={32}
-                />
-              </Logo>
+          // footer={
+          //   <LogoGrid>
+          //     <Logo>
+          //       <img
+          //         src="https://cdn.brandfetch.io/id6O2oGzv-/w/800/h/271/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+          //         className="grayscale brightness-0 dark:brightness-0 dark:invert"
+          //         alt="Google"
+          //         width={94}
+          //         height={32}
+          //       />
+          //     </Logo>
+          //     <Logo>
+          //       <img
+          //         src="https://cdn.brandfetch.io/idtEghWGp4/w/800/h/229/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+          //         className="grayscale brightness-0 dark:brightness-0 dark:invert"
+          //         alt="BBC"
+          //         width={112}
+          //         height={32}
+          //       />
+          //     </Logo>
+          //     <Logo>
+          //       <img
+          //         src="https://cdn.brandfetch.io/id_0dwKPKT/w/800/h/278/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+          //         className="grayscale brightness-0 dark:brightness-0 dark:invert"
+          //         alt="Nike"
+          //         width={92}
+          //         height={32}
+          //       />
+          //     </Logo>
+          //     <Logo>
+          //       <img
+          //         src="https://cdn.brandfetch.io/iduaw_nOnR/w/800/h/122/theme/light/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+          //         className="grayscale brightness-0 dark:brightness-0 dark:invert"
+          //         alt="Samsung"
+          //         width={210}
+          //         height={32}
+          //       />
+          //     </Logo>
              
-              <Logo>
-                <img
-                  src="https://cdn.brandfetch.io/id6htIcs_f/w/90/h/90/theme/dark/id4N0u-dxx.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
-                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
-                  alt="Procter & Gamble"
-                  width={32}
-                  height={32}
-                />
-              </Logo>
-              <Logo>
-                <img
-                  src="https://cdn.brandfetch.io/idXhrQrb5t/w/800/h/179/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
-                  className="grayscale brightness-0 dark:brightness-0 dark:invert"
-                  alt="Verizon"
-                  width={143}
-                  height={32}
-                />
-              </Logo>
-            </LogoGrid>
-          }
+          //     <Logo>
+          //       <img
+          //         src="https://cdn.brandfetch.io/id6htIcs_f/w/90/h/90/theme/dark/id4N0u-dxx.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+          //         className="grayscale brightness-0 dark:brightness-0 dark:invert"
+          //         alt="Procter & Gamble"
+          //         width={32}
+          //         height={32}
+          //       />
+          //     </Logo>
+          //     <Logo>
+          //       <img
+          //         src="https://cdn.brandfetch.io/idXhrQrb5t/w/800/h/179/theme/dark/logo.png?c=1bxmjesfnzjpwu6tsu9dxg29y5qq3SHVrbQ"
+          //         className="grayscale brightness-0 dark:brightness-0 dark:invert"
+          //         alt="Verizon"
+          //         width={143}
+          //         height={32}
+          //       />
+          //     </Logo>
+          //   </LogoGrid>
+          // }
         />
         {/* Header */}
      

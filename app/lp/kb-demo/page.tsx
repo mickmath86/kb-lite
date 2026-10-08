@@ -39,21 +39,19 @@ export default function LpBookingPage() {
       subheadline="Book a free consultation with our team to discover how Kickbord can help your business grow."
       
       photo={
-        <div className="w-full min-h-150">
-          <iframe
-            src="https://calendar.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4"
-            allow="payment"
-            style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden', minHeight: '600px' }}
-            scrolling="yes"
-            id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
-            title="Kickbord Booking Calendar"
-          />
-        </div>
+        <iframe
+          src="https://calendar.kickbord.com/widget/booking/PA9BL9KS5PxCkzn4C6f4"
+          allow="payment"
+          style={{ width: '100%', border: 'none', overflow: 'hidden' }}
+          scrolling="no"
+          id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
+          title="Kickbord Booking Calendar"
+        />
       }
     />
       <Script
-        src="https://links.kickbord.com/js/form_embed.js"
-        strategy="lazyOnload"
+        src="https://calendar.kickbord.com/js/form_embed.js"
+        strategy="afterInteractive"
       />
       <FooterWithLinksAndSocialIcons
         links={<></>}

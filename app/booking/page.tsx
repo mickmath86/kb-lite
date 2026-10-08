@@ -78,8 +78,8 @@ export default function BookingPage() {
       </Main>
 
       <Script 
-        src="https://links.kickbord.com/js/form_embed.js" 
-        strategy="lazyOnload"
+        src="https://calendar.kickbord.com/js/form_embed.js" 
+        strategy="afterInteractive"
       />
     </>
   )

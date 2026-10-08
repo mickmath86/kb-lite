@@ -28,13 +28,13 @@ export default function LpBookingPage() {
                 demo={
                 <>
                     <h3 className="text-3xl text-white bg-[#637c86] rounded px-4 py-2">Step 1: Watch this video</h3>
-                    <Screenshot wallpaper="blue" placement="bottom" className="w-full">
+                   
                         <wistia-player
                         media-id="e3b8vgs3q0"
                         aspect="1.7777777777777777"
                         className="w-full h-full"
                         />
-                    </Screenshot>
+                    
                 </>
                 }
                

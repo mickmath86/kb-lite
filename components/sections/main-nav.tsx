@@ -35,7 +35,7 @@ const systems = [
   { name: 'Local Service Ads', description: 'Top of Google, Google Verified badge, pay per lead', href: '/systems/local-service-ads', icon: ShieldCheckIcon },
 ]
 const callsToAction = [
-  { name: 'Watch demo', href: '/ai-agent-demo', icon: PlayCircleIcon },
+  { name: 'Watch demo', href: '/lp/booking', icon: PlayCircleIcon },
   { name: 'Book a call', href: '/lp/booking', icon: PhoneIcon },
 ]
 

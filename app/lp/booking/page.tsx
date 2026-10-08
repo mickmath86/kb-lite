@@ -1,10 +1,16 @@
+import type { Metadata } from 'next'
 import Script from 'next/script'
 import { Eyebrow } from "@/components/elements/eyebrow";
-import { LeadQualifierModal } from "@/components/elements/lead-qualifier-modal";
 import { Screenshot } from "@/components/elements/screenshot";
 import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-demo";
 import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo';
 import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with-links-and-social-icons';
+
+export const metadata: Metadata = {
+  title: 'Book a Free Marketing Consultation | Kickbord',
+  description:
+    'See how Kickbord brings AI voice agents, campaign strategy, and modern marketing together to grow your business for $297 per month.',
+}
 
 export default function LpBookingPage() {
   return (

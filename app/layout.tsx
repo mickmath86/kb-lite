@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kickbord.com"),
   title: "Kickbord",
   description: "Digital Marketing Services",
 };

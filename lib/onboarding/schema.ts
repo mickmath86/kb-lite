@@ -1,5 +1,5 @@
 import { presetFor } from './trades'
-import type { Answers, Ctx, Option, Step } from './types'
+import type { Answers, Ctx, Field, Option, Step } from './types'
 
 const o = (...pairs: [string, string][]): Option[] => pairs.map(([value, label]) => ({ value, label }))
 const YES_NO = o(['yes', 'Yes'], ['no', 'No'])
@@ -36,7 +36,7 @@ const askAnyLook = (a: Answers, ctx: Ctx) => !(ctx.demo && a.demo_feedback === D
 
 const is = (id: string, ...vals: string[]) => (a: Answers) => vals.includes(a[id])
 
-export const STEPS: Step[] = [
+const BASE_STEPS: Step[] = [
   {
     id: 'you',
     title: 'About you and your business',
@@ -433,6 +433,42 @@ export const STEPS: Step[] = [
     ],
   },
 ]
+
+// Every "Other" choice gets a required follow-up text field so the client can name it.
+const OTHER_PROMPTS: Record<string, string> = {
+  role: 'What is your role?',
+  entity_type: 'How is your business set up?',
+  payment_methods: 'Which other payment methods do you accept?',
+  website_host: 'Who built or hosts your website?',
+  domain_registrar: 'Where did you buy your domain?',
+  carrier: 'Who provides your business phone number?',
+  calendar: 'Which calendar do you use?',
+  languages: 'Which other languages do your customers speak?',
+  review_site: 'Which site should reviews go to?',
+}
+
+function withOtherFields(steps: Step[]): Step[] {
+  return steps.map((step) => ({
+    ...step,
+    fields: step.fields.flatMap((f) => {
+      const prompt = OTHER_PROMPTS[f.id]
+      if (!prompt || !f.options?.some((o) => o.value === 'other')) return [f]
+      const multi = f.type === 'checkboxes'
+      const other: Field = {
+        id: `${f.id}_other`,
+        label: prompt,
+        type: 'text',
+        required: true,
+        placeholder: 'Type it here',
+        showIf: (a, ctx) =>
+          (!f.showIf || f.showIf(a, ctx)) && (multi ? Array.isArray(a[f.id]) && a[f.id].includes('other') : a[f.id] === 'other'),
+      }
+      return [f, other]
+    }),
+  }))
+}
+
+export const STEPS: Step[] = withOtherFields(BASE_STEPS)
 
 export function visibleSteps(a: Answers, ctx: Ctx) {
   return STEPS.filter((s) => !s.showIf || s.showIf(a, ctx))

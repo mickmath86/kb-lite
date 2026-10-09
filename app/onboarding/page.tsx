@@ -4,6 +4,7 @@ import { cleanDemoUrl, first } from '@/lib/onboarding/url'
 
 export const metadata: Metadata = {
   title: 'Client onboarding | Kickbord',
+  description: 'Set up your website, AI receptionist, and review funnel with Kickbord. About 10 minutes, and your progress saves as you go.',
   robots: { index: false, follow: false },
   referrer: 'no-referrer',
 }

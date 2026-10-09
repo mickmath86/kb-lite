@@ -1,29 +1,32 @@
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://rtlhldhumcmzgbvkqmnm.supabase.co'
-const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InJ0bGhsZGh1bWNtemdidmtxbW5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MDM5NzAsImV4cCI6MjA5ODA3OTk3MH0.75ekkQTasFQHksnDF0obWw-s1QRz1nsxGmSGmtJeono'
-const ENDPOINT = process.env.NEXT_PUBLIC_ONBOARDING_API || `${SUPABASE_URL}/functions/v1/onboarding`
+// Same-origin proxy to the Supabase `onboarding` Edge Function.
+// The browser calls /api/onboarding, so there are no CORS issues on localhost, previews, or production.
+// The function URL is fixed on purpose: it is public, and ignoring NEXT_PUBLIC_* env vars means a
+// stray value in Vercel cannot break the form. Override only with ONBOARDING_FUNCTION_URL (https required).
+const DEFAULT_URL = 'https://rtlhldhumcmzgbvkqmnm.supabase.co/functions/v1/onboarding'
+
+function endpoint() {
+  const custom = process.env.ONBOARDING_FUNCTION_URL
+  return custom && custom.startsWith('https://') ? custom : DEFAULT_URL
+}
 
 export async function POST(request: Request) {
   const body = await request.text()
+  if (body.length > 300_000) return Response.json({ error: 'Request too large.' }, { status: 413 })
 
   try {
-    const response = await fetch(ENDPOINT, {
+    const response = await fetch(endpoint(), {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body,
       cache: 'no-store',
+      signal: AbortSignal.timeout(25_000),
     })
-
     return new Response(await response.text(), {
       status: response.status,
-      headers: { 'Content-Type': response.headers.get('Content-Type') || 'application/json' },
+      headers: { 'Content-Type': response.headers.get('Content-Type') || 'application/json', 'Cache-Control': 'no-store' },
     })
-  } catch {
+  } catch (err) {
+    console.error('onboarding proxy failed', err)
     return Response.json({ error: 'The onboarding service is temporarily unavailable. Please try again.' }, { status: 502 })
   }
 }

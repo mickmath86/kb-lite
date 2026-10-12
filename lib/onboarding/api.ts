@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Answers, FileRec } from './types'
 
-// Public values (safe to ship to the browser). The anon key only grants uploads through signed URLs.
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://rtlhldhumcmzgbvkqmnm.supabase.co'
+// Public values (safe to ship to the browser), fixed here so stray Vercel env vars cannot break uploads.
+// The anon key only grants uploads through signed URLs; all data calls go through /api/onboarding.
+const SUPABASE_URL = 'https://rtlhldhumcmzgbvkqmnm.supabase.co'
 const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bGhsZGh1bWNtemdidmtxbW5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MDM5NzAsImV4cCI6MjA5ODA3OTk3MH0.75ekkQTasFQHksnDF0obWw-s1QRz1nsxGmSGmtJeono'
 const ENDPOINT = '/api/onboarding'
 const BUCKET = 'onboarding-uploads'
@@ -16,7 +16,7 @@ async function call<T>(payload: Record<string, unknown>): Promise<T> {
   try {
     res = await fetch(ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
   } catch {

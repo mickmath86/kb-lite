@@ -114,9 +114,28 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
 
   async function persist(nextStepId: string, a: Answers = answers): Promise<string | null> {
     const idx = STEPS.findIndex((s) => s.id === nextStepId)
-    const res = await saveSubmission({
-      token, step: idx, answers: a, ein: ein.replace(/\D/g, '') || undefined, meta: token ? undefined : { ...meta, demo: demoUrl ?? meta.demo }, hp,
-    })
+    const payload = {
+      step: idx, answers: a, ein: ein.replace(/\D/g, '') || undefined, hp,
+    }
+    const fresh = { ...meta, demo: demoUrl ?? meta.demo }
+    let res
+    try {
+      res = await saveSubmission({ token, ...payload, meta: token ? undefined : fresh })
+    } catch (e) {
+      // The saved record no longer exists (for example it was cleared). Start a new one with the current
+      // answers instead of blocking the client.
+      if (e instanceof ApiError && e.status === 404 && token) {
+        window.localStorage.removeItem(STORAGE_KEY)
+        const lostFiles = files.length > 0
+        const lostEin = einOnFile && !ein
+        if (lostFiles) setFiles([])
+        if (lostEin) { setEinOnFile(false); setEinLast4(null) }
+        if (lostFiles || lostEin) setBanner('Your saved session was reset, so please re-enter your EIN and re-upload any files.')
+        res = await saveSubmission({ token: null, ...payload, meta: fresh })
+      } else {
+        throw e
+      }
+    }
     if (res.status === 'completed') { setPhase('done'); return null }
     if (ein) { setEinOnFile(true); setEinLast4(ein.replace(/\D/g, '').slice(-4)); setEin('') }
     if (res.token !== token) {
@@ -203,13 +222,23 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
     const pruned: Answers = {}
     for (const s of steps) for (const f of visibleFields(s, answers, ctx)) if (answers[f.id] !== undefined) pruned[f.id] = answers[f.id]
     for (const k of ['first_name', 'last_name', 'email', 'mobile', 'company_name']) pruned[k] = answers[k]
-    const t = token ?? (await persist(step.id, pruned))
+    const t = await persist(step.id, pruned)
     if (!t) return
-    await completeSubmission({
-      token: t, step: STEPS.length, answers: pruned,
-      // An EIN is only kept when the client said they have one.
-      ein: answers.has_ein === 'yes' ? ein.replace(/\D/g, '') || undefined : '',
-    })
+    try {
+      await completeSubmission({
+        token: t, step: STEPS.length, answers: pruned,
+        // An EIN is only kept when the client said they have one.
+        ein: answers.has_ein === 'yes' ? ein.replace(/\D/g, '') || undefined : '',
+      })
+    } catch (e) {
+      const missing = e instanceof ApiError && Array.isArray(e.data?.missing) ? (e.data.missing as string[]) : []
+      if (missing.includes('ein')) {
+        go('legal', answers)
+        setBanner('Please re-enter your EIN to finish.')
+        return
+      }
+      throw e
+    }
     posthog.capture('onboarding_completed', { has_demo: !!demoUrl, demo_feedback: answers.demo_feedback ?? null })
     window.localStorage.removeItem(STORAGE_KEY)
     setAnswers(pruned)

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ButtonLink } from '@/components/elements/button'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
+import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
 
 export const metadata: Metadata = {
   title: 'CRM setup guide | Kickbord onboarding',
@@ -149,6 +150,30 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
   const locationId = cleanLocationId(first(sp.location) ?? first(sp.location_id))
   const dashboardUrl = crmUrl('/dashboard', locationId)
   const quickLinks = [{ label: 'Open CRM dashboard', href: dashboardUrl }, ...QUICK_LINKS]
+
+  if (first(sp.completed) === '1') {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-olive-100 px-6 py-16 text-olive-950 dark:bg-olive-950 dark:text-white">
+        <div className="w-full max-w-2xl rounded-3xl border border-olive-950/10 bg-white p-8 text-center shadow-2xl shadow-olive-950/10 dark:border-white/10 dark:bg-white/5 sm:p-12">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-olive-950 text-white dark:bg-white dark:text-olive-950">
+            <CheckmarkIcon className="size-7" />
+          </div>
+          <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-olive-600 dark:text-olive-300">
+            Setup submitted
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-medium tracking-tight sm:text-5xl">
+            We&rsquo;ll be in touch with next steps
+          </h1>
+          <p className="mx-auto mt-4 max-w-md text-lg leading-8 text-olive-700 dark:text-olive-300">
+            Your CRM setup checklist has been marked complete. Our team will review your progress and follow up shortly.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <ButtonLink href={dashboardUrl}>Return to your CRM <ArrowNarrowRightIcon /></ButtonLink>
+          </div>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-olive-100 text-olive-950 dark:bg-olive-950 dark:text-white">
@@ -307,6 +332,15 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
             </li>
           ))}
         </ol>
+        <form method="post" action="/api/onboarding/crm-complete" className="mx-auto mt-8 max-w-4xl">
+          {locationId && <input type="hidden" name="location_id" value={locationId} />}
+          <button
+            type="submit"
+            className="w-full rounded-full bg-olive-950 px-6 py-4 text-base font-semibold text-white transition-colors hover:bg-olive-800 dark:bg-white dark:text-olive-950 dark:hover:bg-olive-100"
+          >
+            I&rsquo;ve completed setup
+          </button>
+        </form>
       </section>
 
       <section className="border-t border-olive-950/10 bg-white/60 px-6 py-10 dark:border-white/10 dark:bg-white/5 lg:px-8">
@@ -331,6 +365,7 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
             ))}
           </div>
         </div>
+        
       </section>
     </main>
   )

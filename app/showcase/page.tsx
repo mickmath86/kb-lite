@@ -405,7 +405,7 @@ export default function ShowcasePage() {
             }
             actions={
               <>
-                <a href="#" className="text-sm/7 text-olive-950 dark:text-white">Sign in</a>
+                <a href="https://app.kickbord.com" className="text-sm/7 text-olive-950 dark:text-white">Sign in</a>
                 <Button size="md">Get started</Button>
               </>
             }
@@ -429,7 +429,7 @@ export default function ShowcasePage() {
             }
             actions={
               <>
-                <a href="#" className="text-sm/7 text-olive-950 dark:text-white">Log in</a>
+                <a href="https://app.kickbord.com" className="text-sm/7 text-olive-950 dark:text-white">Log in</a>
                 <Button size="md">Start free</Button>
               </>
             }

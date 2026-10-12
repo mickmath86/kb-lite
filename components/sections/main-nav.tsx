@@ -132,7 +132,7 @@ export default function MainNav() {
           <div> 
               <Button size="md" className="mr-4">  <a href="/lp/booking"> Book a Call</a></Button>
        
-          <a href="#" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <a href="https://app.kickbord.com" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
 
@@ -144,7 +144,7 @@ export default function MainNav() {
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-900 dark:sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Kickbord</span>
               <img
                 alt=""
@@ -212,7 +212,7 @@ export default function MainNav() {
                 
                 </Button>
                 <a
-                  href="#"
+                  href="https://app.kickbord.com"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5"
                 >
                   Log in

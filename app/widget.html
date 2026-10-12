@@ -1,0 +1,472 @@
+<script>
+window.KickbordOnboardingConfig = {
+  enabled: true,
+  brandName: 'Kickbord',
+  title: 'Launch your system',
+  subtitle: 'Finish these steps to activate your account.',
+  position: 'right',
+  accent: '#01696f',
+  textColor: '#1f2937',
+  background: '#ffffff',
+  panelWidth: 420,
+  autoOpen: true,
+  delay: 1000,
+  minimizeByDefault: false,
+  showOnMobile: true,
+  showProgress: true,
+  closeOnComplete: false,
+  storageKey: 'kickbord_onboarding_v2',
+  accountId: '{{location.id}}',
+  userId: '{{user.id}}',
+  useSpaRouting: true,
+  drawerMode: 'accordion',
+  allowHtmlDetails: true,
+  steps: [
+    {
+      id: 'business-profile',
+      title: 'Complete your business profile',
+      summary: 'Add your core business details and contact information.',
+      details: `
+        <p>Add your official business name, address, website, business hours, and primary contact details.</p>
+        <ul>
+          <li>Confirm your main phone number.</li>
+          <li>Use the correct time zone.</li>
+          <li>Make sure your email is active.</li>
+        </ul>
+      `,
+      videoEmbed: 'https://www.youtube.com/watch?v=gRV9qlnur9o',
+      url: '/settings/company',
+      cta: 'Open company settings',
+      autoMarkOnVisit: true
+    },
+    {
+      id: 'calendar',
+      title: 'Connect your calendar',
+      summary: 'Allow leads to book meetings with you.',
+      details: `
+        <p>Connect the calendar you actually use to avoid missed bookings and conflicts.</p>
+        <ul>
+          <li>Choose the right connected calendar.</li>
+          <li>Confirm your meeting availability.</li>
+          <li>Run one test booking.</li>
+        </ul>
+      `,
+      videoEmbed: 'https://www.loom.com/embed/YOUR_VIDEO_ID',
+      url: '/settings/profile',
+      cta: 'Open calendar settings'
+    },
+    {
+      id: 'pipeline',
+      title: 'Review your lead pipeline',
+      summary: 'Confirm stages and lead flow.',
+      details: `
+        <p>Review your opportunity stages so every new lead lands in the correct place.</p>
+        <ul>
+          <li>Check new lead status.</li>
+          <li>Confirm follow-up stages.</li>
+          <li>Make sure closed/won is correct.</li>
+        </ul>
+      `,
+      videoEmbed: '',
+      url: '/opportunities/pipelines',
+      cta: 'Open pipeline'
+    }
+  ]
+};
+
+(function () {
+  if (window.KickbordOnboardingLoaded) return;
+  window.KickbordOnboardingLoaded = true;
+
+  const DEFAULT_CONFIG = {
+    enabled: true,
+    brandName: 'Kickbord',
+    title: 'Welcome to your new account',
+    subtitle: 'Complete these steps to finish setup and launch your system.',
+    position: 'right',
+    accent: '#01696f',
+    textColor: '#1f2937',
+    background: '#ffffff',
+    panelWidth: 400,
+    autoOpen: true,
+    delay: 1200,
+    minimizeByDefault: false,
+    showOnMobile: true,
+    showProgress: true,
+    closeOnComplete: false,
+    storageKey: 'kickbord_onboarding_v2',
+    accountId: null,
+    userId: null,
+    useSpaRouting: true,
+    drawerMode: 'accordion',
+    allowHtmlDetails: true,
+    steps: []
+  };
+
+  const cfg = mergeConfig(DEFAULT_CONFIG, window.KickbordOnboardingConfig || {});
+  if (!cfg.enabled) return;
+  if (!cfg.showOnMobile && window.innerWidth < 768) return;
+
+  const stateKey = [cfg.storageKey, cfg.accountId || 'global', cfg.userId || 'guest'].join(':');
+  const state = loadState(stateKey, cfg.steps);
+
+  injectStyles(cfg);
+  const ui = buildWidget(cfg, state);
+  bindEvents(ui, cfg, stateKey, state);
+
+  if (cfg.autoOpen && !state.dismissed) {
+    setTimeout(() => ui.root.classList.add('kb-open'), cfg.delay);
+  }
+
+  function mergeConfig(base, incoming) {
+    const merged = Object.assign({}, base, incoming || {});
+    merged.steps = Array.isArray(incoming.steps) ? incoming.steps.map(normalizeStep) : [];
+    return merged;
+  }
+
+  function normalizeStep(step, index) {
+    return Object.assign({
+      id: 'step-' + (index + 1),
+      title: 'Untitled step',
+      summary: '',
+      details: '',
+      videoEmbed: '',
+      cta: 'Open',
+      url: '#',
+      autoMarkOnVisit: false,
+      completed: false,
+      target: '_self'
+    }, step || {});
+  }
+
+  function loadState(key, steps) {
+    const blank = {
+      completed: {},
+      expanded: {},
+      minimized: false,
+      dismissed: false
+    };
+
+    try {
+      const raw = localStorage.getItem(key);
+      const parsed = raw ? JSON.parse(raw) : blank;
+      const normalized = {
+        completed: {},
+        expanded: {},
+        minimized: Boolean(parsed.minimized),
+        dismissed: Boolean(parsed.dismissed)
+      };
+
+      steps.forEach(function (step, idx) {
+        normalized.completed[step.id] = Boolean(parsed.completed && parsed.completed[step.id]) || Boolean(step.completed);
+        normalized.expanded[step.id] = Boolean(parsed.expanded && parsed.expanded[step.id]) || (!parsed.expanded && idx === 0);
+      });
+
+      return normalized;
+    } catch (e) {
+      steps.forEach(function (step, idx) {
+        blank.completed[step.id] = Boolean(step.completed);
+        blank.expanded[step.id] = idx === 0;
+      });
+      return blank;
+    }
+  }
+
+  function saveState(key, currentState) {
+    try {
+      localStorage.setItem(key, JSON.stringify(currentState));
+    } catch (e) {}
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, function (m) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+    });
+  }
+
+  function safeDetails(details) {
+    if (!details) return '';
+    if (cfg.allowHtmlDetails) return String(details);
+    return '<p>' + escapeHtml(details) + '</p>';
+  }
+
+  function progressPercent(completed, steps) {
+    const total = Math.max(steps.length, 1);
+    const done = steps.filter(function (step) { return completed[step.id]; }).length;
+    return Math.round((done / total) * 100);
+  }
+
+  function buildWidget(config, currentState) {
+    const sideClass = config.position === 'left' ? 'kb-left' : 'kb-right';
+    const root = document.createElement('div');
+    root.className = 'kb-onboarding ' + sideClass + (config.minimizeByDefault || currentState.minimized ? ' kb-minimized' : '');
+    root.innerHTML = `
+      <button class="kb-launcher" aria-label="Open onboarding checklist">
+        <span class="kb-launcher-dot"></span>
+        <span class="kb-launcher-label">Start here</span>
+      </button>
+      <section class="kb-panel" aria-label="Onboarding checklist">
+        <header class="kb-header">
+          <div>
+            <p class="kb-eyebrow">${escapeHtml(config.brandName)}</p>
+            <h3 class="kb-title">${escapeHtml(config.title)}</h3>
+            <p class="kb-subtitle">${escapeHtml(config.subtitle)}</p>
+          </div>
+          <div class="kb-actions">
+            <button class="kb-minimize" aria-label="Minimize onboarding">−</button>
+            <button class="kb-close" aria-label="Dismiss onboarding">×</button>
+          </div>
+        </header>
+        ${config.showProgress ? `
+          <div class="kb-progress-wrap">
+            <div class="kb-progress-meta">
+              <span>Progress</span>
+              <strong class="kb-progress-label">${progressPercent(currentState.completed, config.steps)}%</strong>
+            </div>
+            <div class="kb-progress"><span class="kb-progress-bar" style="width:${progressPercent(currentState.completed, config.steps)}%"></span></div>
+          </div>` : ''}
+        <div class="kb-steps">
+          ${config.steps.map(function (step) { return renderStep(step, currentState); }).join('')}
+        </div>
+      </section>
+    `;
+
+    document.body.appendChild(root);
+
+    return {
+      root: root,
+      launcher: root.querySelector('.kb-launcher'),
+      panel: root.querySelector('.kb-panel'),
+      minimize: root.querySelector('.kb-minimize'),
+      close: root.querySelector('.kb-close'),
+      progressBar: root.querySelector('.kb-progress-bar'),
+      progressLabel: root.querySelector('.kb-progress-label')
+    };
+  }
+
+  function renderStep(step, currentState) {
+    const done = Boolean(currentState.completed[step.id]);
+    const expanded = Boolean(currentState.expanded[step.id]);
+    const completedClass = done ? ' kb-step-done' : '';
+    const expandedClass = expanded ? ' kb-step-expanded' : '';
+    const video = step.videoEmbed ? `<div class="kb-video-wrap"><iframe src="${escapeHtml(step.videoEmbed)}" title="${escapeHtml(step.title)} video" loading="lazy" allowfullscreen></iframe></div>` : '';
+    return `
+      <article class="kb-step${completedClass}${expandedClass}" data-step-id="${escapeHtml(step.id)}">
+        <div class="kb-step-summary">
+          <label class="kb-step-main">
+            <input class="kb-check" type="checkbox" data-step-id="${escapeHtml(step.id)}" ${done ? 'checked' : ''} />
+            <span>
+              <strong>${escapeHtml(step.title)}</strong>
+              <small>${escapeHtml(step.summary)}</small>
+            </span>
+          </label>
+          <button class="kb-drawer-toggle" type="button" data-step-id="${escapeHtml(step.id)}" aria-expanded="${expanded ? 'true' : 'false'}">
+            <span>Details</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+        <div class="kb-drawer" ${expanded ? '' : 'hidden'}>
+          <div class="kb-drawer-inner">
+            <div class="kb-details">${safeDetails(step.details)}</div>
+            ${video}
+            <div class="kb-step-actions">
+              <button class="kb-link-btn" type="button" data-step-id="${escapeHtml(step.id)}" data-url="${escapeHtml(step.url)}">${escapeHtml(step.cta || 'Open')}</button>
+              <button class="kb-complete" type="button" data-step-id="${escapeHtml(step.id)}">Mark done</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function bindEvents(ui, config, stateKey, currentState) {
+    function sync() {
+      const percent = progressPercent(currentState.completed, config.steps);
+      if (ui.progressBar) ui.progressBar.style.width = percent + '%';
+      if (ui.progressLabel) ui.progressLabel.textContent = percent + '%';
+
+      Array.prototype.slice.call(ui.root.querySelectorAll('.kb-step')).forEach(function (stepEl) {
+        const id = stepEl.getAttribute('data-step-id');
+        const isDone = Boolean(currentState.completed[id]);
+        const expanded = Boolean(currentState.expanded[id]);
+        stepEl.classList.toggle('kb-step-done', isDone);
+        stepEl.classList.toggle('kb-step-expanded', expanded);
+
+        const checkbox = stepEl.querySelector('.kb-check');
+        if (checkbox) checkbox.checked = isDone;
+
+        const drawer = stepEl.querySelector('.kb-drawer');
+        const toggle = stepEl.querySelector('.kb-drawer-toggle');
+        if (drawer) drawer.hidden = !expanded;
+        if (toggle) toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+
+      saveState(stateKey, currentState);
+
+      const doneCount = config.steps.filter(function (step) { return currentState.completed[step.id]; }).length;
+      if (doneCount === config.steps.length && config.closeOnComplete) {
+        ui.root.classList.remove('kb-open');
+      }
+    }
+
+    ui.launcher.addEventListener('click', function () {
+      ui.root.classList.toggle('kb-open');
+      ui.root.classList.remove('kb-minimized');
+      currentState.minimized = false;
+      currentState.dismissed = false;
+      saveState(stateKey, currentState);
+    });
+
+    if (ui.minimize) {
+      ui.minimize.addEventListener('click', function () {
+        ui.root.classList.toggle('kb-minimized');
+        currentState.minimized = ui.root.classList.contains('kb-minimized');
+        saveState(stateKey, currentState);
+      });
+    }
+
+    if (ui.close) {
+      ui.close.addEventListener('click', function () {
+        ui.root.classList.remove('kb-open');
+        currentState.dismissed = true;
+        saveState(stateKey, currentState);
+      });
+    }
+
+    ui.root.addEventListener('click', function (event) {
+      const drawerToggle = event.target.closest('.kb-drawer-toggle');
+      if (drawerToggle) {
+        const id = drawerToggle.getAttribute('data-step-id');
+        if (config.drawerMode === 'accordion') {
+          config.steps.forEach(function (step) {
+            currentState.expanded[step.id] = step.id === id ? !currentState.expanded[id] : false;
+          });
+        } else {
+          currentState.expanded[id] = !currentState.expanded[id];
+        }
+        sync();
+        return;
+      }
+
+      const completeBtn = event.target.closest('.kb-complete');
+      if (completeBtn) {
+        const id = completeBtn.getAttribute('data-step-id');
+        currentState.completed[id] = true;
+        sync();
+        return;
+      }
+
+      const linkBtn = event.target.closest('.kb-link-btn');
+      if (linkBtn) {
+        const id = linkBtn.getAttribute('data-step-id');
+        const url = linkBtn.getAttribute('data-url');
+        const step = config.steps.find(function (item) { return item.id === id; });
+        navigateWithinApp(url, step, currentState, config, sync);
+      }
+    });
+
+    ui.root.addEventListener('change', function (event) {
+      const checkbox = event.target.closest('.kb-check');
+      if (!checkbox) return;
+      const id = checkbox.getAttribute('data-step-id');
+      currentState.completed[id] = checkbox.checked;
+      sync();
+    });
+
+    sync();
+  }
+
+  function navigateWithinApp(url, step, currentState, config, sync) {
+    if (!url || url === '#') return;
+
+    const isAbsolute = /^https?:\/\//i.test(url);
+    if (isAbsolute) {
+      window.open(url, '_blank', 'noopener');
+      if (step && step.autoMarkOnVisit) {
+        currentState.completed[step.id] = true;
+        sync();
+      }
+      return;
+    }
+
+    let navigated = false;
+
+    if (config.useSpaRouting) {
+      try {
+        window.history.pushState({}, '', url);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        window.dispatchEvent(new Event('locationchange'));
+        navigated = window.location.pathname === url || window.location.href.indexOf(url) > -1;
+      } catch (e) {}
+    }
+
+    if (!navigated) {
+      try {
+        window.location.assign(url);
+        navigated = true;
+      } catch (e) {}
+    }
+
+    if (navigated && step && step.autoMarkOnVisit) {
+      currentState.completed[step.id] = true;
+      sync();
+    }
+  }
+
+  function injectStyles(config) {
+    if (document.getElementById('kb-onboarding-styles-v2')) return;
+    const style = document.createElement('style');
+    style.id = 'kb-onboarding-styles-v2';
+    style.textContent = `
+      .kb-onboarding{position:fixed;bottom:24px;z-index:999999;font-family:Inter,Arial,sans-serif;color:${config.textColor}}
+      .kb-right{right:24px}.kb-left{left:24px}
+      .kb-launcher{display:flex;align-items:center;gap:10px;padding:12px 16px;border:none;border-radius:999px;background:${config.accent};color:#fff;box-shadow:0 12px 32px rgba(0,0,0,.18);cursor:pointer}
+      .kb-launcher-dot{width:10px;height:10px;border-radius:50%;background:#7ef3da;box-shadow:0 0 0 6px rgba(126,243,218,.15)}
+      .kb-launcher-label{font-size:14px;font-weight:700;letter-spacing:.01em}
+      .kb-panel{width:min(${Number(config.panelWidth) || 400}px,calc(100vw - 32px));max-height:min(82vh,820px);overflow:auto;margin-top:12px;background:${config.background};border:1px solid rgba(15,23,42,.08);border-radius:20px;box-shadow:0 20px 60px rgba(15,23,42,.18);padding:18px;display:none}
+      .kb-open .kb-panel{display:block}.kb-minimized .kb-panel{display:none}
+      .kb-header{display:flex;justify-content:space-between;gap:14px;margin-bottom:14px}
+      .kb-eyebrow{margin:0 0 4px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:${config.accent}}
+      .kb-title{margin:0;font-size:20px;line-height:1.2}
+      .kb-subtitle{margin:8px 0 0;font-size:13px;line-height:1.55;color:#475569}
+      .kb-actions{display:flex;gap:8px}
+      .kb-actions button{width:34px;height:34px;border:none;border-radius:10px;background:#f1f5f9;color:#0f172a;font-size:18px;cursor:pointer}
+      .kb-progress-wrap{margin:8px 0 14px}
+      .kb-progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;color:#475569}
+      .kb-progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+      .kb-progress-bar{display:block;height:100%;background:${config.accent};border-radius:999px;transition:width .25s ease}
+      .kb-steps{display:grid;gap:12px}
+      .kb-step{padding:14px;border:1px solid rgba(15,23,42,.08);border-radius:16px;background:#fff;transition:border-color .2s ease, background .2s ease, box-shadow .2s ease}
+      .kb-step-done{background:#f0fdfa;border-color:rgba(1,105,111,.22)}
+      .kb-step-expanded{box-shadow:0 10px 24px rgba(15,23,42,.06)}
+      .kb-step-summary{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+      .kb-step-main{display:flex;align-items:flex-start;gap:10px;cursor:pointer;flex:1}
+      .kb-step-main input{margin-top:3px;accent-color:${config.accent}}
+      .kb-step-main strong{display:block;font-size:14px;line-height:1.35}
+      .kb-step-main small{display:block;margin-top:4px;font-size:12px;line-height:1.5;color:#64748b}
+      .kb-drawer-toggle{display:flex;align-items:center;gap:6px;border:none;background:#f8fafc;color:#0f172a;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap}
+      .kb-drawer-toggle svg{width:16px;height:16px;transition:transform .2s ease}
+      .kb-step-expanded .kb-drawer-toggle svg{transform:rotate(180deg)}
+      .kb-drawer{margin-top:12px;padding-top:12px;border-top:1px solid rgba(15,23,42,.08)}
+      .kb-drawer-inner{display:grid;gap:12px}
+      .kb-details{font-size:13px;line-height:1.6;color:#334155}
+      .kb-details p,.kb-details ul,.kb-details ol{margin:0 0 10px}
+      .kb-details ul,.kb-details ol{padding-left:18px}
+      .kb-video-wrap{position:relative;width:100%;padding-top:56.25%;overflow:hidden;border-radius:14px;background:#0f172a}
+      .kb-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+      .kb-step-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+      .kb-link-btn,.kb-complete{font-size:12px;font-weight:700;border:none;cursor:pointer;padding:9px 12px;border-radius:10px}
+      .kb-link-btn{background:${config.accent};color:#fff}
+      .kb-complete{background:#ecfeff;color:${config.accent}}
+      @media (max-width:640px){
+        .kb-onboarding{right:12px!important;left:12px!important;bottom:12px}
+        .kb-panel{width:calc(100vw - 24px)}
+        .kb-step-summary{flex-direction:column}
+        .kb-drawer-toggle{width:100%;justify-content:center}
+        .kb-step-actions>*{width:100%;justify-content:center}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+})();
+</script>

@@ -120,7 +120,7 @@ export default function ContactPage() {
         }
         actions={
           <>
-            <PlainButtonLink href="#" className="max-sm:hidden">
+            <PlainButtonLink href="https://app.kickbord.com" className="max-sm:hidden">
               Log in
             </PlainButtonLink>
             <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>

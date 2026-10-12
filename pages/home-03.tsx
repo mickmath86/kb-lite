@@ -57,14 +57,14 @@ export default function Page() {
             <NavbarLink href="#">Pricing</NavbarLink>
             <NavbarLink href="#">About</NavbarLink>
             <NavbarLink href="#">Docs</NavbarLink>
-            <NavbarLink href="#" className="sm:hidden">
+            <NavbarLink href="https://app.kickbord.com" className="sm:hidden">
               Log in
             </NavbarLink>
           </>
         }
         actions={
           <>
-            <PlainButtonLink href="#" className="max-sm:hidden">
+            <PlainButtonLink href="https://app.kickbord.com" className="max-sm:hidden">
               Log in
             </PlainButtonLink>
             <ButtonLink href="#">Get started</ButtonLink>

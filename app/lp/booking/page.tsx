@@ -6,13 +6,44 @@ import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-d
 import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo';
 import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with-links-and-social-icons';
 
-export const metadata: Metadata = {
-  title: 'Book a Free Marketing Consultation | Kickbord',
-  description:
-    'See how Kickbord brings AI voice agents, campaign strategy, and modern marketing together to grow your business for $297 per month.',
+type SP = Record<string, string | string[] | undefined>
+
+const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)
+
+function getDynamicPrice(searchParams: SP): number {
+  const raw = first(searchParams.dp)?.trim()
+  if (!raw) return 297
+  const parsed = Number(raw)
+  if (!Number.isFinite(parsed) || parsed < 0) return 297
+  return Math.round(parsed)
 }
 
-export default function LpBookingPage() {
+function formatPrice(price: number): string {
+  return price.toLocaleString('en-US')
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<SP>
+}): Promise<Metadata> {
+  const sp = await searchParams
+  const price = formatPrice(getDynamicPrice(sp))
+  return {
+    title: 'Book a Free Marketing Consultation | Kickbord',
+    description:
+      `See how Kickbord brings AI voice agents, campaign strategy, and modern marketing together to grow your business for $${price} per month.`,
+  }
+}
+
+export default async function LpBookingPage({
+  searchParams,
+}: {
+  searchParams: Promise<SP>
+}) {
+  const sp = await searchParams
+  const price = formatPrice(getDynamicPrice(sp))
+  const useYouTubeDemo = first(sp.dp) === '397'
   return (
     <div>
       <div className="w-full flex items-center justify-center my-12">
@@ -22,18 +53,30 @@ export default function LpBookingPage() {
      
       <HeroCenteredWithDemo
                 eyebrow={<Eyebrow>Platform tour</Eyebrow>}
-                headline="We help businesses grow with modern marketing for $297/mo"
+                headline={`We help businesses grow with modern marketing for $${price}/mo`}
                 subheadline={<p>From AI voice agents to campaign strategy, Kickbord brings the full stack of modern marketing to your business.</p>}
                 
                 demo={
                 <>
                     <h3 className="text-3xl text-white bg-[#637c86] rounded px-4 py-2">Step 1: Watch this video</h3>
                    
-                        <wistia-player
+                    {useYouTubeDemo ? (
+                      <div className="aspect-video w-full">
+                        <iframe
+                          src="https://www.youtube.com/embed/4mYiuBwNqY4"
+                          title="Kickbord platform tour"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="h-full w-full rounded"
+                        />
+                      </div>
+                    ) : (
+                      <wistia-player
                         media-id="e3b8vgs3q0"
                         aspect="1.7777777777777777"
                         className="w-full h-full"
-                        />
+                      />
+                    )}
                     
                 </>
                 }

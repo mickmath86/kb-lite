@@ -6,23 +6,35 @@
 //
 // Actions (POST JSON { action, ... }):
 //   save          create or update a submission (autosave). Creates one when no token is sent.
+//                 Moving to a new furthest step sends an onboarding.progress webhook.
 //   load          fetch saved answers, step, and uploaded files for a token.
+//   find          look up a submission by sub-account location id + the email from the link (resume on any device).
+//   setup_save    save which setup steps are checked off.
+//   setup_complete mark the setup stage done and send onboarding.setup_completed.
 //   sign_upload   get a signed upload URL for the private storage bucket.
 //   register_file confirm an upload and record it.
 //   delete_file   remove an uploaded file.
-//   complete      validate, mark completed, and send the signed webhook.
+//   complete      validate, mark completed, and send onboarding.completed.
 //   resend        (admin) re-send webhooks for completed submissions that were not delivered.
 //   reveal_ein    (admin) decrypt the EIN for one submission.
+//   preview       (admin) return the webhook payload for one submission without sending it.
 //
 // Vault secrets: onboarding_ein_key, onboarding_webhook_secret, onboarding_admin_token,
 // onboarding_webhook_url ("unset" disables sending).
+//
+// Every webhook uses the same payload shape (schema_version 2, see buildEnvelope). All keys are always
+// present; unanswered values are empty strings. Branch on `event` in the automation.
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { ANSWER_KEYS, FILE_KEYS, SETUP_STEP_IDS } from './keys.ts'
 
 const BUCKET = 'onboarding-uploads'
 const MAX_BODY_BYTES = 300_000
 const MAX_FILE_BYTES = 15 * 1024 * 1024
 const MAX_FILES_PER_SUBMISSION = 60
 const SIGNED_URL_SECONDS = 7 * 24 * 60 * 60
+const SITE = 'https://www.kickbord.com'
+const LOCATION_RE = /^[a-zA-Z0-9_-]{8,80}$/
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const ALLOWED_MIME = new Set([
   'image/png',
   'image/jpeg',
@@ -211,6 +223,10 @@ async function actionSave(body: Row) {
     current_step: step,
     ...derivedColumns(answers),
   }
+  const prog = body.progress && typeof body.progress === 'object' ? body.progress : null
+  const stepNumber = prog && Number.isInteger(prog.step_number) ? Math.max(0, Math.min(50, prog.step_number)) : null
+  const stepCount = prog && Number.isInteger(prog.step_count) ? Math.max(1, Math.min(50, prog.step_count)) : null
+  const stepId = prog ? str(prog.step_id, 40) : null
 
   let row = body.token ? await findByToken(body.token) : null
   if (body.token && !row) return { status: 404, body: { error: 'Unknown or expired link.' } }
@@ -221,7 +237,20 @@ async function actionSave(body: Row) {
 
   if (!row) {
     const meta = body.meta && typeof body.meta === 'object' ? body.meta : {}
+    const location = cleanLocation(meta.location)
+    const linkEmail = cleanEmail(meta.email)
+    // Same client opening their link on another device: continue the existing record.
+    const existing = location && linkEmail ? await findByLocation(location, linkEmail) : null
+    if (existing) {
+      if (existing.status === 'completed') return { status: 200, body: { ok: true, token: existing.token, status: 'completed' } }
+      row = existing
+    }
+  }
+  if (!row) {
+    const meta = body.meta && typeof body.meta === 'object' ? body.meta : {}
     const insert = {
+      location_id: cleanLocation(meta.location),
+      link_email: cleanEmail(meta.email),
       ...base,
       token: newToken(),
       plan: str(meta.plan, 60),
@@ -236,7 +265,104 @@ async function actionSave(body: Row) {
     const { error } = await sb.from('client_onboardings').update(base).eq('id', row.id)
     if (error) return { status: 500, body: { error: 'Could not save. Please try again.' } }
   }
+
+  // Progress: only when they reach a new furthest step, so going back and forth does not repeat it.
+  if (stepNumber !== null && stepNumber > (row!.progress_step_number ?? 0)) {
+    const { data: moved } = await sb
+      .from('client_onboardings')
+      .update({ progress_step_number: stepNumber, progress_step_count: stepCount, progress_step_id: stepId })
+      .eq('id', row!.id)
+      .lt('progress_step_number', stepNumber)
+      .select('*')
+      .maybeSingle()
+    if (moved) background(sendWebhook(moved, 'onboarding.progress'))
+  }
   return { status: 200, body: { ok: true, token: row!.token, status: 'in_progress' } }
+}
+
+function background(p: Promise<unknown>) {
+  const rt = (globalThis as Row).EdgeRuntime
+  if (rt?.waitUntil) rt.waitUntil(p)
+  else p.catch(() => {})
+}
+
+function cleanLocation(v: unknown) {
+  return typeof v === 'string' && LOCATION_RE.test(v.trim()) ? v.trim() : null
+}
+
+function cleanEmail(v: unknown) {
+  const e = typeof v === 'string' ? v.trim().toLowerCase() : ''
+  return e.length <= 200 && EMAIL_RE.test(e) ? e : null
+}
+
+async function findByLocation(location: string, email: string): Promise<Row | null> {
+  // Two plain equality lookups (no filter-string building with user input).
+  for (const col of ['link_email', 'email']) {
+    const { data } = await sb
+      .from('client_onboardings')
+      .select('*')
+      .eq('location_id', location)
+      .eq(col, email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+    if (data?.[0]) return data[0]
+  }
+  return null
+}
+
+async function actionFind(body: Row) {
+  const location = cleanLocation(body.location)
+  const email = cleanEmail(body.email)
+  if (!location || !email) return { status: 400, body: { error: 'Missing details.' } }
+  const row = await findByLocation(location, email)
+  if (!row) return { status: 404, body: { error: 'Not found.' } }
+  return { status: 200, body: { token: row.token, status: row.status } }
+}
+
+function cleanSetupSteps(v: unknown): string[] {
+  if (!Array.isArray(v)) return []
+  const known = new Set<string>(SETUP_STEP_IDS)
+  return [...new Set(v.filter((x): x is string => typeof x === 'string' && known.has(x)))]
+}
+
+async function setupRow(body: Row): Promise<Row | null> {
+  if (body.token) return await findByToken(body.token)
+  const location = cleanLocation(body.location)
+  if (!location) return null
+  const email = cleanEmail(body.email)
+  const found = email ? await findByLocation(location, email) : null
+  if (found) return found
+  // Setup guide opened without the questionnaire (older links): keep a record so the webhook stays the same.
+  const { data } = await sb
+    .from('client_onboardings')
+    .insert({ token: newToken(), location_id: location, link_email: email, email, answers: {}, services: cleanServices(body.services) })
+    .select('*')
+    .single()
+  return data
+}
+
+async function actionSetupSave(body: Row) {
+  const row = await setupRow(body)
+  if (!row) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  await sb.from('client_onboardings').update({ setup_steps: cleanSetupSteps(body.steps_checked) }).eq('id', row.id)
+  return { status: 200, body: { ok: true, token: row.token, setup_steps: cleanSetupSteps(body.steps_checked) } }
+}
+
+async function actionSetupComplete(body: Row) {
+  const row = await setupRow(body)
+  if (!row) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  if (row.setup_completed_at) return { status: 200, body: { ok: true, token: row.token, status: 'setup_completed' } }
+  const { data: done } = await sb
+    .from('client_onboardings')
+    .update({ setup_steps: cleanSetupSteps(body.steps_checked), setup_completed_at: new Date().toISOString() })
+    .eq('id', row.id)
+    .is('setup_completed_at', null)
+    .select('*')
+    .maybeSingle()
+  if (!done) return { status: 200, body: { ok: true, token: row.token, status: 'setup_completed' } }
+  const r = await sendWebhook(done, 'onboarding.setup_completed')
+  await sb.from('client_onboardings').update({ setup_webhook_status: r.status }).eq('id', row.id)
+  return { status: 200, body: { ok: true, token: row.token, status: 'setup_completed', webhook: r.status } }
 }
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -271,6 +397,9 @@ async function actionLoad(body: Row) {
       plan: row.plan,
       demo_url: row.demo_url,
       services: row.services ?? [],
+      location_id: row.location_id ?? null,
+      setup_steps: row.setup_steps ?? [],
+      setup_completed: !!row.setup_completed_at,
       has_ein_on_file: !!row.ein_encrypted,
       ein_last4: row.ein_last4,
       files: files.map((f) => ({ id: f.id, field_id: f.field_id, name: f.original_name, size: f.size_bytes, content_type: f.content_type })),
@@ -357,57 +486,142 @@ function missingCore(row: Row): string[] {
   return missing
 }
 
-async function buildPayload(row: Row) {
+type Event = 'onboarding.progress' | 'onboarding.completed' | 'onboarding.setup_completed'
+
+const DAY_NAMES: Record<string, string> = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' }
+
+/** Turn any answer into plain text so every webhook value is a string. */
+function flat(v: unknown, key = ''): string {
+  if (v === undefined || v === null) return ''
+  if (typeof v === 'string') return v
+  if (typeof v === 'number') return String(v)
+  if (typeof v === 'boolean') return v ? 'yes' : 'no'
+  if (Array.isArray(v)) {
+    const parts = v.map((x) => flat(x)).filter(Boolean)
+    return parts.join(v.some((x) => x && typeof x === 'object') ? ' | ' : ', ')
+  }
+  if (typeof v === 'object') {
+    const o = v as Record<string, unknown>
+    if (key === 'hours' || Object.keys(o).every((k) => k in DAY_NAMES)) {
+      return Object.entries(o)
+        .map(([d, h]) => {
+          const x = (h ?? {}) as Record<string, unknown>
+          return `${DAY_NAMES[d] ?? d} ${x.closed ? 'closed' : `${x.open ?? ''}-${x.close ?? ''}`}`
+        })
+        .join(', ')
+    }
+    return Object.entries(o).map(([k, x]) => `${k}: ${flat(x)}`).filter((t) => !t.endsWith(': ')).join(', ')
+  }
+  return ''
+}
+
+/** Setup steps that apply to this plan. Mirrors lib/onboarding/setup-steps.ts (`when`). */
+function setupStepsFor(services: string[]): string[] {
+  const all = services.length === 0 || services.includes('custom')
+  const has = (x: string) => all || services.includes(x)
+  const bundle = has('launch') || has('grow')
+  const reputation = bundle || has('reputation')
+  const receptionist = bundle || has('ai_receptionist')
+  const lsa = has('grow') || has('lsa')
+  const on: Record<string, boolean> = {
+    business_details: true,
+    integrations: receptionist || reputation || lsa,
+    phone_system: receptionist,
+    gbp_verify: reputation || lsa,
+    google_ads: lsa,
+  }
+  return SETUP_STEP_IDS.filter((id) => on[id] ?? true)
+}
+
+function stageOf(row: Row) {
+  if (row.setup_completed_at) return 'done'
+  if (row.status === 'completed') return 'setup'
+  return 'questions'
+}
+
+function linkFor(path: string, row: Row) {
+  const u = new URL(path, SITE)
+  u.searchParams.set('t', row.token)
+  if (row.location_id) u.searchParams.set('location', row.location_id)
+  if (row.services?.length) u.searchParams.set('services', row.services.join(','))
+  return u.toString()
+}
+
+/** One payload shape for every event. Do not remove or rename keys; add new ones only. */
+async function buildEnvelope(row: Row, event: Event) {
   const files = await listFiles(row.id)
-  const out = []
+  const fileUrls: Record<string, string[]> = {}
   for (const f of files) {
     const { data } = await sb.storage.from(BUCKET).createSignedUrl(f.storage_path, SIGNED_URL_SECONDS)
-    out.push({
-      field_id: f.field_id,
-      name: f.original_name,
-      content_type: f.content_type,
-      size_bytes: f.size_bytes,
-      url: data?.signedUrl ?? null,
-      url_expires_at: new Date(Date.now() + SIGNED_URL_SECONDS * 1000).toISOString(),
-    })
+    if (data?.signedUrl) (fileUrls[f.field_id] ??= []).push(data.signedUrl)
   }
   const a = row.answers ?? {}
+  const answers: Record<string, string> = {}
+  for (const k of ANSWER_KEYS) answers[k] = flat(a[k], k)
+  const fileOut: Record<string, string> = {}
+  for (const k of FILE_KEYS) fileOut[k] = (fileUrls[k] ?? []).join(', ')
+  const services: string[] = row.services ?? []
+  const checked: string[] = row.setup_steps ?? []
+  const questionsDone = row.status === 'completed'
+  const stepCount = row.progress_step_count ?? 0
+  const stepNumber = questionsDone ? stepCount : row.progress_step_number ?? 0
   return {
-    event: 'onboarding.completed',
-    version: 1,
+    schema_version: 2,
+    event,
+    event_id: crypto.randomUUID(),
+    sent_at: new Date().toISOString(),
     submission_id: row.id,
-    submitted_at: row.completed_at,
-    source: row.source,
-    plan: row.plan,
-    ghl_contact_id: row.ghl_contact_id,
-    demo_url: row.demo_url,
-    demo_feedback: row.demo_feedback,
-    services: row.services ?? [],
-    services_labels: (row.services ?? []).map((s: string) => SERVICE_LABELS[s] ?? s),
+    location_id: row.location_id ?? '',
+    ghl_contact_id: row.ghl_contact_id ?? '',
+    plan: row.plan ?? '',
+    stage: stageOf(row),
+    services: services.map((s) => SERVICE_LABELS[s] ?? s).join(', '),
+    services_codes: services.join(', '),
     contact: {
-      first_name: row.first_name,
-      last_name: row.last_name,
-      email: row.email,
-      phone: row.phone,
-      company_name: row.company_name,
-      role: a.role ?? null,
+      first_name: row.first_name ?? '',
+      last_name: row.last_name ?? '',
+      email: row.email ?? row.link_email ?? '',
+      phone: row.phone ?? '',
+      company_name: row.company_name ?? '',
     },
+    progress: {
+      step_id: questionsDone ? 'submitted' : row.progress_step_id ?? '',
+      step_number: stepNumber,
+      step_count: stepCount,
+      percent: questionsDone ? 100 : stepCount ? Math.round((Math.max(0, stepNumber - 1) / stepCount) * 100) : 0,
+      started_at: row.created_at ?? '',
+      last_saved_at: row.updated_at ?? '',
+      questions_completed_at: row.completed_at ?? '',
+      setup_completed_at: row.setup_completed_at ?? '',
+    },
+    links: {
+      resume_url: linkFor('/onboarding', row),
+      setup_url: linkFor('/onboarding/setup', row),
+    },
+    demo: { url: row.demo_url ?? '', feedback: row.demo_feedback ?? '' },
     a2p: {
-      has_ein: row.has_ein,
-      ein_on_file: !!row.ein_encrypted,
-      ein_last4: row.ein_last4,
-      path: row.has_ein ? 'standard' : 'sole_proprietor_or_pending',
+      has_ein: row.has_ein === true ? 'yes' : row.has_ein === false ? 'no' : '',
+      ein_on_file: row.ein_encrypted ? 'yes' : 'no',
+      ein_last4: row.ein_last4 ?? '',
+      path: row.has_ein === true ? 'standard' : row.has_ein === false ? 'sole_proprietor_or_pending' : '',
     },
-    answers: a,
-    files: out,
+    answers,
+    files: fileOut,
+    files_expire_at: files.length ? new Date(Date.now() + SIGNED_URL_SECONDS * 1000).toISOString() : '',
+    setup: {
+      steps_total: setupStepsFor(services).length,
+      steps_done: checked.filter((id) => setupStepsFor(services).includes(id)).length,
+      steps_in_plan: setupStepsFor(services).join(', '),
+      steps_checked: checked.join(', '),
+    },
   }
 }
 
-async function sendWebhook(row: Row): Promise<{ status: 'sent' | 'failed' | 'pending_config'; error?: string }> {
+async function sendWebhook(row: Row, event: Event): Promise<{ status: 'sent' | 'failed' | 'pending_config'; error?: string }> {
   const url = await secret('onboarding_webhook_url')
   if (!url || url === 'unset') return { status: 'pending_config' }
   try {
-    const payload = JSON.stringify(await buildPayload(row))
+    const payload = JSON.stringify(await buildEnvelope(row, event))
     const ts = String(Math.floor(Date.now() / 1000))
     const sig = await hmacHex((await secret('onboarding_webhook_secret'))!, `${ts}.${payload}`)
     const ctrl = new AbortController()
@@ -416,7 +630,7 @@ async function sendWebhook(row: Row): Promise<{ status: 'sent' | 'failed' | 'pen
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Kickbord-Event': 'onboarding.completed',
+        'X-Kickbord-Event': event,
         'X-Kickbord-Timestamp': ts,
         'X-Kickbord-Signature': `sha256=${sig}`,
       },
@@ -432,7 +646,7 @@ async function sendWebhook(row: Row): Promise<{ status: 'sent' | 'failed' | 'pen
 }
 
 async function deliver(row: Row) {
-  const r = await sendWebhook(row)
+  const r = await sendWebhook(row, 'onboarding.completed')
   await sb
     .from('client_onboardings')
     .update({
@@ -486,6 +700,13 @@ async function actionResend(req: Request, body: Row) {
   return { status: 200, body: { results } }
 }
 
+async function actionPreview(req: Request, body: Row) {
+  if (!(await adminOk(req))) return { status: 401, body: { error: 'Unauthorized.' } }
+  const { data: row } = await sb.from('client_onboardings').select('*').eq('id', body.id).maybeSingle()
+  if (!row) return { status: 404, body: { error: 'Not found.' } }
+  return { status: 200, body: await buildEnvelope(row, body.event ?? 'onboarding.completed') }
+}
+
 async function actionRevealEin(req: Request, body: Row) {
   if (!(await adminOk(req))) return { status: 401, body: { error: 'Unauthorized.' } }
   const { data } = await sb.from('client_onboardings').select('ein_encrypted').eq('id', body.id).maybeSingle()
@@ -515,12 +736,16 @@ Deno.serve(async (req) => {
     const run = ({
       save: () => actionSave(body),
       load: () => actionLoad(body),
+      find: () => actionFind(body),
+      setup_save: () => actionSetupSave(body),
+      setup_complete: () => actionSetupComplete(body),
       sign_upload: () => actionSignUpload(body),
       register_file: () => actionRegisterFile(body),
       delete_file: () => actionDeleteFile(body),
       complete: () => actionComplete(body),
       resend: () => actionResend(req, body),
       reveal_ein: () => actionRevealEin(req, body),
+      preview: () => actionPreview(req, body),
     } as Record<string, () => Promise<{ status: number; body: unknown }>>)[body.action as string]
     if (!run) return json({ error: 'Unknown action.' }, 400, origin)
     const r = await run()

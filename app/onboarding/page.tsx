@@ -12,6 +12,8 @@ export const metadata: Metadata = {
 
 type SP = Record<string, string | string[] | undefined>
 
+const cleanLocation = (v: string | undefined) => (v && /^[a-zA-Z0-9_-]{8,80}$/.test(v.trim()) ? v.trim() : null)
+
 const clip = (v: string | undefined, n = 120) => (v ? v.trim().slice(0, n) : '')
 
 /**
@@ -22,6 +24,7 @@ const clip = (v: string | undefined, n = 120) => (v ? v.trim().slice(0, n) : '')
  *               Picks which sections are shown. Empty or "Custom" shows everything. Saved and sent in the webhook.
  *   plan        launch | grow (echoed in the webhook)
  *   cid         CRM contact id (echoed in the webhook)
+ *   location    CRM sub-account (location) id. With email, lets the same link resume on any device.
  *   t           resume token (added automatically after the first save)
  */
 export default async function OnboardingPage({ searchParams }: { searchParams: Promise<SP> }) {
@@ -53,7 +56,13 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
     <OnboardingFlow
       demoUrl={demoUrl}
       prefill={prefill}
-      meta={{ plan: clip(first(sp.plan), 60) || undefined, cid: clip(first(sp.cid), 120) || undefined, demo: demoUrl ?? undefined }}
+      meta={{
+        plan: clip(first(sp.plan), 60) || undefined,
+        cid: clip(first(sp.cid), 120) || undefined,
+        demo: demoUrl ?? undefined,
+        location: cleanLocation(first(sp.location) ?? first(sp.location_id)) ?? undefined,
+        email: prefill.email || undefined,
+      }}
       tokenParam={token.length >= 20 ? token : null}
       services={services}
     />

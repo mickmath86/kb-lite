@@ -9,7 +9,9 @@ const SUPABASE_ANON_KEY =
 const ENDPOINT = '/api/onboarding'
 const BUCKET = 'onboarding-uploads'
 
-export type Meta = { plan?: string; cid?: string; demo?: string; services?: string[] }
+export type Meta = { plan?: string; cid?: string; demo?: string; services?: string[]; location?: string; email?: string }
+
+export type Progress = { step_id: string; step_number: number; step_count: number }
 
 async function call<T>(payload: Record<string, unknown>): Promise<T> {
   let res: Response
@@ -41,6 +43,9 @@ export type Loaded = {
   plan: string | null
   demo_url: string | null
   services: string[] | null
+  location_id: string | null
+  setup_steps: string[]
+  setup_completed: boolean
   has_ein_on_file: boolean
   ein_last4: string | null
   files: FileRec[]
@@ -48,7 +53,16 @@ export type Loaded = {
 
 export const loadSubmission = (token: string) => call<Loaded>({ action: 'load', token })
 
-export const saveSubmission = (p: { token?: string | null; step: number; answers: Answers; ein?: string; meta?: Meta; hp?: string }) =>
+export const findSubmission = (location: string, email: string) =>
+  call<{ token: string; status: string }>({ action: 'find', location, email })
+
+export const saveSetup = (p: { token?: string | null; location?: string | null; email?: string | null; services?: string[]; steps_checked: string[] }) =>
+  call<{ ok: true; token: string }>({ action: 'setup_save', ...p })
+
+export const completeSetup = (p: { token?: string | null; location?: string | null; email?: string | null; services?: string[]; steps_checked: string[] }) =>
+  call<{ ok: true; token: string; status: string }>({ action: 'setup_complete', ...p })
+
+export const saveSubmission = (p: { token?: string | null; step: number; answers: Answers; ein?: string; meta?: Meta; hp?: string; progress?: Progress }) =>
   call<{ ok: true; token: string; status: string }>({ action: 'save', ...p })
 
 export const completeSubmission = (p: { token: string; step: number; answers: Answers; ein?: string }) =>

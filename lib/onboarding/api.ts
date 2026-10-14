@@ -46,6 +46,8 @@ export type Loaded = {
   location_id: string | null
   setup_steps: string[]
   setup_completed: boolean
+  login_created: boolean
+  login_email: string | null
   has_ein_on_file: boolean
   ein_last4: string | null
   files: FileRec[]
@@ -61,6 +63,9 @@ export const saveSetup = (p: { token?: string | null; location?: string | null; 
 
 export const completeSetup = (p: { token?: string | null; location?: string | null; email?: string | null; services?: string[]; steps_checked: string[] }) =>
   call<{ ok: true; token: string; status: string }>({ action: 'setup_complete', ...p })
+
+export const createLogin = (token: string, password: string) =>
+  call<{ ok: true; status: 'created' | 'exists'; email: string }>({ action: 'create_login', token, password })
 
 export const saveSubmission = (p: { token?: string | null; step: number; answers: Answers; ein?: string; meta?: Meta; hp?: string; progress?: Progress }) =>
   call<{ ok: true; token: string; status: string }>({ action: 'save', ...p })

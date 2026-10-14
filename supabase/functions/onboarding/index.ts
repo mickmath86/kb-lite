@@ -11,6 +11,8 @@
 //   find          look up a submission by sub-account location id + the email from the link (resume on any device).
 //   setup_save    save which setup steps are checked off.
 //   setup_complete mark the setup stage done and send onboarding.setup_completed.
+//   create_login  create the client's CRM user in their sub-account with the password they pick.
+//                 The password goes straight to the CRM and is never stored or logged.
 //   sign_upload   get a signed upload URL for the private storage bucket.
 //   register_file confirm an upload and record it.
 //   delete_file   remove an uploaded file.
@@ -34,6 +36,8 @@ const MAX_FILES_PER_SUBMISSION = 60
 const SIGNED_URL_SECONDS = 7 * 24 * 60 * 60
 const SITE = 'https://www.kickbord.com'
 const LOCATION_RE = /^[a-zA-Z0-9_-]{8,80}$/
+const GHL_API = 'https://services.leadconnectorhq.com'
+const GHL_COMPANY_ID = 'yiMNNRLaz6UPsDiYuPH3' // Kickbord agency
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const ALLOWED_MIME = new Set([
   'image/png',
@@ -341,6 +345,93 @@ async function setupRow(body: Row): Promise<Row | null> {
   return data
 }
 
+function passwordProblems(pw: string): string[] {
+  const out: string[] = []
+  if (pw.length < 12) out.push('at least 12 characters')
+  if (!/[A-Z]/.test(pw)) out.push('an uppercase letter')
+  if (!/[a-z]/.test(pw)) out.push('a lowercase letter')
+  if (!/[0-9]/.test(pw)) out.push('a number')
+  if (!/[^A-Za-z0-9]/.test(pw)) out.push('a symbol like ! or #')
+  if (pw.length > 128) out.push('no more than 128 characters')
+  return out
+}
+
+async function ghl(path: string, init: RequestInit = {}) {
+  const key = await secret('ghl_agency_token')
+  if (!key) throw new Error('CRM key missing')
+  const res = await fetch(`${GHL_API}${path}`, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${key}`,
+      Version: '2021-07-28',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...(init.headers ?? {}),
+    },
+    signal: AbortSignal.timeout(15_000),
+  })
+  const data = await res.json().catch(() => ({}))
+  return { ok: res.ok, status: res.status, data: data as Row }
+}
+
+async function actionCreateLogin(body: Row) {
+  const row = await findByToken(body.token)
+  if (!row) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  if (row.login_created_at) return { status: 200, body: { ok: true, status: 'exists', email: row.login_email } }
+  if (!row.location_id) return { status: 400, body: { error: 'Your account is not ready yet. Please contact Kickbord.' } }
+  if ((row.login_attempts ?? 0) >= 10) return { status: 429, body: { error: 'Too many tries. Please contact Kickbord.' } }
+  const email = cleanEmail(row.email) ?? cleanEmail(row.link_email)
+  if (!email) return { status: 400, body: { error: 'We do not have your email yet. Please finish the onboarding questions.' } }
+  const pw = typeof body.password === 'string' ? body.password : ''
+  const problems = passwordProblems(pw)
+  if (problems.length) return { status: 400, body: { error: `Your password needs ${problems.join(', ')}.` } }
+
+  await sb.from('client_onboardings').update({ login_attempts: (row.login_attempts ?? 0) + 1 }).eq('id', row.id)
+
+  // The sub-account must belong to Kickbord.
+  const loc = await ghl(`/locations/${encodeURIComponent(row.location_id)}`)
+  if (!loc.ok || loc.data?.location?.companyId !== GHL_COMPANY_ID) {
+    console.error('create_login: location check failed', loc.status)
+    return { status: 400, body: { error: 'Your account is not ready yet. Please contact Kickbord.' } }
+  }
+
+  // Never change the password of an existing user from a public form.
+  const found = await ghl(`/users/search?companyId=${GHL_COMPANY_ID}&query=${encodeURIComponent(email)}`)
+  const existing = (found.data?.users ?? []).find((u: Row) => String(u.email ?? '').toLowerCase() === email)
+  if (existing) {
+    await sb.from('client_onboardings').update({ ghl_user_id: existing.id, login_email: email }).eq('id', row.id)
+    return { status: 409, body: { error: 'existing', email } }
+  }
+
+  const created = await ghl('/users/', {
+    method: 'POST',
+    body: JSON.stringify({
+      companyId: GHL_COMPANY_ID,
+      firstName: row.first_name || 'Owner',
+      lastName: row.last_name || (row.company_name ?? 'Account'),
+      email,
+      password: pw,
+      phone: row.phone ?? undefined,
+      type: 'account',
+      role: 'admin',
+      locationIds: [row.location_id],
+    }),
+  })
+  if (!created.ok || !created.data?.id) {
+    console.error('create_login: create failed', created.status, String(created.data?.message ?? '').slice(0, 200))
+    const msg = String(created.data?.message ?? '')
+    return { status: 400, body: { error: /password/i.test(msg) ? msg : 'We could not create your login. Please try again or contact Kickbord.' } }
+  }
+  const { data: updated } = await sb
+    .from('client_onboardings')
+    .update({ ghl_user_id: created.data.id, login_email: email, login_created_at: new Date().toISOString() })
+    .eq('id', row.id)
+    .select('*')
+    .single()
+  if (!updated) console.error('create_login: could not record login')
+  return { status: 200, body: { ok: true, status: 'created', email } }
+}
+
 async function actionSetupSave(body: Row) {
   const row = await setupRow(body)
   if (!row) return { status: 404, body: { error: 'Unknown or expired link.' } }
@@ -400,6 +491,8 @@ async function actionLoad(body: Row) {
       location_id: row.location_id ?? null,
       setup_steps: row.setup_steps ?? [],
       setup_completed: !!row.setup_completed_at,
+      login_created: !!row.login_created_at,
+      login_email: row.login_email ?? row.email ?? row.link_email ?? null,
       has_ein_on_file: !!row.ein_encrypted,
       ein_last4: row.ein_last4,
       files: files.map((f) => ({ id: f.id, field_id: f.field_id, name: f.original_name, size: f.size_bytes, content_type: f.content_type })),
@@ -606,6 +699,12 @@ async function buildEnvelope(row: Row, event: Event) {
       path: row.has_ein === true ? 'standard' : row.has_ein === false ? 'sole_proprietor_or_pending' : '',
     },
     answers,
+    account: {
+      login_created: row.login_created_at ? 'yes' : 'no',
+      login_email: row.login_email ?? '',
+      ghl_user_id: row.ghl_user_id ?? '',
+      login_created_at: row.login_created_at ?? '',
+    },
     files: fileOut,
     files_expire_at: files.length ? new Date(Date.now() + SIGNED_URL_SECONDS * 1000).toISOString() : '',
     setup: {
@@ -739,6 +838,7 @@ Deno.serve(async (req) => {
       find: () => actionFind(body),
       setup_save: () => actionSetupSave(body),
       setup_complete: () => actionSetupComplete(body),
+      create_login: () => actionCreateLogin(body),
       sign_upload: () => actionSignUpload(body),
       register_file: () => actionRegisterFile(body),
       delete_file: () => actionDeleteFile(body),

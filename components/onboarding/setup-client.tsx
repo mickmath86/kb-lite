@@ -1,10 +1,15 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { completeSetup, findSubmission, loadSubmission, saveSetup } from '@/lib/onboarding/api'
+import { ApiError, completeSetup, createLogin, findSubmission, loadSubmission, saveSetup } from '@/lib/onboarding/api'
 import { useIsMobileDevice } from '@/lib/onboarding/device'
 
+type Login = { ready: boolean; created: boolean; email: string | null }
+
 type Ctx = {
+  token: string | null
+  login: Login
+  setLogin: (l: Login) => void
   checked: string[]
   toggle: (id: string) => void
   complete: () => Promise<void>
@@ -33,6 +38,7 @@ export function SetupProvider({ token: tokenProp, location, email, services, chi
   const [checked, setChecked] = useState<string[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [login, setLogin] = useState<Login>({ ready: false, created: false, email })
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Restore saved checkmarks.
@@ -42,12 +48,15 @@ export function SetupProvider({ token: tokenProp, location, email, services, chi
       try {
         let t = tokenProp
         if (!t && location && email) t = (await findSubmission(location, email)).token
-        if (!t) return
+        if (!t) { setLogin((l) => ({ ...l, ready: true })); return }
         const saved = await loadSubmission(t)
         if (cancelled) return
         setToken(saved.token)
         setChecked(saved.setup_steps ?? [])
-      } catch { /* nothing saved yet */ }
+        setLogin({ ready: true, created: !!saved.login_created, email: saved.login_email ?? email })
+      } catch {
+        if (!cancelled) setLogin((l) => ({ ...l, ready: true }))
+      }
     })()
     return () => { cancelled = true }
   }, [tokenProp, location, email])
@@ -83,7 +92,7 @@ export function SetupProvider({ token: tokenProp, location, email, services, chi
     }
   }, [body, checked])
 
-  return <SetupContext.Provider value={{ checked, toggle, complete, busy, error }}>{children}</SetupContext.Provider>
+  return <SetupContext.Provider value={{ token, login, setLogin, checked, toggle, complete, busy, error }}>{children}</SetupContext.Provider>
 }
 
 export function StepCheckbox({ id }: { id: string }) {
@@ -140,5 +149,119 @@ export function DesktopGate({ children }: { children: React.ReactNode }) {
         </button>
       </div>
     </main>
+  )
+}
+
+const RULES: [string, (p: string) => boolean][] = [
+  ['12 or more characters', (p) => p.length >= 12],
+  ['An uppercase letter', (p) => /[A-Z]/.test(p)],
+  ['A lowercase letter', (p) => /[a-z]/.test(p)],
+  ['A number', (p) => /[0-9]/.test(p)],
+  ['A symbol, like ! or #', (p) => /[^A-Za-z0-9]/.test(p)],
+]
+
+/** First setup step: the client picks the password for their Kickbord account. */
+export function CreateLoginCard({ appUrl }: { appUrl: string }) {
+  const { token, login, setLogin } = useSetup()
+  const [pw, setPw] = useState('')
+  const [pw2, setPw2] = useState('')
+  const [show, setShow] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  const [existing, setExisting] = useState(false)
+
+  if (!login.ready || !token) return null
+
+  const box = 'rounded-2xl border border-olive-950/10 bg-white p-6 shadow-sm shadow-olive-950/5 sm:p-8 dark:border-white/10 dark:bg-white/5'
+  const input = 'w-full rounded-lg border border-olive-950/15 bg-white px-4 py-3 text-sm text-olive-950 focus:outline-none focus:ring-2 focus:ring-olive-950/20 dark:border-white/10 dark:bg-olive-900 dark:text-white'
+
+  if (login.created || existing) {
+    return (
+      <div className={box}>
+        <div className="flex items-start gap-4">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-olive-950 text-sm font-semibold text-white dark:bg-white dark:text-olive-950">&#10003;</span>
+          <div>
+            <h3 className="text-xl font-semibold tracking-tight text-olive-950 dark:text-white">{existing ? 'You already have a login' : 'Your login is ready'}</h3>
+            <p className="mt-2 leading-7 text-olive-700 dark:text-olive-300">
+              Sign in with <strong className="font-semibold text-olive-950 dark:text-white">{login.email}</strong>{existing ? ' and your existing password. Forgot it? Use "Forgot password" on the sign-in page.' : ' and the password you just picked.'}
+            </p>
+            <ol className="mt-4 list-decimal space-y-1.5 pl-5 text-sm leading-6 text-olive-700 dark:text-olive-300">
+              <li>Click &ldquo;Sign in to Kickbord&rdquo; below. It opens in a new tab, so keep this page open.</li>
+              <li>The first time, we email you a 6-digit security code. Enter it to finish signing in.</li>
+              {!existing && <li>You may also get an email called &ldquo;Activate Your Account&rdquo;. You can ignore it.</li>}
+            </ol>
+            <a href={appUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-full bg-olive-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-olive-800 dark:bg-white dark:text-olive-950">
+              Sign in to Kickbord &#8599;
+            </a>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const ok = RULES.every(([, test]) => test(pw))
+  const match = pw.length > 0 && pw === pw2
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!ok) { setErr('Your password does not meet all the rules yet.'); return }
+    if (!match) { setErr('The two passwords do not match.'); return }
+    setBusy(true)
+    setErr(null)
+    try {
+      const r = await createLogin(token!, pw)
+      setPw(''); setPw2('')
+      setLogin({ ready: true, created: true, email: r.email })
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 409) {
+        setExisting(true)
+        setLogin({ ready: true, created: false, email: (e.data?.email as string) ?? login.email })
+      } else {
+        setErr(e instanceof Error ? e.message : 'Could not create your login. Please try again.')
+      }
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className={box}>
+      <div className="flex items-start gap-4">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-olive-950 text-sm font-semibold text-white dark:bg-white dark:text-olive-950"><svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg></span>
+        <div className="w-full">
+          <p className="text-xs font-semibold uppercase tracking-wider text-olive-500">Before you start</p>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-olive-950 dark:text-white">Create your Kickbord login</h3>
+          <p className="mt-2 leading-7 text-olive-700 dark:text-olive-300">
+            Pick the password you will use to sign in. Your email is <strong className="font-semibold text-olive-950 dark:text-white">{login.email}</strong>.
+          </p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-sm font-semibold text-olive-950 dark:text-white">Password</span>
+              <input type={show ? 'text' : 'password'} value={pw} onChange={(e) => setPw(e.target.value)} autoComplete="new-password" className={input} />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-sm font-semibold text-olive-950 dark:text-white">Type it again</span>
+              <input type={show ? 'text' : 'password'} value={pw2} onChange={(e) => setPw2(e.target.value)} autoComplete="new-password" className={input} />
+            </label>
+          </div>
+          <label className="mt-3 inline-flex items-center gap-2 text-sm text-olive-700 dark:text-olive-300">
+            <input type="checkbox" checked={show} onChange={(e) => setShow(e.target.checked)} className="size-4 accent-olive-950" /> Show password
+          </label>
+          <ul className="mt-4 grid gap-1.5 text-sm sm:grid-cols-2">
+            {RULES.map(([label, test]) => (
+              <li key={label} className={test(pw) ? 'text-olive-950 dark:text-white' : 'text-olive-500'}>
+                {test(pw) ? '\u2713' : '\u2022'} {label}
+              </li>
+            ))}
+            <li className={match ? 'text-olive-950 dark:text-white' : 'text-olive-500'}>{match ? '\u2713' : '\u2022'} Both passwords match</li>
+          </ul>
+          <p className="mt-4 text-xs text-olive-500">Write it down somewhere safe. We never see or store your password.</p>
+          {err && <p role="alert" className="mt-3 text-sm text-red-600">{err}</p>}
+          <button type="submit" disabled={busy} className="mt-5 rounded-full bg-olive-950 px-6 py-3 text-sm font-semibold text-white hover:bg-olive-800 disabled:opacity-60 dark:bg-white dark:text-olive-950">
+            {busy ? 'Creating your login...' : 'Create my login'}
+          </button>
+        </div>
+      </div>
+    </form>
   )
 }

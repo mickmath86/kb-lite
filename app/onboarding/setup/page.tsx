@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { ButtonLink } from '@/components/elements/button'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
-import { CompleteSetupButton, DesktopGate, SetupProvider, StepCheckbox } from '@/components/onboarding/setup-client'
+import { CompleteSetupButton, CreateLoginCard, DesktopGate, SetupProvider, StepCheckbox } from '@/components/onboarding/setup-client'
 import { parseServices, resolveMods } from '@/lib/onboarding/services'
 import { type Instruction, stepsFor } from '@/lib/onboarding/setup-steps'
 
@@ -181,6 +181,11 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
           </div>
         </div>
 
+        {resumeToken && (
+          <div className="mb-5">
+            <CreateLoginCard appUrl={dashboardUrl} />
+          </div>
+        )}
         <ol className="space-y-5">
           {steps.map((step, index) => (
             <li

@@ -227,6 +227,7 @@ async function actionSave(body: Row) {
       plan: str(meta.plan, 60),
       ghl_contact_id: str(meta.cid, 120),
       demo_url: cleanDemoUrl(meta.demo),
+      services: cleanServices(meta.services),
     }
     const { data, error } = await sb.from('client_onboardings').insert(insert).select('*').single()
     if (error) return { status: 500, body: { error: 'Could not save. Please try again.' } }
@@ -236,6 +237,24 @@ async function actionSave(body: Row) {
     if (error) return { status: 500, body: { error: 'Could not save. Please try again.' } }
   }
   return { status: 200, body: { ok: true, token: row!.token, status: 'in_progress' } }
+}
+
+const SERVICE_LABELS: Record<string, string> = {
+  launch: 'Kickbord Launch',
+  grow: 'Kickbord Grow',
+  website_rebuild: 'Website Rebuild',
+  keep_site: 'Keeping Current Site',
+  reputation: 'Reputation Management',
+  ai_receptionist: 'AI Fall Back Receptionist',
+  lsa: 'Local Services Ads',
+  custom: 'Custom',
+}
+
+function cleanServices(v: unknown): string[] {
+  if (!Array.isArray(v)) return []
+  const out: string[] = []
+  for (const s of v) if (typeof s === 'string' && /^[a-z_]{2,30}$/.test(s) && !out.includes(s)) out.push(s)
+  return out.slice(0, 10)
 }
 
 async function actionLoad(body: Row) {
@@ -251,6 +270,7 @@ async function actionLoad(body: Row) {
       answers: row.answers,
       plan: row.plan,
       demo_url: row.demo_url,
+      services: row.services ?? [],
       has_ein_on_file: !!row.ein_encrypted,
       ein_last4: row.ein_last4,
       files: files.map((f) => ({ id: f.id, field_id: f.field_id, name: f.original_name, size: f.size_bytes, content_type: f.content_type })),
@@ -362,6 +382,8 @@ async function buildPayload(row: Row) {
     ghl_contact_id: row.ghl_contact_id,
     demo_url: row.demo_url,
     demo_feedback: row.demo_feedback,
+    services: row.services ?? [],
+    services_labels: (row.services ?? []).map((s: string) => SERVICE_LABELS[s] ?? s),
     contact: {
       first_name: row.first_name,
       last_name: row.last_name,

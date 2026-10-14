@@ -1,3 +1,5 @@
+import { parseServices } from '@/lib/onboarding/services'
+
 const LOCATION_ID_RE = /^[a-zA-Z0-9_-]{8,80}$/
 
 export async function POST(request: Request) {
@@ -5,6 +7,9 @@ export async function POST(request: Request) {
   const rawLocationId = form.get('location_id') ?? form.get('location') ?? form.get('locationId')
   const locationId =
     typeof rawLocationId === 'string' && LOCATION_ID_RE.test(rawLocationId) ? rawLocationId : null
+
+  const rawServices = form.get('services')
+  const services = parseServices(typeof rawServices === 'string' ? rawServices : '')
 
   const webhookUrl = process.env.CRM_ONBOARDING_COMPLETE_WEBHOOK_URL
   if (webhookUrl?.startsWith('https://')) {
@@ -17,6 +22,7 @@ export async function POST(request: Request) {
           source: 'kickbord-onboarding-crm-guide',
           location_id: locationId,
           locationId,
+          services,
           completed_at: new Date().toISOString(),
         }),
         cache: 'no-store',
@@ -30,5 +36,6 @@ export async function POST(request: Request) {
   const destination = new URL('/onboarding/crm', request.url)
   destination.searchParams.set('completed', '1')
   if (locationId) destination.searchParams.set('location', locationId)
+  if (services.length) destination.searchParams.set('services', services.join(','))
   return Response.redirect(destination, 303)
 }

@@ -4,6 +4,7 @@ import { clsx } from 'clsx/lite'
 import { useId, useRef, useState } from 'react'
 import { DAYS, defaultHours, resolve } from '@/lib/onboarding/schema'
 import { OTHER_TRADE, TRADE_GROUPS } from '@/lib/onboarding/trades'
+import type { Guide } from '@/lib/onboarding/guides'
 import type { Answers, Ctx, Field, FileRec, RowCol } from '@/lib/onboarding/types'
 import { hostnameOf } from './util'
 
@@ -31,7 +32,18 @@ export function FieldRenderer(p: FieldProps) {
   const id = useId()
   const help = resolve(f.help, p.answers, p.ctx)
   const required = !!resolve(f.required ?? false, p.answers, p.ctx)
+  const guide = resolve(f.guide, p.answers, p.ctx)
   const bare = f.type === 'checkbox' || f.type === 'consent' || f.type === 'demo' || f.type === 'note'
+
+  if (f.type === 'note') {
+    return (
+      <div id={`field-${f.id}`} className="rounded-xl bg-olive-950/5 p-4 sm:col-span-2 dark:bg-white/5">
+        <p className="text-sm font-semibold text-olive-950 dark:text-white">{f.label}</p>
+        {f.body && <p className="mt-1 text-sm text-olive-700 dark:text-olive-300">{f.body}</p>}
+        {guide && <GuideBox guide={guide} open />}
+      </div>
+    )
+  }
 
   return (
     <div id={`field-${f.id}`} className={clsx('scroll-mt-28', f.half ? 'sm:col-span-1' : 'sm:col-span-2')}>
@@ -43,12 +55,43 @@ export function FieldRenderer(p: FieldProps) {
       )}
       <Control {...p} id={id} />
       {help && !p.error && <p className="mt-1.5 text-xs text-olive-500">{help}</p>}
+      {guide && <GuideBox guide={guide} />}
       {p.error && (
         <p role="alert" className="mt-1.5 text-sm text-red-600 dark:text-red-400">
           {p.error}
         </p>
       )}
     </div>
+  )
+}
+
+/** Expandable step-by-step instructions with direct links. */
+export function GuideBox({ guide, open = false }: { guide: Guide; open?: boolean }) {
+  return (
+    <details open={open} className="group mt-3 rounded-lg border border-olive-950/10 bg-white text-sm dark:border-white/10 dark:bg-olive-900/50">
+      <summary className="flex cursor-pointer list-none items-center [&::-webkit-details-marker]:hidden justify-between gap-3 px-4 py-3 font-medium text-olive-950 dark:text-white">
+        <span>{guide.title}</span>
+        <span className="shrink-0 text-xs text-olive-500"><span className="group-open:hidden">Show steps</span><span className="hidden group-open:inline">Hide</span></span>
+      </summary>
+      <div className="border-t border-olive-950/10 px-4 py-3 dark:border-white/10">
+        <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-olive-700 dark:text-olive-300">
+          {guide.steps.map((s, i) => <li key={i}>{s}</li>)}
+        </ol>
+        {guide.links && guide.links.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {guide.links.map((l) => (
+              <a
+                key={l.href} href={l.href} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center rounded-full bg-olive-950 px-3 py-1.5 text-xs font-medium text-white hover:bg-olive-800 dark:bg-white dark:text-olive-950"
+              >
+                {l.label} &#8599;
+              </a>
+            ))}
+          </div>
+        )}
+        {guide.note && <p className="mt-3 text-xs text-olive-500">{guide.note}</p>}
+      </div>
+    </details>
   )
 }
 

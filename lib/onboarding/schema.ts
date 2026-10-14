@@ -1,3 +1,8 @@
+import {
+  FIND_ADS_ACCOUNT, FIND_CUSTOMER_ID, FIND_GBP_LINK, FIND_GBP_OWNER, FIND_PLATFORM, FIND_REGISTRAR, GBP_VIDEO, LSA_DOCS,
+  PLATFORMS, REGISTRARS, platformInviteGuide, registrarInviteGuide,
+} from './guides'
+import { KICKBORD_ACCESS_EMAIL } from './services'
 import { presetFor } from './trades'
 import type { Answers, Ctx, Field, Option, Step } from './types'
 
@@ -35,6 +40,21 @@ const askFullLook = (a: Answers, ctx: Ctx) => !demoKept(a, ctx)
 const askAnyLook = (a: Answers, ctx: Ctx) => !(ctx.demo && a.demo_feedback === DEMO_FEEDBACK.keep)
 
 const is = (id: string, ...vals: string[]) => (a: Answers) => vals.includes(a[id])
+
+/** We are building them a new website (rebuild, or the full plan unless they chose to keep their site). */
+const rebuilding = (a: Answers, ctx: Ctx) =>
+  ctx.mods.site === 'rebuild' || (ctx.mods.site === 'ask' && a.website_plan !== 'keep_add')
+/** We are keeping their website and adding the chat widget. */
+const keepingSite = (a: Answers, ctx: Ctx) =>
+  ctx.mods.site === 'keep' || (ctx.mods.site === 'ask' && a.has_website === 'yes' && a.website_plan === 'keep_add')
+/** They have a website we need to know about. */
+const hasSite = (a: Answers, ctx: Ctx) => ctx.mods.site === 'keep' || (ctx.mods.site !== null && a.has_website === 'yes')
+/** We need a contact for whoever manages their website or domain. */
+const needsWebContact = (a: Answers, ctx: Ctx) =>
+  (hasSite(a, ctx) && a.website_platform === 'not_sure') ||
+  (keepingSite(a, ctx) && a.site_access === 'someone_else') ||
+  (rebuilding(a, ctx) && (a.has_domain === 'not_sure' ||
+    (a.has_domain === 'yes' && (a.domain_registrar === 'not_sure' || a.domain_access === 'someone_else' || a.domain_access === 'not_sure'))))
 
 const BASE_STEPS: Step[] = [
   {
@@ -148,16 +168,19 @@ const BASE_STEPS: Step[] = [
   },
   {
     id: 'web',
-    title: 'Website, domain, and email',
+    title: (a, ctx) => (ctx.mods.site === 'keep' ? 'Your current website' : 'Website, domain, and email'),
     intro: (_a, ctx) =>
-      ctx.demo
-        ? 'Take another look at the demo site we built for you, then tell us what you think.'
-        : 'This tells us what to build and what to connect.',
+      ctx.mods.site === 'keep'
+        ? 'We will keep your website and add your AI chat assistant to it. We just need to know how to get in.'
+        : ctx.demo && ctx.mods.site !== null
+          ? 'Take another look at the demo site we built for you, then tell us what you think.'
+          : 'This tells us what to build and what to connect.',
+    showIf: (_a, ctx) => ctx.mods.site !== null,
     fields: [
-      { id: 'demo_preview', label: 'Your demo site', type: 'demo', showIf: (_a, ctx) => ctx.demo },
+      { id: 'demo_preview', label: 'Your demo site', type: 'demo', showIf: (_a, ctx) => ctx.demo && ctx.mods.site !== 'keep' },
       {
         id: 'demo_feedback', label: 'Did you like the demo website we showed you on our call?', type: 'radio', required: true,
-        showIf: (_a, ctx) => ctx.demo,
+        showIf: (_a, ctx) => ctx.demo && ctx.mods.site !== 'keep',
         options: [
           { value: DEMO_FEEDBACK.keep, label: 'Yes, keep it as it is', hint: 'We will finish it and launch it.' },
           { value: DEMO_FEEDBACK.tweaks, label: 'Yes, with some changes', hint: 'Tell us what to change.' },
@@ -166,46 +189,78 @@ const BASE_STEPS: Step[] = [
       },
       {
         id: 'demo_changes', label: 'What would you like us to change?', type: 'textarea', required: true,
-        showIf: (a, ctx) => ctx.demo && a.demo_feedback === DEMO_FEEDBACK.tweaks,
+        showIf: (a, ctx) => ctx.demo && ctx.mods.site !== 'keep' && a.demo_feedback === DEMO_FEEDBACK.tweaks,
         placeholder: 'Wording, photos, colors, pages, anything.',
       },
       {
         id: 'demo_notes', label: 'Anything else we should know about the site? (optional)', type: 'textarea',
-        showIf: (a, ctx) => ctx.demo && a.demo_feedback === DEMO_FEEDBACK.keep,
+        showIf: (a, ctx) => ctx.demo && ctx.mods.site !== 'keep' && a.demo_feedback === DEMO_FEEDBACK.keep,
       },
       {
-        id: 'has_website', label: 'Do you have an existing website?', type: 'radio', required: true, options: YES_NO,
+        id: 'has_website', label: 'Do you have a website today?', type: 'radio', required: true, options: YES_NO,
+        showIf: (_a, ctx) => ctx.mods.site !== 'keep',
         help: (_a, ctx) => (ctx.demo ? 'This is about the website you have today, not the demo.' : undefined),
       },
-      { id: 'website_url', label: 'Website address', type: 'url', required: true, showIf: is('has_website', 'yes'), placeholder: 'yourcompany.com' },
+      { id: 'website_url', label: 'Your website address', type: 'url', required: true, showIf: hasSite, placeholder: 'yourcompany.com' },
       {
         id: 'website_plan', label: 'What should we do with it?', type: 'radio', required: true,
-        showIf: (a, ctx) => a.has_website === 'yes' && !demoKept(a, ctx),
+        showIf: (a, ctx) => ctx.mods.site === 'ask' && a.has_website === 'yes' && !demoKept(a, ctx),
         options: o(['replace', 'Replace it'], ['improve', 'Improve it'], ['keep_add', 'Keep it and only add the chat and AI features']),
       },
       {
-        id: 'website_host', label: 'Who built or hosts it?', type: 'select', showIf: is('has_website', 'yes'),
-        options: o(['wix', 'Wix'], ['squarespace', 'Squarespace'], ['godaddy', 'GoDaddy'], ['wordpress', 'WordPress'], ['duda', 'Duda'], ['other', 'Other'], ['not_sure', 'Not sure']),
-      },
-      { id: 'has_domain', label: 'Do you own a domain name?', type: 'radio', required: true, options: YES_NO_UNSURE, help: 'A domain is your web address, like yourcompany.com.' },
-      { id: 'domain_name', label: 'Domain name', type: 'text', required: true, showIf: is('has_domain', 'yes'), placeholder: 'yourcompany.com', half: true },
-      {
-        id: 'domain_registrar', label: 'Where did you buy it?', type: 'select', required: true, showIf: is('has_domain', 'yes'), half: true,
-        options: o(['godaddy', 'GoDaddy'], ['namecheap', 'Namecheap'], ['squarespace', 'Squarespace or Google Domains'], ['cloudflare', 'Cloudflare'], ['other', 'Other'], ['not_sure', 'Not sure']),
+        id: 'website_platform', label: 'What is your website built on?', type: 'select', required: true, showIf: hasSite,
+        options: o(...PLATFORMS), guide: FIND_PLATFORM,
       },
       {
-        id: 'domain_access', label: 'Can you log in to that account?', type: 'radio', required: true, showIf: is('has_domain', 'yes'),
+        id: 'site_access', label: `Please invite ${KICKBORD_ACCESS_EMAIL} as an admin on your website`, type: 'radio', required: true,
+        showIf: (a, ctx) => keepingSite(a, ctx) && !!a.website_platform && a.website_platform !== 'not_sure',
+        help: 'We need this to add the chat assistant to your site. We never need your password.',
+        guide: (a) => platformInviteGuide(a),
+        options: o(
+          ['sent', `Done, I sent the invite to ${KICKBORD_ACCESS_EMAIL}`],
+          ['kickoff', 'Help me do this on our kickoff call'],
+          ['someone_else', 'Someone else manages my website'],
+        ),
+      },
+      {
+        id: 'has_domain', label: 'Do you own a domain name?', type: 'radio', required: true, options: YES_NO_UNSURE, showIf: rebuilding,
+        help: 'A domain is your web address, like yourcompany.com.',
+      },
+      {
+        id: 'domain_name', label: 'Domain name', type: 'text', required: true, placeholder: 'yourcompany.com',
+        showIf: (a, ctx) => rebuilding(a, ctx) && a.has_domain === 'yes',
+      },
+      {
+        id: 'domain_registrar', label: 'Where is your domain registered?', type: 'select', required: true,
+        showIf: (a, ctx) => rebuilding(a, ctx) && a.has_domain === 'yes',
+        options: o(...REGISTRARS), guide: FIND_REGISTRAR,
+      },
+      {
+        id: 'domain_access', label: 'Can you sign in to that account?', type: 'radio', required: true,
+        showIf: (a, ctx) => rebuilding(a, ctx) && a.has_domain === 'yes' && !!a.domain_registrar && a.domain_registrar !== 'not_sure',
         options: o(['me', 'Yes, I can'], ['someone_else', 'Someone else manages it'], ['not_sure', 'Not sure']),
       },
       {
-        id: 'domain_manager', label: 'Who manages it? Name and email', type: 'text', required: true,
-        showIf: (a) => a.has_domain === 'yes' && a.domain_access === 'someone_else',
+        id: 'domain_invite', label: `Please invite ${KICKBORD_ACCESS_EMAIL} to your domain account`, type: 'radio', required: true,
+        showIf: (a, ctx) => rebuilding(a, ctx) && a.has_domain === 'yes' && a.domain_access === 'me',
+        help: 'We need this to point your domain to your new website and set up your business email. We never need your password.',
+        guide: (a) => registrarInviteGuide(a),
+        options: o(['sent', `Done, I sent the invite to ${KICKBORD_ACCESS_EMAIL}`], ['kickoff', 'Help me do this on our kickoff call']),
       },
       {
-        id: 'domain_help', label: 'Want us to help you pick and register one?', type: 'radio', required: true, showIf: is('has_domain', 'no'), options: YES_NO,
+        id: 'web_contact_note', label: 'Who can help us with your website or domain?', type: 'note', showIf: needsWebContact,
+        body: 'No problem. Give us the name and email of whoever built your site or set up your domain, like a web designer, IT person, or family member. We will reach out to them directly.',
+      },
+      { id: 'web_contact_name', label: 'Their name', type: 'text', required: true, half: true, showIf: needsWebContact },
+      { id: 'web_contact_email', label: 'Their email', type: 'email', required: true, half: true, showIf: needsWebContact },
+      { id: 'web_contact_phone', label: 'Their phone (optional)', type: 'tel', half: true, showIf: needsWebContact },
+      {
+        id: 'domain_help', label: 'Want us to help you pick and register one?', type: 'radio', required: true, options: YES_NO,
+        showIf: (a, ctx) => rebuilding(a, ctx) && a.has_domain === 'no',
       },
       {
         id: 'email_preference', label: 'Which email should customers see on your website and emails?', type: 'radio', required: true,
+        showIf: rebuilding,
         options: [
           { value: 'new_domain_email', label: 'Set up a business email on my domain (recommended)', hint: 'For example you@yourcompany.com. It looks more professional, builds trust, and helps your emails reach the inbox. We set it up for you, and your old messages can be forwarded.' },
           { value: 'keep_current', label: 'Keep my current email' },
@@ -214,36 +269,82 @@ const BASE_STEPS: Step[] = [
       },
       {
         id: 'email_addresses_wanted', label: 'Which addresses would you like?', type: 'text', required: true,
-        showIf: is('email_preference', 'new_domain_email'), placeholder: 'info@, firstname@, service@',
+        showIf: (a, ctx) => rebuilding(a, ctx) && a.email_preference === 'new_domain_email', placeholder: 'info@, firstname@, service@',
       },
     ],
   },
   {
     id: 'google',
-    title: 'Google and online presence',
-    intro: 'Your Google Business Profile is how most local customers find you and read your reviews.',
+    title: 'Your Google Business Profile',
+    intro: 'Your Google Business Profile is the listing that shows on Google Maps and Search. It is how most local customers find you and read your reviews.',
+    showIf: (_a, ctx) => ctx.mods.reputation || ctx.mods.lsa,
     fields: [
-      { id: 'has_gbp', label: 'Do you have a Google Business Profile?', type: 'radio', required: true, options: YES_NO_UNSURE },
-      { id: 'gbp_url', label: 'Profile link, or business name and city as shown on Google', type: 'text', showIf: is('has_gbp', 'yes') },
-      { id: 'gbp_verified', label: 'Is it verified?', type: 'radio', showIf: is('has_gbp', 'yes'), options: YES_NO_UNSURE },
-      { id: 'gbp_owner_email', label: 'Which Google account (email) owns it?', type: 'email', required: true, showIf: is('has_gbp', 'yes') },
       {
-        id: 'gbp_access_ack', label: 'I will add Kickbord as a manager on my profile after you email me the steps.', type: 'checkbox', required: true, showIf: is('has_gbp', 'yes'),
+        id: 'has_gbp', label: 'Do you have a Google Business Profile?', type: 'radio', required: true, options: YES_NO_UNSURE,
+        help: 'Search your business name on Google. If a box with your business, reviews, and a map shows up, you have one.',
+      },
+      { id: 'gbp_url', label: 'Link to your Business Profile', type: 'text', required: true, showIf: is('has_gbp', 'yes'), placeholder: 'https://maps.app.goo.gl/...', guide: FIND_GBP_LINK },
+      { id: 'gbp_owner_email', label: 'Which Google email owns it?', type: 'email', required: true, showIf: is('has_gbp', 'yes'), guide: FIND_GBP_OWNER },
+      { id: 'gbp_verified', label: 'Does Google show it as verified?', type: 'radio', showIf: is('has_gbp', 'yes'), options: YES_NO_UNSURE, help: 'Verified profiles can be edited and show a "Your business on Google" panel when you are signed in.' },
+      {
+        id: 'gbp_connect_note', label: 'Next step', type: 'note', showIf: is('has_gbp', 'yes'),
+        body: 'After this form, your CRM setup guide will walk you through connecting your profile in a few clicks.',
       },
       {
-        id: 'gbp_visit', label: 'Do customers visit your location?', type: 'radio', required: true, showIf: is('has_gbp', 'no', 'not_sure'),
-        options: o(['service_area', 'No, I go to customers'], ['storefront', 'Yes, customers visit me'], ['both', 'Both']),
-        help: 'We will create and verify your profile. Google may ask for a short video or documents to prove the business is real.',
+        id: 'gbp_visit', label: 'Do customers come to your location?', type: 'radio', required: true, showIf: is('has_gbp', 'no', 'not_sure'),
+        options: o(['service_area', 'No, I go to my customers'], ['storefront', 'Yes, customers visit me'], ['both', 'Both']),
+        help: 'No worries. We will search for an existing profile first, then create one with you on our kickoff call.',
       },
-      { id: 'review_link', label: 'Existing Google review link (optional)', type: 'url' },
-      { id: 'social_facebook', label: 'Facebook page (optional)', type: 'text', half: true },
-      { id: 'social_instagram', label: 'Instagram (optional)', type: 'text', half: true },
-      { id: 'social_yelp', label: 'Yelp (optional)', type: 'text', half: true },
-      { id: 'social_other', label: 'Other profiles (optional)', type: 'text', half: true },
+      { id: 'gbp_google_email', label: 'Which Google or Gmail account should own your new profile?', type: 'email', required: true, showIf: is('has_gbp', 'no', 'not_sure'), help: 'Use an account you will keep. You will own the profile, and we will be added as a manager.', defaultValue: (a) => a.email ?? '' },
+      { id: 'gbp_video_note', label: 'Verification', type: 'note', showIf: is('has_gbp', 'no', 'not_sure'), guide: GBP_VIDEO, body: 'Google needs to confirm your business is real before your profile goes live.' },
+      { id: 'review_link', label: 'Existing Google review link (optional)', type: 'url', showIf: (a, ctx) => ctx.mods.reputation && a.has_gbp === 'yes' },
+      { id: 'social_facebook', label: 'Facebook page (optional)', type: 'text', half: true, showIf: (_a, ctx) => ctx.mods.reputation },
+      { id: 'social_instagram', label: 'Instagram (optional)', type: 'text', half: true, showIf: (_a, ctx) => ctx.mods.reputation },
+      { id: 'social_yelp', label: 'Yelp (optional)', type: 'text', half: true, showIf: (_a, ctx) => ctx.mods.reputation },
+      { id: 'social_other', label: 'Other profiles (optional)', type: 'text', half: true, showIf: (_a, ctx) => ctx.mods.reputation },
       {
-        id: 'tracking_ids', label: 'Ad or analytics accounts you already use (optional)', type: 'textarea',
+        id: 'tracking_ids', label: 'Ad or analytics accounts you already use (optional)', type: 'textarea', showIf: rebuilding,
         help: 'Google Analytics, Google Ads, Meta Pixel. IDs only. Never send us passwords.',
       },
+    ],
+  },
+  {
+    id: 'ads',
+    title: 'Google Local Services Ads',
+    intro: 'These are the "Google Screened" or "Google Guaranteed" ads at the very top of search results. You only pay when a customer contacts you. A few questions so we can set them up.',
+    showIf: (_a, ctx) => ctx.mods.lsa,
+    fields: [
+      {
+        id: 'lsa_has_account', label: 'Do you already have a Google Ads account?', type: 'radio', required: true, options: YES_NO_UNSURE,
+        guide: FIND_ADS_ACCOUNT,
+      },
+      {
+        id: 'lsa_customer_id', label: 'Your Google Ads customer ID', type: 'text', required: true, placeholder: '123-456-7890',
+        showIf: is('lsa_has_account', 'yes'), guide: FIND_CUSTOMER_ID,
+      },
+      { id: 'lsa_owner_email', label: 'Which Google email do you sign in with?', type: 'email', required: true, showIf: is('lsa_has_account', 'yes') },
+      {
+        id: 'lsa_link_note', label: 'What happens next', type: 'note', showIf: is('lsa_has_account', 'yes'),
+        body: `Kickbord will send a "link request" to your Google Ads account from ${KICKBORD_ACCESS_EMAIL}. Your CRM setup guide shows you exactly where to click Accept. You stay the owner and can remove us any time.`,
+      },
+      {
+        id: 'lsa_google_email', label: 'Which Google or Gmail account should own your ads account?', type: 'email', required: true,
+        showIf: is('lsa_has_account', 'no', 'not_sure'), defaultValue: (a) => a.gbp_owner_email || a.gbp_google_email || a.email || '',
+        help: 'We will create the account and make this email the owner. Using the same account as your Business Profile is easiest.',
+      },
+      {
+        id: 'lsa_budget', label: 'About how much would you like to spend on leads each month?', type: 'select', required: true,
+        options: o(['lt500', 'Under $500'], ['500_1000', '$500 to $1,000'], ['1000_2500', '$1,000 to $2,500'], ['2500_plus', 'More than $2,500'], ['not_sure', 'Not sure, advise me']),
+        help: 'Google bills this to your card directly. You can change it any time.',
+      },
+      {
+        id: 'lsa_job_types', label: 'Which jobs do you want leads for?', type: 'tags', required: true,
+        help: 'Google lets you turn job types on and off. Pick the ones you want more of.',
+        defaultValue: (a) => (Array.isArray(a.services) ? a.services.slice(0, 6) : []),
+      },
+      { id: 'lsa_field_staff', label: 'How many people work in the field, including you?', type: 'select', required: true, half: true, options: o(['1', 'Just me'], ['2_5', '2 to 5'], ['6_10', '6 to 10'], ['11_plus', '11 or more']), help: 'Some trades require a background check for each field worker.' },
+      { id: 'lsa_license', label: 'Contractor license (photo or PDF)', type: 'file', accept: '.pdf,.png,.jpg,.jpeg,.webp,.heic', maxFiles: 3, guide: LSA_DOCS },
+      { id: 'lsa_insurance', label: 'Certificate of insurance (PDF)', type: 'file', accept: '.pdf,.png,.jpg,.jpeg,.webp', maxFiles: 3 },
     ],
   },
   {
@@ -253,7 +354,7 @@ const BASE_STEPS: Step[] = [
       demoKept(a, ctx)
         ? 'Add anything that will make your site feel more like you.'
         : 'Help us make the site look like your business.',
-    showIf: askAnyLook,
+    showIf: (a, ctx) => rebuilding(a, ctx) && askAnyLook(a, ctx),
     fields: [
       { id: 'logo', label: 'Logo', type: 'file', accept: '.png,.jpg,.jpeg,.webp,.svg,.pdf', maxFiles: 3, help: 'No logo? We will make a clean text version.' },
       { id: 'brand_colors', label: 'Brand colors (optional)', type: 'text', showIf: askFullLook, placeholder: 'Navy and orange, or hex codes' },
@@ -287,6 +388,7 @@ const BASE_STEPS: Step[] = [
     id: 'voice',
     title: 'Your AI receptionist',
     intro: 'This sets up how calls and texts are answered, booked, and handed to you.',
+    showIf: (_a, ctx) => ctx.mods.receptionist,
     fields: [
       { id: 'phone_current', label: 'Business phone number customers call today', type: 'tel', required: true, half: true },
       {
@@ -294,8 +396,15 @@ const BASE_STEPS: Step[] = [
         options: o(['att', 'AT&T'], ['verizon', 'Verizon'], ['tmobile', 'T-Mobile'], ['google_voice', 'Google Voice'], ['voip', 'Other internet phone service'], ['landline', 'Landline'], ['other', 'Other'], ['not_sure', 'Not sure']),
       },
       {
-        id: 'ai_answer_mode', label: 'When should the AI answer?', type: 'radio', required: true,
-        options: o(['always', 'Every call'], ['after_hours_busy', 'After hours and when I am busy'], ['no_answer', 'Only when I do not pick up']),
+        id: 'ai_role', label: 'How should the AI receptionist work with your phone line?', type: 'radio', required: true,
+        options: [
+          { value: 'fallback', label: 'Back me up (recommended)', hint: 'Your phone rings first. The AI answers the calls you miss.' },
+          { value: 'main_line', label: 'Answer every call', hint: 'The AI picks up first and transfers to you when needed.' },
+        ],
+      },
+      {
+        id: 'ai_answer_mode', label: 'When should the AI pick up?', type: 'radio', required: true, showIf: is('ai_role', 'fallback'),
+        options: o(['no_answer', 'When I do not answer'], ['after_hours', 'Only after hours'], ['after_hours_busy', 'After hours, and when I do not answer during the day']),
       },
       {
         id: 'new_number_ok', label: 'Is it okay to use a new local number for the AI and forward calls to it?', type: 'radio', required: true, options: YES_NO_UNSURE,
@@ -368,6 +477,7 @@ const BASE_STEPS: Step[] = [
   {
     id: 'reviews',
     title: 'Your review funnel',
+    showIf: (_a, ctx) => ctx.mods.reputation,
     intro:
       'After each job, customers get a short message asking for a Google review. Every customer receives the same public review link, because Google does not allow filtering who gets asked based on how happy they are.',
     fields: [
@@ -439,7 +549,7 @@ const OTHER_PROMPTS: Record<string, string> = {
   role: 'What is your role?',
   entity_type: 'How is your business set up?',
   payment_methods: 'Which other payment methods do you accept?',
-  website_host: 'Who built or hosts your website?',
+  website_platform: 'What is your website built on?',
   domain_registrar: 'Where did you buy your domain?',
   carrier: 'Who provides your business phone number?',
   calendar: 'Which calendar do you use?',

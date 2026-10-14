@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { OnboardingFlow } from '@/components/onboarding/flow'
+import { parseServices } from '@/lib/onboarding/services'
 import { cleanDemoUrl, first } from '@/lib/onboarding/url'
 
 export const metadata: Metadata = {
@@ -17,6 +18,8 @@ const clip = (v: string | undefined, n = 120) => (v ? v.trim().slice(0, n) : '')
  * Query parameters (all optional):
  *   demo        https link to the client's demo site, shown on the website step
  *   first_name, last_name (or name), email, phone, company   prefill the form
+ *   services    comma-separated CRM services, e.g. "Kickbord Launch, Keeping Current Site".
+ *               Picks which sections are shown. Empty or "Custom" shows everything. Saved and sent in the webhook.
  *   plan        launch | grow (echoed in the webhook)
  *   cid         CRM contact id (echoed in the webhook)
  *   t           resume token (added automatically after the first save)
@@ -45,12 +48,14 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
   if (company) prefill.company_name = company
 
   const token = clip(first(sp.t), 100)
+  const services = parseServices(sp.services)
   return (
     <OnboardingFlow
       demoUrl={demoUrl}
       prefill={prefill}
       meta={{ plan: clip(first(sp.plan), 60) || undefined, cid: clip(first(sp.cid), 120) || undefined, demo: demoUrl ?? undefined }}
       tokenParam={token.length >= 20 ? token : null}
+      services={services}
     />
   )
 }

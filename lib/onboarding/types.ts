@@ -1,3 +1,6 @@
+import type { Guide } from './guides'
+import type { Mods } from './services'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Answers = Record<string, any>
 
@@ -10,6 +13,8 @@ export type Ctx = {
   /** An EIN is already stored for this submission (it is never sent back to the browser). */
   einOnFile: boolean
   einLast4: string | null
+  /** Which sections apply, based on the services in the link. */
+  mods: Mods
 }
 
 export type Option = { value: string; label: string; hint?: string }
@@ -32,6 +37,8 @@ export type Field = {
     | 'text' | 'email' | 'tel' | 'url' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'consent'
     | 'checkboxes' | 'tags' | 'hours' | 'rows' | 'file' | 'ein' | 'trade' | 'trades' | 'note' | 'demo'
   help?: Dyn<string | undefined>
+  /** Expandable step-by-step instructions with direct links. */
+  guide?: Dyn<Guide | undefined>
   placeholder?: string
   required?: Dyn<boolean>
   options?: Option[]

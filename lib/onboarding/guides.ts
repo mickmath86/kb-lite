@@ -298,3 +298,21 @@ export const LSA_DOCS: Guide = {
     'Insurance: ask your insurance agent for a "certificate of insurance" (COI) PDF. They can email it the same day.',
   ],
 }
+
+// ── IRS EIN confirmation letter ────────────────────────────────────────────
+
+export const FIND_EIN_LETTER: Guide = {
+  title: 'Where do I find my EIN letter?',
+  steps: [
+    'Look for a letter from the IRS called "CP 575" that came after you got your EIN. If you applied online, it was a PDF you could download or save at the end.',
+    'Search your email and computer for "CP 575" or "EIN". Check the folder where you keep business or tax papers.',
+    'Found it? Take a clear photo of the whole first page, or upload the PDF here.',
+    'Lost it? If you have an IRS Business Tax Account, sign in and download a new copy under your notices.',
+    'No online account? Call the IRS Business and Specialty Tax Line at 800-829-4933 (Monday to Friday, 7 a.m. to 7 p.m. your local time). Ask for "Letter 147C, EIN Previously Assigned". They can fax or mail it to you.',
+  ],
+  links: [
+    { label: 'IRS Business Tax Account', href: 'https://www.irs.gov/businesses/business-tax-account' },
+    { label: 'IRS help with EIN letters', href: 'https://www.irs.gov/businesses/employer-identification-number' },
+  ],
+  note: 'This is optional. Can\'t find it right now? Skip it and keep going. Carriers check that your business name matches IRS records, and this letter shows your exact legal name.',
+}

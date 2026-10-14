@@ -1,5 +1,5 @@
 import {
-  FIND_ADS_ACCOUNT, FIND_CUSTOMER_ID, FIND_GBP_LINK, FIND_GBP_OWNER, FIND_PLATFORM, FIND_REGISTRAR, GBP_VIDEO, LSA_DOCS,
+  FIND_ADS_ACCOUNT, FIND_CUSTOMER_ID, FIND_EIN_LETTER, FIND_GBP_LINK, FIND_GBP_OWNER, FIND_PLATFORM, FIND_REGISTRAR, GBP_VIDEO, LSA_DOCS,
   PLATFORMS, REGISTRARS, platformInviteGuide, registrarInviteGuide,
 } from './guides'
 import { KICKBORD_ACCESS_EMAIL } from './services'
@@ -103,9 +103,9 @@ const BASE_STEPS: Step[] = [
         help: 'Stored encrypted. It is never shown on your website or sent to other tools.',
       },
       {
-        id: 'ein_letter', label: 'IRS confirmation letter (optional)', type: 'file', showIf: is('has_ein', 'yes'),
-        accept: '.pdf,.png,.jpg,.jpeg,.webp', maxFiles: 1,
-        help: 'A photo or PDF of your CP 575 or 147C letter speeds up approval if the names need to match.',
+        id: 'ein_letter', label: 'IRS EIN confirmation letter, CP 575 or 147C (optional)', type: 'file', showIf: is('has_ein', 'yes'),
+        accept: '.pdf,.png,.jpg,.jpeg,.webp,.heic', maxFiles: 1, guide: FIND_EIN_LETTER,
+        help: 'A photo or PDF of the letter. It helps your texting registration get approved faster.',
       },
       {
         id: 'legal_name', label: 'Legal business name', type: 'text', required: true,

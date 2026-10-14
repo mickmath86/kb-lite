@@ -15,6 +15,7 @@ import {
   ApiError, completeSubmission, deleteFile, loadSubmission, saveSubmission, uploadFile, type Meta,
 } from '@/lib/onboarding/api'
 import { STEPS, defaultHours, resolve, validateStep, visibleFields, visibleSteps } from '@/lib/onboarding/schema'
+import { SERVICE_NAMES, parseServices, resolveMods, type ServiceSlug } from '@/lib/onboarding/services'
 import type { Answers, Ctx, FileRec } from '@/lib/onboarding/types'
 import { FieldRenderer, DemoPreview } from './fields'
 import { hostnameOf } from './util'
@@ -27,11 +28,13 @@ export type FlowProps = {
   prefill: Answers
   meta: Meta
   tokenParam: string | null
+  /** Services from the `services` query parameter. Empty means show every section. */
+  services: ServiceSlug[]
 }
 
 type Phase = 'loading' | 'welcome' | 'form' | 'done'
 
-export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }: FlowProps) {
+export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, services: servicesParam }: FlowProps) {
   const [phase, setPhase] = useState<Phase>('loading')
   const [token, setToken] = useState<string | null>(null)
   const [answers, setAnswers] = useState<Answers>(prefill)
@@ -40,6 +43,7 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
   const [einOnFile, setEinOnFile] = useState(false)
   const [einLast4, setEinLast4] = useState<string | null>(null)
   const [demoUrl, setDemoUrl] = useState<string | null>(demoParam)
+  const [services, setServices] = useState<ServiceSlug[]>(servicesParam)
   const [stepId, setStepId] = useState(STEPS[0].id)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)
@@ -48,7 +52,8 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
   const [resumeNote, setResumeNote] = useState(false)
   const [hp, setHp] = useState('')
 
-  const ctx: Ctx = useMemo(() => ({ files, demo: !!demoUrl, einOnFile, einLast4 }), [files, demoUrl, einOnFile, einLast4])
+  const mods = useMemo(() => resolveMods(services), [services])
+  const ctx: Ctx = useMemo(() => ({ files, demo: !!demoUrl, einOnFile, einLast4, mods }), [files, demoUrl, einOnFile, einLast4, mods])
   const steps = useMemo(() => visibleSteps(answers, ctx), [answers, ctx])
   const stepIdx = Math.max(0, steps.findIndex((s) => s.id === stepId))
   const step = steps[stepIdx] ?? steps[0]
@@ -70,6 +75,8 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
             setEinOnFile(saved.has_ein_on_file)
             setEinLast4(saved.ein_last4)
             setDemoUrl(saved.demo_url ?? demoParam)
+            // The link wins; otherwise use the services saved with this submission.
+            if (servicesParam.length === 0 && saved.services?.length) setServices(parseServices(saved.services))
             setAnswers({ ...prefill, ...saved.answers })
             if (saved.status === 'completed') return setPhase('done')
             const savedStep = STEPS[Math.min(saved.step, STEPS.length - 1)]
@@ -117,7 +124,7 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
     const payload = {
       step: idx, answers: a, ein: ein.replace(/\D/g, '') || undefined, hp,
     }
-    const fresh = { ...meta, demo: demoUrl ?? meta.demo }
+    const fresh = { ...meta, demo: demoUrl ?? meta.demo, services }
     let res
     try {
       res = await saveSubmission({ token, ...payload, meta: token ? undefined : fresh })
@@ -335,10 +342,16 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam }
               ))}
             </ul>
           </div>
-          {demoUrl && (
+          {!mods.all && (
+            <div className="mt-6 rounded-xl border border-olive-950/10 p-4 dark:border-white/10">
+              <p className="text-sm font-semibold text-olive-950 dark:text-white">Your plan</p>
+              <p className="mt-1 text-sm text-olive-700 dark:text-olive-300">{mods.services.map((s) => SERVICE_NAMES[s]).join(', ')}. We will only ask about what is in your plan.</p>
+            </div>
+          )}
+          {demoUrl && mods.site !== 'keep' && mods.site !== null && (
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-olive-950/10 bg-white p-4 dark:border-white/10 dark:bg-olive-900/50">
               <p className="text-sm text-olive-700 dark:text-olive-300">
-                We built a demo site for you: <span className="font-semibold text-olive-950 dark:text-white">{hostnameOf(demoUrl)}</span>. We will ask about it in step 4.
+                We built a demo site for you: <span className="font-semibold text-olive-950 dark:text-white">{hostnameOf(demoUrl)}</span>. We will ask about it in step {Math.max(1, visibleSteps(answers, ctx).findIndex((s) => s.id === 'web') + 1)}.
               </p>
               <a href={demoUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-olive-950 underline dark:text-white">Open it now</a>
             </div>

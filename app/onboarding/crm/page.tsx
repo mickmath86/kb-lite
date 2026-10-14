@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ButtonLink } from '@/components/elements/button'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon'
+import { type Mods, parseServices, resolveMods } from '@/lib/onboarding/services'
 
 export const metadata: Metadata = {
   title: 'CRM setup guide | Kickbord onboarding',
@@ -32,16 +33,29 @@ type Instruction = {
   details?: string[]
 }
 
-const SETUP_STEPS: {
+type Task = string | { text: string; when: (m: Mods) => boolean }
+
+type SetupStep = {
   title: string
   duration: string
   description: string
-  tasks: string[]
-  path: string
+  tasks: Task[]
+  /** CRM screen for this step. */
+  path?: string
+  /** Outside link for steps done in another app (for example Google Ads). */
+  externalUrl?: string
+  externalLabel?: string
+  /** One video per step for now. Can be swapped per service later. */
   videoUrl?: string
   instructionsTitle?: string
   instructions?: Instruction[]
-}[] = [
+  /** Show this step only for these services. Missing means always. */
+  when?: (m: Mods) => boolean
+}
+
+const googleWork = (m: Mods) => m.reputation || m.lsa
+
+const SETUP_STEPS: SetupStep[] = [
   {
     title: 'Confirm business details',
     duration: '5 min',
@@ -87,10 +101,11 @@ const SETUP_STEPS: {
     description:
       'Connect the external accounts Kickbord needs for bookings, messaging, reviews, and business visibility.',
     tasks: [
-      'Connect the calendar your team uses for appointments.',
-      'Connect the Google account that manages business access.',
-      'Link your Google Business Profile and confirm the correct location.',
+      { text: 'Connect the calendar your team uses for appointments.', when: (m) => m.receptionist },
+      { text: 'Connect the Google account that manages business access.', when: googleWork },
+      { text: 'Link your Google Business Profile and confirm the correct location.', when: googleWork },
     ],
+    when: (m) => m.receptionist || googleWork(m),
     path: '/settings/lc-integrations',
     videoUrl: 'https://www.youtube.com/embed/zwon4lQtUso',
   },
@@ -106,6 +121,73 @@ const SETUP_STEPS: {
     ],
     path: '/settings/phone_system?tab=manage',
     videoUrl: 'https://www.youtube.com/embed/JJ-PBcGx9iw',
+    when: (m) => m.receptionist,
+  },
+  {
+    title: 'Verify your Google Business Profile',
+    duration: '5 min',
+    description:
+      'Only needed if your profile is new or Google asks you to verify it. Google usually asks for a short video, recorded on your phone.',
+    tasks: [
+      'Record one continuous video, at least 30 seconds long.',
+      'Show your service area, your work truck or tools, and proof the business is yours.',
+      'Upload it from the verification screen in your Business Profile.',
+    ],
+    externalUrl: 'https://business.google.com/locations',
+    externalLabel: 'Open your Business Profiles',
+    instructionsTitle: 'How to record your verification video',
+    instructions: [
+      { text: 'Open your Business Profiles (link above) and sign in with the Google account that owns your profile.' },
+      { text: 'Click "Get verified" (or "Verify") on your business. If you do not see it, your profile is already verified and you can skip this step.' },
+      { text: 'Choose "Video" if Google offers it. Then record one continuous video on your phone, at least 30 seconds long. Do not stop and start again.' },
+      {
+        text: 'In the video, show:',
+        details: [
+          'Where you work: a street sign or landmark in the area you serve.',
+          'That the business is yours: your work truck with your logo, or your branded tools and equipment.',
+          'Proof you run it: open your license, a permit, or an invoice with your business name on it.',
+        ],
+      },
+      { text: 'Upload the video when Google asks. Review usually takes a few days. Google will email you when it is done.' },
+      { text: 'Stuck? Book a setup session below and we will do it with you.' },
+    ],
+    when: googleWork,
+  },
+  {
+    title: 'Accept Kickbord in Google Ads',
+    duration: '5 min',
+    description:
+      'This lets Kickbord run your Local Services Ads. You stay the owner and pay Google directly. You can remove access any time.',
+    tasks: [
+      'Accept the link request Kickbord sent to your Google Ads account.',
+      'Link your Google Business Profile to Google Ads so customers can book from your ads.',
+    ],
+    externalUrl: 'https://ads.google.com/',
+    externalLabel: 'Open Google Ads',
+    instructionsTitle: 'Where to click in Google Ads',
+    instructions: [
+      { text: 'Open Google Ads (link above) and sign in with the Google account you gave us in onboarding.' },
+      {
+        text: 'Accept the link request:',
+        details: [
+          'Click "Admin" (the gear icon) in the left menu.',
+          'Click "Access and security".',
+          'Click the "Managers" tab.',
+          'Find the request from Kickbord and click "Accept".',
+          'No request yet? We may not have sent it. We will text you when it is ready.',
+        ],
+      },
+      {
+        text: 'Link your Business Profile:',
+        details: [
+          'Click "Tools" in the left menu, then "Data manager".',
+          'Find "Google Business Profile" and click "Manage & link".',
+          'Pick your business and confirm the location is right, then click "Link".',
+        ],
+      },
+      { text: 'That is it. We handle the rest, including ad setup and booking from your ads.' },
+    ],
+    when: (m) => m.lsa,
   },
 ]
 
@@ -149,7 +231,21 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
   const sp = await searchParams
   const locationId = cleanLocationId(first(sp.location) ?? first(sp.location_id))
   const dashboardUrl = crmUrl('/dashboard', locationId)
-  const quickLinks = [{ label: 'Open CRM dashboard', href: dashboardUrl }, ...QUICK_LINKS]
+  const services = parseServices(sp.services)
+  const servicesParam = services.join(',')
+  const mods = resolveMods(services)
+  const steps = SETUP_STEPS.filter((step) => !step.when || step.when(mods)).map((step) => ({
+    ...step,
+    tasks: step.tasks.flatMap((t) => (typeof t === 'string' ? [t] : t.when(mods) ? [t.text] : [])),
+  }))
+  const totalMinutes = steps.reduce((n, step) => n + (parseInt(step.duration, 10) || 0), 0)
+  const stepWord = ['zero', 'one', 'two', 'three', 'four', 'five', 'six'][steps.length] ?? String(steps.length)
+  const onboardingHref = servicesParam ? `/onboarding?services=${encodeURIComponent(servicesParam)}` : '/onboarding'
+  const quickLinks = [
+    { label: 'Open CRM dashboard', href: dashboardUrl },
+    { label: 'Return to onboarding', href: onboardingHref },
+    ...QUICK_LINKS.slice(1),
+  ]
 
   if (first(sp.completed) === '1') {
     return (
@@ -184,11 +280,11 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
               Kickbord onboarding
             </p>
             <h1 className="mt-4 font-display text-5xl font-medium tracking-tight sm:text-6xl">
-              Set up your CRM in three steps
+              Set up your CRM in {stepWord} {steps.length === 1 ? 'step' : 'steps'}
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-8 text-olive-700 dark:text-olive-300">
-              Follow this guided checklist to configure your account, connect your calendar, organize your pipeline,
-              and make sure every new lead lands in the right place.
+              Follow this guided checklist to set up your account and connect the tools in your plan, so every new
+              lead lands in the right place.
             </p>
             <div className="mt-6 max-w-xl rounded-2xl border border-olive-950/10 bg-white/70 p-4 text-sm leading-6 text-olive-800 dark:border-white/10 dark:bg-white/10 dark:text-olive-200">
               <strong className="font-semibold text-olive-950 dark:text-white">Recommended:</strong> You should attempt
@@ -216,10 +312,10 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
             <div className="flex flex-wrap items-center justify-between gap-4 p-5">
               <div>
                 <p className="text-sm font-semibold">Full walkthrough</p>
-                <p className="text-sm text-olive-500 dark:text-olive-300">About 18 minutes total</p>
+                <p className="text-sm text-olive-500 dark:text-olive-300">About {totalMinutes} minutes total</p>
               </div>
               <span className="rounded-full bg-olive-100 px-3 py-1 text-xs font-medium text-olive-700 dark:bg-white/10 dark:text-olive-200">
-                3 lessons
+                {steps.length} lessons
               </span>
             </div>
           </div>
@@ -235,12 +331,12 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
             </p>
           </div>
           <div className="rounded-2xl border border-olive-950/10 bg-white px-4 py-3 text-sm text-olive-700 dark:border-white/10 dark:bg-white/5 dark:text-olive-300">
-            Estimated time: <strong className="font-semibold text-olive-950 dark:text-white">18 minutes</strong>
+            Estimated time: <strong className="font-semibold text-olive-950 dark:text-white">{totalMinutes} minutes</strong>
           </div>
         </div>
 
         <ol className="space-y-5">
-          {SETUP_STEPS.map((step, index) => (
+          {steps.map((step, index) => (
             <li
               key={step.title}
               className="rounded-2xl border border-olive-950/10 bg-white p-6 shadow-sm shadow-olive-950/5 dark:border-white/10 dark:bg-white/5 sm:p-8"
@@ -263,19 +359,21 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
                     {step.duration}
                   </span>
                   <a
-                    href={crmUrl(step.path, locationId)}
+                    href={step.externalUrl ?? crmUrl(step.path ?? '/dashboard', locationId)}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-sm font-semibold text-olive-950 underline decoration-olive-950/30 underline-offset-4 hover:decoration-olive-950 dark:text-white dark:decoration-white/40 dark:hover:decoration-white"
                   >
-                    Open related screen in CRM<ArrowNarrowRightIcon className="size-4" />
+                    {step.externalLabel ?? 'Open related screen in CRM'}<ArrowNarrowRightIcon className="size-4" />
                   </a>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <StepVideo stepNumber={index + 1} videoUrl={step.videoUrl} />
-              </div>
+              {(step.videoUrl || !step.externalUrl) && (
+                <div className="mt-6">
+                  <StepVideo stepNumber={index + 1} videoUrl={step.videoUrl} />
+                </div>
+              )}
 
               <div className="mt-6">
                 <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-olive-500 dark:text-olive-300">
@@ -334,6 +432,7 @@ export default async function CrmSetupGuidePage({ searchParams }: { searchParams
         </ol>
         <form method="post" action="/api/onboarding/crm-complete" className="mx-auto mt-8 max-w-4xl">
           {locationId && <input type="hidden" name="location_id" value={locationId} />}
+          {servicesParam && <input type="hidden" name="services" value={servicesParam} />}
           <button
             type="submit"
             className="w-full rounded-full bg-olive-950 px-6 py-4 text-base font-semibold text-white transition-colors hover:bg-olive-800 dark:bg-white dark:text-olive-950 dark:hover:bg-olive-100"

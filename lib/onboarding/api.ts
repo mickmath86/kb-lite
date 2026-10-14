@@ -9,7 +9,7 @@ const SUPABASE_ANON_KEY =
 const ENDPOINT = '/api/onboarding'
 const BUCKET = 'onboarding-uploads'
 
-export type Meta = { plan?: string; cid?: string; demo?: string }
+export type Meta = { plan?: string; cid?: string; demo?: string; services?: string[] }
 
 async function call<T>(payload: Record<string, unknown>): Promise<T> {
   let res: Response
@@ -40,6 +40,7 @@ export type Loaded = {
   answers: Answers
   plan: string | null
   demo_url: string | null
+  services: string[] | null
   has_ein_on_file: boolean
   ein_last4: string | null
   files: FileRec[]

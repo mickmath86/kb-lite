@@ -316,3 +316,28 @@ export const FIND_EIN_LETTER: Guide = {
   ],
   note: 'This is optional. Can\'t find it right now? Skip it and keep going. Carriers check that your business name matches IRS records, and this letter shows your exact legal name.',
 }
+
+export const FIND_EIN: Guide = {
+  title: 'How do I check if my business has an EIN?',
+  steps: [
+    'Look for an IRS letter called "CP 575". Your EIN is printed near the top.',
+    'Check a past business tax return. The EIN is at the top of the first page.',
+    'Check the paperwork from when you opened your business bank account, or any 1099 or payroll forms you sent out.',
+    'Ask your accountant or bookkeeper. They will usually know right away.',
+    'Still not sure? Call the IRS at 800-829-4933 (Monday to Friday, 7 a.m. to 7 p.m. your local time) and ask if your business has an EIN.',
+  ],
+  note: 'Most LLCs and corporations have one. If you find it, change your answer to "Yes".',
+}
+
+export const GET_EIN: Guide = {
+  title: 'How do I get an EIN?',
+  steps: [
+    'Open the IRS page below and click "Apply for an EIN". It is free. Never pay another website for one.',
+    'Have your Social Security number ready. You have to finish in one sitting, and it times out after 15 minutes of no activity.',
+    'Answer the questions. When you are approved, your EIN shows on the screen right away.',
+    'Download and save the confirmation letter (CP 575) at the end. You can upload it here.',
+    'Come back to this form using the link in your onboarding email, change your answer to "Yes", and enter your EIN.',
+  ],
+  links: [{ label: 'Apply for an EIN on IRS.gov', href: 'https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number' }],
+  note: 'Carriers can take about 15 days to see a new EIN, so we wait about two weeks before registering you.',
+}

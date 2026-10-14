@@ -1,5 +1,5 @@
 import {
-  FIND_ADS_ACCOUNT, FIND_CUSTOMER_ID, FIND_EIN_LETTER, FIND_GBP_LINK, FIND_GBP_OWNER, FIND_PLATFORM, FIND_REGISTRAR, GBP_VIDEO, LSA_DOCS,
+  FIND_ADS_ACCOUNT, FIND_CUSTOMER_ID, FIND_EIN, FIND_EIN_LETTER, GET_EIN, FIND_GBP_LINK, FIND_GBP_OWNER, FIND_PLATFORM, FIND_REGISTRAR, GBP_VIDEO, LSA_DOCS,
   PLATFORMS, REGISTRARS, platformInviteGuide, registrarInviteGuide,
 } from './guides'
 import { KICKBORD_ACCESS_EMAIL } from './services'
@@ -96,11 +96,35 @@ const BASE_STEPS: Step[] = [
       },
       {
         id: 'has_ein', label: 'Does your business have an EIN (federal tax ID)?', type: 'radio', required: true, options: YES_NO_UNSURE,
-        help: 'No EIN is fine. We can register you as a sole proprietor, with tighter texting limits.',
+        help: 'This is the 9-digit federal tax number for your business, like 12-3456789. It is not your Social Security number.',
+      },
+      {
+        id: 'ein_unsure_note', label: 'Check first', type: 'note', showIf: is('has_ein', 'not_sure'), guide: FIND_EIN,
+        body: 'Your EIN decides how much you can text, so it is worth a quick check.',
+      },
+      {
+        id: 'no_ein_note', label: 'Texting without an EIN', type: 'note', showIf: is('has_ein', 'no'), guide: GET_EIN,
+        body: 'Without an EIN, we register you as a sole proprietor. That works, but carriers limit you to 1 texting number and about 1,000 texts a day to T-Mobile customers. An EIN removes those limits, and getting one is free and takes about 15 minutes online.',
+      },
+      {
+        id: 'ein_plan', label: 'What would you like to do?', type: 'radio', required: true, showIf: is('has_ein', 'no'),
+        options: o(['sole_prop', 'Register me as a sole proprietor for now'], ['get_ein', 'I will get an EIN first']),
+      },
+      {
+        id: 'sp_email', label: 'Personal email for the registration', type: 'email', required: true,
+        showIf: (a) => a.has_ein === 'no' && a.ein_plan === 'sole_prop',
+        help: 'Must be a free email like Gmail, Yahoo, or Outlook.com. Carriers do not accept business emails for sole proprietors.',
+        defaultValue: (a) => (/@(gmail|yahoo|outlook|hotmail|icloud|aol)\./i.test(a.email ?? '') ? a.email : ''),
+      },
+      {
+        id: 'sp_mobile', label: 'Your personal cell phone', type: 'tel', required: true,
+        showIf: (a) => a.has_ein === 'no' && a.ein_plan === 'sole_prop',
+        help: 'Carriers text a code here to confirm it is you, and we will ask you for it. It must be a real cell phone, not Google Voice or an internet phone line.',
+        defaultValue: (a) => a.mobile ?? '',
       },
       {
         id: 'ein', label: 'EIN', type: 'ein', required: true, showIf: is('has_ein', 'yes'),
-        help: 'Stored encrypted. It is never shown on your website or sent to other tools.',
+        help: 'Stored encrypted. It is never shown on your website or sent to other tools. Got your EIN in the last 15 days? Carriers may not see it yet, so we may wait a bit before registering.',
       },
       {
         id: 'ein_letter', label: 'IRS EIN confirmation letter, CP 575 or 147C (optional)', type: 'file', showIf: is('has_ein', 'yes'),
@@ -109,7 +133,7 @@ const BASE_STEPS: Step[] = [
       },
       {
         id: 'legal_name', label: 'Legal business name', type: 'text', required: true,
-        help: 'Exactly as it appears on your tax or state records. Sole proprietors: your full legal name.',
+        help: 'Exactly as it appears on your IRS letter (CP 575 or 147C), including LLC or Inc. No EIN? Use your full legal name, without LLC or Inc.',
       },
       { id: 'dba_name', label: 'Doing business as (if different)', type: 'text' },
       { id: 'address_street', label: 'Business street address', type: 'text', required: true, autoComplete: 'address-line1' },

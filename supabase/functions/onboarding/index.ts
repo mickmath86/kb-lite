@@ -560,6 +560,18 @@ async function actionDeleteFile(body: Row) {
   return { status: 200, body: { ok: true } }
 }
 
+function a2pPath(row: Row): string {
+  const a = row.answers ?? {}
+  if (row.has_ein === true || a.has_ein === 'yes') return 'standard'
+  if (a.has_ein === 'not_sure') return 'needs_review'
+  if (row.has_ein === false || a.has_ein === 'no') {
+    if (a.ein_plan === 'get_ein') return 'waiting_on_ein'
+    if (a.ein_plan === 'sole_prop') return 'sole_proprietor'
+    return 'needs_review'
+  }
+  return ''
+}
+
 // Minimum the server insists on, regardless of client behavior.
 function missingCore(row: Row): string[] {
   const a = row.answers ?? {}
@@ -696,7 +708,8 @@ async function buildEnvelope(row: Row, event: Event) {
       has_ein: row.has_ein === true ? 'yes' : row.has_ein === false ? 'no' : '',
       ein_on_file: row.ein_encrypted ? 'yes' : 'no',
       ein_last4: row.ein_last4 ?? '',
-      path: row.has_ein === true ? 'standard' : row.has_ein === false ? 'sole_proprietor_or_pending' : '',
+      // standard | sole_proprietor | waiting_on_ein | needs_review | ''
+      path: a2pPath(row),
     },
     answers,
     account: {

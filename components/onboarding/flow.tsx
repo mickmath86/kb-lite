@@ -12,9 +12,10 @@ import {
   NavbarWithLogoActionsAndCenteredLinks,
 } from '@/components/sections/navbar-with-logo-actions-and-centered-links'
 import {
-  ApiError, completeSubmission, deleteFile, loadSubmission, saveSubmission, uploadFile, type Meta,
+  ApiError, completeSubmission, deleteFile, findSubmission, loadSubmission, saveSubmission, uploadFile, type Meta,
 } from '@/lib/onboarding/api'
 import { STEPS, defaultHours, resolve, validateStep, visibleFields, visibleSteps } from '@/lib/onboarding/schema'
+import { useIsMobileDevice } from '@/lib/onboarding/device'
 import { SERVICE_NAMES, parseServices, resolveMods, type ServiceSlug } from '@/lib/onboarding/services'
 import type { Answers, Ctx, FileRec } from '@/lib/onboarding/types'
 import { FieldRenderer, DemoPreview } from './fields'
@@ -51,6 +52,7 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, 
   const [uploading, setUploading] = useState<Record<string, number>>({})
   const [resumeNote, setResumeNote] = useState(false)
   const [hp, setHp] = useState('')
+  const isMobile = useIsMobileDevice()
 
   const mods = useMemo(() => resolveMods(services), [services])
   const ctx: Ctx = useMemo(() => ({ files, demo: !!demoUrl, einOnFile, einLast4, mods }), [files, demoUrl, einOnFile, einLast4, mods])
@@ -63,12 +65,22 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, 
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      const stored = tokenParam || (typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEY) : null)
+      let stored = tokenParam || (typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEY) : null)
+      // No saved link on this device: find their record by sub-account and email from the link (resume on any device).
+      if (!tokenParam && meta.location && meta.email) {
+        try {
+          const found = await findSubmission(meta.location, meta.email)
+          stored = found.token
+        } catch { /* not started yet */ }
+      }
       if (stored) {
         try {
           const saved = await loadSubmission(stored)
           if (cancelled) return
-          const differentClient = !tokenParam && demoParam && saved.demo_url && saved.demo_url !== demoParam
+          const differentClient = !tokenParam && (
+            (demoParam && saved.demo_url && saved.demo_url !== demoParam) ||
+            (meta.location && saved.location_id && saved.location_id !== meta.location)
+          )
           if (!differentClient) {
             setToken(saved.token)
             setFiles(saved.files)
@@ -125,9 +137,12 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, 
       step: idx, answers: a, ein: ein.replace(/\D/g, '') || undefined, hp,
     }
     const fresh = { ...meta, demo: demoUrl ?? meta.demo, services }
+    const visible = visibleSteps(a, ctx)
+    const vIdx = visible.findIndex((s) => s.id === nextStepId)
+    const progress = vIdx >= 0 ? { step_id: nextStepId, step_number: vIdx + 1, step_count: visible.length } : undefined
     let res
     try {
-      res = await saveSubmission({ token, ...payload, meta: token ? undefined : fresh })
+      res = await saveSubmission({ token, ...payload, progress, meta: token ? undefined : fresh })
     } catch (e) {
       // The saved record no longer exists (for example it was cleared). Start a new one with the current
       // answers instead of blocking the client.
@@ -138,7 +153,7 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, 
         if (lostFiles) setFiles([])
         if (lostEin) { setEinOnFile(false); setEinLast4(null) }
         if (lostFiles || lostEin) setBanner('Your saved session was reset, so please re-enter your EIN and re-upload any files.')
-        res = await saveSubmission({ token: null, ...payload, meta: fresh })
+        res = await saveSubmission({ token: null, ...payload, progress, meta: fresh })
       } else {
         throw e
       }
@@ -329,6 +344,11 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, 
           <p className="mt-3 text-base text-olive-600 dark:text-olive-400">
             This takes about 10 to 15 minutes. Your progress saves automatically, so you can stop and pick up later from the same link.
           </p>
+          {isMobile && (
+            <p className="mt-6 rounded-xl border border-olive-950/10 bg-white p-4 text-sm text-olive-700 dark:border-white/10 dark:bg-olive-900/50 dark:text-olive-300">
+              You can answer these questions on your phone. The last part, setting up your account, needs a computer. Your answers save as you go, so you can switch any time using the link in your email.
+            </p>
+          )}
           <div className="mt-8 rounded-xl bg-olive-950/5 p-5 dark:bg-white/5">
             <p className="text-sm font-semibold text-olive-950 dark:text-white">It helps to have on hand</p>
             <ul className="mt-3 flex flex-col gap-2.5">
@@ -367,33 +387,47 @@ export function OnboardingFlow({ demoUrl: demoParam, prefill, meta, tokenParam, 
   }
 
   if (phase === 'done') {
-    const timeline: [string, string][] = [
-      ['Now', 'We review your answers and start your texting registration. Carrier approval can take a few days.'],
-      ['Days 2 to 10', 'We build your website, AI receptionist, and review funnel.'],
-      ['Days 10 to 14', 'You review everything and request changes.'],
-      ['Weeks 2 to 3', 'You go live.'],
-    ]
+    const setupUrl = (() => {
+      const u = new URLSearchParams()
+      if (token) u.set('t', token)
+      if (meta.location) u.set('location', meta.location)
+      if (services.length) u.set('services', services.join(','))
+      if (meta.email) u.set('email', meta.email)
+      return `/onboarding/setup?${u.toString()}`
+    })()
     return shell(
       <div className="flex flex-1 items-start justify-center px-6 py-12 md:py-16">
         <div className="w-full max-w-2xl">
-          <p className="mb-2 font-mono text-xs font-semibold tracking-widest text-olive-500 uppercase">All set</p>
+          <p className="mb-2 font-mono text-xs font-semibold tracking-widest text-olive-500 uppercase">Step 1 of 2 done</p>
           <h1 className="font-display text-3xl tracking-tight text-olive-950 sm:text-4xl dark:text-white">
-            {answers.first_name ? `Thank you, ${answers.first_name}.` : 'Thank you.'} We have everything we need to start.
+            {answers.first_name ? `Thank you, ${answers.first_name}.` : 'Thank you.'} Your answers are in.
           </h1>
-          <ol className="mt-8 flex flex-col gap-4">
-            {timeline.map(([when, what]) => (
-              <li key={when} className="flex gap-4 rounded-xl border border-olive-950/10 bg-white p-4 dark:border-white/10 dark:bg-olive-900/50">
-                <span className="w-28 shrink-0 text-sm font-semibold text-olive-950 dark:text-white">{when}</span>
-                <span className="text-sm text-olive-700 dark:text-olive-300">{what}</span>
-              </li>
-            ))}
-          </ol>
-          {answers.has_gbp === 'yes' && (
-            <p className="mt-6 text-sm text-olive-700 dark:text-olive-300">Watch your inbox. We will email the steps to add Kickbord as a manager on your Google Business Profile.</p>
+          <p className="mt-3 text-base text-olive-600 dark:text-olive-400">
+            One last part: set up your account. It takes about 20 to 30 minutes, with a short video for each step.
+          </p>
+          {isMobile ? (
+            <div className="mt-8 rounded-xl border border-olive-950/10 bg-white p-5 dark:border-white/10 dark:bg-olive-900/50">
+              <p className="text-sm font-semibold text-olive-950 dark:text-white">Please switch to a computer for this part</p>
+              <p className="mt-2 text-sm text-olive-700 dark:text-olive-300">
+                Account setup does not work on phones or tablets. Open the onboarding link from your email on a desktop or laptop and you will land right here. Everything you entered is saved.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button
+                  onClick={() => {
+                    navigator.clipboard?.writeText(new URL(setupUrl, window.location.origin).toString())
+                    setResumeNote(true)
+                  }}
+                >
+                  {resumeNote ? 'Link copied' : 'Copy setup link'}
+                </Button>
+                <a href={setupUrl} className="self-center text-sm text-olive-500 underline">I am on a computer</a>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-8">
+              <ButtonLink href={setupUrl} size="lg">Continue to account setup <ArrowNarrowRightIcon /></ButtonLink>
+            </div>
           )}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="/lp/booking" size="lg">Book your kickoff call <ArrowNarrowRightIcon /></ButtonLink>
-          </div>
         </div>
       </div>,
     )

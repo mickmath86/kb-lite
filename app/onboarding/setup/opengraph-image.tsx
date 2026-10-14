@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Kickbord CRM setup guide'
+export const alt = 'Kickbord account setup'
 export const size = {
   width: 1200,
   height: 630,
@@ -53,10 +53,10 @@ export default function Image() {
               textTransform: 'uppercase',
             }}
           >
-            CRM onboarding guide
+            Kickbord onboarding
           </div>
           <div style={{ fontSize: 76, fontWeight: 800, lineHeight: 1.05, letterSpacing: '-3px' }}>
-            Set up your CRM in three guided steps.
+            Set up your account, step by step.
           </div>
         </div>
 

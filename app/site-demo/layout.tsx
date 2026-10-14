@@ -12,7 +12,7 @@ export default function SiteDemoLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-olive-950">
+    <div className="relative h-dvh w-dvw overflow-hidden bg-olive-950">
       {children}
       <VideoWidget />
     </div>

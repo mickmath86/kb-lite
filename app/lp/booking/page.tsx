@@ -89,7 +89,7 @@ export default async function LpBookingPage({
       
       photo={
         <iframe
-          src="https://calendar.kickbord.com/widget/booking/zTv2dT5rGV4YCRSA1s25"
+          src="https://calendar.kickbord.com/widget/booking/joLrz73XMe6vKuIOrKfL"
           allow="payment"
           style={{ width: '100%', border: 'none', overflow: 'hidden' }}
           scrolling="no"

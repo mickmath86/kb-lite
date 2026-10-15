@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Your Kickbord call is booked</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; width:100% !important; background:#f4f4f0; }
+  table { border-collapse:collapse; mso-table-lspace:0; mso-table-rspace:0; }
+  img { border:0; outline:none; text-decoration:none; display:block; -ms-interpolation-mode:bicubic; }
+  a { color:#0c0c09; }
+  .serif { font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight:400; }
+  .sans { font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+  @media only screen and (max-width:620px) {
+    .container { width:100% !important; }
+    .px { padding-left:24px !important; padding-right:24px !important; }
+    .h1 { font-size:36px !important; line-height:40px !important; }
+    .stack { display:block !important; width:100% !important; }
+    .stack-gap { padding-top:12px !important; padding-left:0 !important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background:#f4f4f0;">
+
+<!-- Preview text (shows next to the subject line in the inbox) -->
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f4f4f0;">
+  You're booked for {{appointment.day_of_week}}, {{appointment.only_start_date}} at {{appointment.only_start_time}}. Here is a 2-minute video on what to expect.
+  &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f4f0;">
+  <tr>
+    <td align="center" style="padding:32px 12px;">
+
+      <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px;">
+
+        <!-- Logo -->
+        <tr>
+          <td align="left" class="px" style="padding:0 40px 24px 40px;">
+            <a href="https://www.kickbord.com" target="_blank" style="text-decoration:none;">
+              <img src="https://www.kickbord.com/Logos/Kb-logo.png" width="150" alt="Kickbord" style="width:150px; height:auto;">
+            </a>
+          </td>
+        </tr>
+
+        <!-- Card -->
+        <tr>
+          <td style="background:#ffffff; border:1px solid #e8e8e3; border-radius:16px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+              <!-- Heading -->
+              <tr>
+                <td class="px sans" style="padding:40px 40px 0 40px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+                  <p style="margin:0 0 12px 0; font-size:12px; line-height:16px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#fc2201;">You're booked</p>
+                  <h1 class="h1 serif" style="margin:0; font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight:400; font-size:44px; line-height:48px; color:#0c0c09;">
+                    See you soon, {{contact.first_name}}.
+                  </h1>
+                  <p style="margin:16px 0 0 0; font-size:16px; line-height:26px; color:#474739;">
+                    Thanks for booking a call with Kickbord. We'll look at how you get jobs today and show you where AI can bring in more calls, more reviews, and more booked work, without adding to your day.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Appointment details -->
+              <tr>
+                <td class="px" style="padding:28px 40px 0 40px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f4f0; border-radius:12px;">
+                    <tr>
+                      <td class="sans" style="padding:24px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                          <tr>
+                            <td style="padding:0 0 14px 0; font-size:12px; line-height:16px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#7c7c67;">When</td>
+                          </tr>
+                          <tr>
+                            <td class="serif" style="padding:0; font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-size:26px; line-height:32px; color:#0c0c09;">
+                              {{appointment.day_of_week}}, {{appointment.only_start_date}}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding:4px 0 0 0; font-size:16px; line-height:24px; color:#474739;">
+                              {{appointment.only_start_time}} to {{appointment.only_end_time}} ({{appointment.timezone}})
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding:18px 0 0 0; font-size:12px; line-height:16px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#7c7c67;">Where</td>
+                          </tr>
+                          <tr>
+                            <td style="padding:6px 0 0 0; font-size:16px; line-height:24px; color:#0c0c09; word-break:break-word;">
+                              {{appointment.meeting_location}}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding:18px 0 0 0; font-size:12px; line-height:16px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#7c7c67;">With</td>
+                          </tr>
+                          <tr>
+                            <td style="padding:6px 0 0 0; font-size:16px; line-height:24px; color:#0c0c09;">
+                              {{appointment.user.name}}, Kickbord
+                            </td>
+                          </tr>
+                        </table>
+
+                        <!-- Add to calendar button -->
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:22px;">
+                          <tr>
+                            <td align="center" bgcolor="#0c0c09" style="border-radius:999px;">
+                              <!--[if mso]>
+                              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{appointment.add_to_calendar}}" style="height:44px;v-text-anchor:middle;width:200px;" arcsize="50%" stroke="f" fillcolor="#0c0c09">
+                              <w:anchorlock/><center style="color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;">Add to calendar</center>
+                              </v:roundrect>
+                              <![endif]-->
+                              <!--[if !mso]><!-->
+                              <a href="{{appointment.add_to_calendar}}" target="_blank" class="sans" style="display:inline-block; padding:12px 26px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:600; color:#ffffff; text-decoration:none; border-radius:999px;">Add to calendar</a>
+                              <!--<![endif]-->
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Video -->
+              <tr>
+                <td class="px sans" style="padding:36px 40px 0 40px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+                  <h2 class="serif" style="margin:0; font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight:400; font-size:30px; line-height:36px; color:#0c0c09;">Watch this before we talk</h2>
+                  <p style="margin:8px 0 16px 0; font-size:15px; line-height:24px; color:#474739;">A 2-minute look at what we'll cover, so you can get the most out of our time.</p>
+                  <!-- Replace VIDEO_LINK (both places) with your YouTube, Loom, or Vimeo link -->
+                  <a href="VIDEO_LINK" target="_blank" style="text-decoration:none;">
+                    <img src="https://www.kickbord.com/email/booking-video-thumb.jpg" width="520" alt="Play video: what to expect on your Kickbord call" style="width:100%; max-width:520px; height:auto; border-radius:12px;">
+                  </a>
+                  <p style="margin:12px 0 0 0; font-size:14px; line-height:20px;">
+                    <a href="VIDEO_LINK" target="_blank" style="color:#0c0c09; font-weight:600; text-decoration:underline;">Play the video &rarr;</a>
+                  </p>
+                </td>
+              </tr>
+
+              <!-- What to expect -->
+              <tr>
+                <td class="px sans" style="padding:36px 40px 0 40px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+                  <h2 class="serif" style="margin:0 0 16px 0; font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight:400; font-size:30px; line-height:36px; color:#0c0c09;">What we'll cover</h2>
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="36" valign="top" style="padding:0 0 16px 0;">
+                        <div style="width:26px; height:26px; border-radius:13px; background:#0c0c09; color:#ffffff; font-size:13px; line-height:26px; font-weight:600; text-align:center;">1</div>
+                      </td>
+                      <td valign="top" style="padding:2px 0 16px 0; font-size:15px; line-height:23px; color:#474739;">
+                        <strong style="color:#0c0c09;">Where your jobs come from today.</strong> Calls, Google, referrals, and what slips through the cracks.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="36" valign="top" style="padding:0 0 16px 0;">
+                        <div style="width:26px; height:26px; border-radius:13px; background:#0c0c09; color:#ffffff; font-size:13px; line-height:26px; font-weight:600; text-align:center;">2</div>
+                      </td>
+                      <td valign="top" style="padding:2px 0 16px 0; font-size:15px; line-height:23px; color:#474739;">
+                        <strong style="color:#0c0c09;">What AI can take off your plate.</strong> Answering missed calls, replying to leads in seconds, and asking for reviews.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="36" valign="top" style="padding:0;">
+                        <div style="width:26px; height:26px; border-radius:13px; background:#fc2201; color:#ffffff; font-size:13px; line-height:26px; font-weight:600; text-align:center;">3</div>
+                      </td>
+                      <td valign="top" style="padding:2px 0 0 0; font-size:15px; line-height:23px; color:#474739;">
+                        <strong style="color:#0c0c09;">A clear plan and price.</strong> No pressure. You'll leave knowing exactly what we'd set up for you.
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Prep -->
+              <tr>
+                <td class="px sans" style="padding:28px 40px 0 40px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #fc2201;">
+                    <tr>
+                      <td style="padding:2px 0 2px 16px; font-size:15px; line-height:24px; color:#474739;">
+                        <strong style="color:#0c0c09;">Have these handy, if you can:</strong> your website address, your Google Business Profile, and a rough idea of how many calls you get in a week.
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Reschedule -->
+              <tr>
+                <td class="px sans" style="padding:32px 40px 40px 40px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #e8e8e3;">
+                    <tr>
+                      <td style="padding:24px 0 0 0; font-size:15px; line-height:24px; color:#474739;">
+                        Need a different time? No problem.
+                        <a href="{{appointment.reschedule_link}}" target="_blank" style="color:#0c0c09; font-weight:600; text-decoration:underline;">Reschedule</a>
+                        &nbsp;or&nbsp;
+                        <a href="{{appointment.cancellation_link}}" target="_blank" style="color:#0c0c09; font-weight:600; text-decoration:underline;">cancel</a>.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:20px 0 0 0; font-size:15px; line-height:24px; color:#474739;">
+                        Talk soon,<br>
+                        <span class="serif" style="font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-size:24px; line-height:32px; color:#0c0c09;">{{appointment.user.name}}</span><br>
+                        <span style="font-size:14px; color:#7c7c67;">Kickbord &middot; {{appointment.user.phone}}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td align="center" class="px sans" style="padding:28px 40px 0 40px; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:12px; line-height:18px; color:#7c7c67;">
+            <img src="https://www.kickbord.com/logos/kb-icon-blk.png" width="28" alt="" style="width:28px; height:auto; margin:0 auto 10px auto; opacity:0.8;">
+            Kickbord &middot; AI for the trades &middot; Ventura, CA<br>
+            <a href="https://www.kickbord.com" target="_blank" style="color:#7c7c67; text-decoration:underline;">kickbord.com</a>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>

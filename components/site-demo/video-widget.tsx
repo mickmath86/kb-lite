@@ -6,7 +6,7 @@ import { ButtonLink } from '@/components/elements/button'
 import { MinusIcon } from '@/components/icons/minus-icon'
 import { PlusIcon } from '@/components/icons/plus-icon'
 
-const RESCHEDULE_CALL_URL = 'https://calendar.kickbord.com/widget/bookings/demo-call-mark-mike'
+const RESCHEDULE_CALL_URL = 'https://calendar.kickbord.com/widget/bookings/kickbord-demo-30-mins'
 const WISTIA_MEDIA_ID = '65v6h1zxns'
 
 const wistiaFallbackStyles = `

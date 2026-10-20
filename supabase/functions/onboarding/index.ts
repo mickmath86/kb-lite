@@ -67,7 +67,7 @@ function corsHeaders(origin: string | null) {
   const allowed = origin && ORIGIN_OK.some((re) => re.test(origin))
   return {
     'Access-Control-Allow-Origin': allowed ? origin! : 'https://www.kickbord.com',
-    'Access-Control-Allow-Headers': 'content-type, authorization, apikey, x-admin-token',
+    'Access-Control-Allow-Headers': 'content-type, authorization, apikey, x-admin-token, x-portal-auth, x-portal-client-id',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     Vary: 'Origin',
   }
@@ -193,6 +193,48 @@ async function findByToken(token: unknown): Promise<Row | null> {
   return data
 }
 
+// ── portal identity ──────────────────────────────────────────────────────────
+// The Kickbord portal sends the signed-in user's Supabase access token (x-portal-auth) and the client
+// being viewed (x-portal-client-id). Both are verified here. Requests without them (kickbord.com) are
+// unchanged. A verified portal client is linked to the onboarding record through client_id.
+type PortalClient = { id: string; location_id: string | null; email: string | null }
+
+async function portalClient(req: Request): Promise<{ client: PortalClient | null; error?: string }> {
+  const raw = req.headers.get('x-portal-auth') ?? ''
+  if (!raw) return { client: null }
+  const jwt = raw.replace(/^Bearer\s+/i, '').trim()
+  const { data: auth, error } = await sb.auth.getUser(jwt)
+  if (error || !auth?.user) return { client: null, error: 'Your portal session expired. Please sign in again.' }
+  const { data: me } = await sb.from('clients').select('id, role, location_id, email').eq('user_id', auth.user.id).maybeSingle()
+  if (!me) return { client: null, error: 'No portal account found for this sign-in.' }
+  const want = (req.headers.get('x-portal-client-id') ?? '').trim()
+  if (!want || want === me.id) return { client: { id: me.id, location_id: me.location_id, email: me.email } }
+  // Viewing as another client is for admins only.
+  if (me.role !== 'admin' || !/^[0-9a-f-]{36}$/i.test(want)) return { client: null, error: 'Not allowed.' }
+  const { data: other } = await sb.from('clients').select('id, location_id, email').eq('id', want).maybeSingle()
+  if (!other) return { client: null, error: 'Unknown client.' }
+  return { client: { id: other.id, location_id: other.location_id, email: other.email } }
+}
+
+async function findByClient(clientId: string): Promise<Row | null> {
+  const { data } = await sb
+    .from('client_onboardings')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+  return data?.[0] ?? null
+}
+
+/** A record linked to a different portal client is never shown to or changed by this one. */
+const otherClients = (row: Row | null, pc: PortalClient | null) => !!(row && pc && row.client_id && row.client_id !== pc.id)
+
+async function linkClient(row: Row, pc: PortalClient | null) {
+  if (!pc || row.client_id) return
+  await sb.from('client_onboardings').update({ client_id: pc.id }).eq('id', row.id).is('client_id', null)
+  row.client_id = pc.id
+}
+
 async function listFiles(submissionId: string) {
   const { data } = await sb
     .from('client_onboarding_files')
@@ -218,7 +260,7 @@ async function applyEin(update: Row, ein: unknown) {
   return null
 }
 
-async function actionSave(body: Row) {
+async function actionSave(body: Row, pc: PortalClient | null = null) {
   if (body.hp) return { status: 200, body: { ok: true, token: 'ignored' } } // honeypot
   const answers = cleanAnswers(body.answers)
   const step = Number.isInteger(body.step) ? Math.max(0, Math.min(99, body.step)) : 0
@@ -233,6 +275,7 @@ async function actionSave(body: Row) {
   const stepId = prog ? str(prog.step_id, 40) : null
 
   let row = body.token ? await findByToken(body.token) : null
+  if (otherClients(row, pc)) row = null
   if (body.token && !row) return { status: 404, body: { error: 'Unknown or expired link.' } }
   if (row?.status === 'completed') return { status: 200, body: { ok: true, token: row.token, status: 'completed' } }
 
@@ -244,8 +287,11 @@ async function actionSave(body: Row) {
     const location = cleanLocation(meta.location)
     const linkEmail = cleanEmail(meta.email)
     // Same client opening their link on another device: continue the existing record.
-    const existing = location && linkEmail ? await findByLocation(location, linkEmail) : null
+    let existing = pc ? await findByClient(pc.id) : null
+    if (!existing && location && linkEmail) existing = await findByLocation(location, linkEmail)
+    if (otherClients(existing, pc)) existing = null
     if (existing) {
+      await linkClient(existing, pc)
       if (existing.status === 'completed') return { status: 200, body: { ok: true, token: existing.token, status: 'completed' } }
       row = existing
     }
@@ -253,6 +299,7 @@ async function actionSave(body: Row) {
   if (!row) {
     const meta = body.meta && typeof body.meta === 'object' ? body.meta : {}
     const insert = {
+      client_id: pc?.id ?? null,
       location_id: cleanLocation(meta.location),
       link_email: cleanEmail(meta.email),
       ...base,
@@ -266,6 +313,7 @@ async function actionSave(body: Row) {
     if (error) return { status: 500, body: { error: 'Could not save. Please try again.' } }
     row = data
   } else {
+    await linkClient(row, pc)
     const { error } = await sb.from('client_onboardings').update(base).eq('id', row.id)
     if (error) return { status: 500, body: { error: 'Could not save. Please try again.' } }
   }
@@ -314,11 +362,15 @@ async function findByLocation(location: string, email: string): Promise<Row | nu
   return null
 }
 
-async function actionFind(body: Row) {
+async function actionFind(body: Row, pc: PortalClient | null = null) {
   const location = cleanLocation(body.location)
   const email = cleanEmail(body.email)
-  if (!location || !email) return { status: 400, body: { error: 'Missing details.' } }
-  const row = await findByLocation(location, email)
+  let row = pc ? await findByClient(pc.id) : null
+  if (!row) {
+    if (!location || !email) return pc ? { status: 404, body: { error: 'Not found.' } } : { status: 400, body: { error: 'Missing details.' } }
+    row = await findByLocation(location, email)
+    if (otherClients(row, pc)) row = null
+  }
   if (!row) return { status: 404, body: { error: 'Not found.' } }
   return { status: 200, body: { token: row.token, status: row.status } }
 }
@@ -474,9 +526,10 @@ function cleanServices(v: unknown): string[] {
   return out.slice(0, 10)
 }
 
-async function actionLoad(body: Row) {
+async function actionLoad(body: Row, pc: PortalClient | null = null) {
   const row = await findByToken(body.token)
-  if (!row) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  if (!row || otherClients(row, pc)) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  await linkClient(row, pc)
   const files = await listFiles(row.id)
   return {
     status: 200,
@@ -771,14 +824,15 @@ async function deliver(row: Row) {
   return r
 }
 
-async function actionComplete(body: Row) {
+async function actionComplete(body: Row, pc: PortalClient | null = null) {
   let saved: { status: number; body: Row } | null = null
   if (body.answers) {
-    saved = await actionSave({ ...body, step: body.step ?? 99 })
+    saved = await actionSave({ ...body, step: body.step ?? 99 }, pc)
     if (saved.status !== 200) return saved
   }
   const row = await findByToken(body.token ?? saved?.body?.token)
-  if (!row) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  if (!row || otherClients(row, pc)) return { status: 404, body: { error: 'Unknown or expired link.' } }
+  await linkClient(row, pc)
   if (row.status === 'completed') return { status: 200, body: { ok: true, status: 'completed' } }
 
   const missing = missingCore(row)
@@ -845,17 +899,20 @@ Deno.serve(async (req) => {
   if (!body || typeof body !== 'object') return json({ error: 'Invalid request.' }, 400, origin)
 
   try {
+    const portal = await portalClient(req)
+    if (portal.error) return json({ error: portal.error }, 401, origin)
+    const pc = portal.client
     const run = ({
-      save: () => actionSave(body),
-      load: () => actionLoad(body),
-      find: () => actionFind(body),
+      save: () => actionSave(body, pc),
+      load: () => actionLoad(body, pc),
+      find: () => actionFind(body, pc),
       setup_save: () => actionSetupSave(body),
       setup_complete: () => actionSetupComplete(body),
       create_login: () => actionCreateLogin(body),
       sign_upload: () => actionSignUpload(body),
       register_file: () => actionRegisterFile(body),
       delete_file: () => actionDeleteFile(body),
-      complete: () => actionComplete(body),
+      complete: () => actionComplete(body, pc),
       resend: () => actionResend(req, body),
       reveal_ein: () => actionRevealEin(req, body),
       preview: () => actionPreview(req, body),

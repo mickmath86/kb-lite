@@ -6,7 +6,8 @@
 // the address bar on load, and can only be framed by Assembly.
 //
 // Assembly app setup: Client URL = https://www.kickbord.com/assembly/crm-login
-// Assembly appends ?token=... The server side lives in the `crm-login` Edge Function.
+// Assembly appends ?token=... The Assembly-built onboarding app instead embeds a signed ?k= link it gets
+// from POST /api/crm-login {action:'link'}. The server side lives in the `crm-login` Edge Function.
 
 export const dynamic = 'force-dynamic'
 
@@ -18,7 +19,11 @@ const FRAME_ANCESTORS = [
   ...(process.env.ASSEMBLY_PORTAL_ORIGINS ?? '').split(/[\s,]+/).filter((o) => /^https:\/\/[a-z0-9.*-]+$/i.test(o)),
 ]
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Signed links (?k=) come from the Assembly-built onboarding app, whose sandbox origin is not
+  // published. Those links are bound to one client and expire in 30 minutes, so any https parent may
+  // frame them. Assembly session tokens (?token=) stay limited to Assembly's own origins.
+  const signedLink = new URL(request.url).searchParams.has('k')
   const nonce = crypto.randomUUID().replace(/-/g, '')
   const csp = [
     "default-src 'none'",
@@ -28,7 +33,7 @@ export async function GET() {
     "img-src 'self' data:",
     "base-uri 'none'",
     "form-action 'none'",
-    `frame-ancestors ${FRAME_ANCESTORS.join(' ')}`,
+    `frame-ancestors ${signedLink ? 'https:' : FRAME_ANCESTORS.join(' ')}`,
   ].join('; ')
   return new Response(page(nonce), {
     headers: {
@@ -117,8 +122,9 @@ function page(nonce: string) {
 (function () {
   var params = new URLSearchParams(location.search);
   var token = params.get('token') || '';
-  // Remove the session token from the address bar and history right away.
-  if (params.has('token')) { params.delete('token'); history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '')); }
+  var link = params.get('k') || '';
+  // Remove the session token / signed link from the address bar and history right away.
+  if (params.has('token') || params.has('k')) { params.delete('token'); params.delete('k'); history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '')); }
 
   var $ = function (id) { return document.getElementById(id); };
   var RULES = [
@@ -131,7 +137,7 @@ function page(nonce: string) {
   function show(id) { ['loading', 'form', 'done', 'info'].forEach(function (x) { $(x).classList.toggle('hidden', x !== id); }); }
   function info(text) { $('infoText').textContent = text; show('info'); }
   function api(body) {
-    body.token = token;
+    if (link) body.k = link; else body.token = token;
     return fetch('/api/crm-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store' })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { status: r.status, data: d }; }); });
   }
@@ -163,7 +169,7 @@ function page(nonce: string) {
   $('pw').addEventListener('input', check); $('pw2').addEventListener('input', check);
   $('showpw').addEventListener('change', function () { var t = this.checked ? 'text' : 'password'; $('pw').type = t; $('pw2').type = t; });
 
-  if (!token) { info('This page only works inside your Kickbord portal. Please open it from there.'); return; }
+  if (!token && !link) { info('This page only works inside your Kickbord portal. Please open it from there.'); return; }
 
   api({ action: 'session' }).then(function (r) {
     var d = r.data || {};

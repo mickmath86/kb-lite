@@ -40,7 +40,7 @@ async function appKey(): Promise<string | null> {
 
 // ---------- Assembly session token (same scheme as @assembly-js/node-sdk) ----------
 const hex = (b: Uint8Array) => Array.from(b).map((x) => x.toString(16).padStart(2, '0')).join('')
-function unhex(s: string): Uint8Array | null {
+function unhex(s: string): Uint8Array<ArrayBuffer> | null {
   if (!/^(?:[0-9a-fA-F]{2})+$/.test(s)) return null
   const out = new Uint8Array(s.length / 2)
   for (let i = 0; i < out.length; i++) out[i] = parseInt(s.slice(i * 2, i * 2 + 2), 16)
@@ -126,44 +126,105 @@ type Who = {
 
 type Fail = { status: number; body: Row }
 
-/** Verify the Assembly token and load who this is from Assembly. */
-async function resolve(token: unknown): Promise<Who | Fail> {
-  const key = await appKey()
-  if (!key) return { status: 503, body: { state: 'unavailable', error: 'This step is not switched on yet. Please contact Kickbord.' } }
-  const s = await decryptToken(token, key)
-  if (!s) return { status: 401, body: { state: 'invalid', error: 'This page only works inside your Kickbord portal. Please open it from there.' } }
-  if (!s.clientId) return { status: 200, body: { state: 'not_client', message: 'This step is for clients. Preview it from a client account.' } }
-  if (!s.companyId) return { status: 200, body: { state: 'not_ready', message: 'Your account is still being set up. We will let you know when this step is ready.' } }
+const INVALID: Fail = { status: 401, body: { state: 'invalid', error: 'This page only works inside your Kickbord portal. Please open it from there.' } }
+const IDS_RE = /^[A-Za-z0-9-]{8,64}$/
 
-  const c = await assembly(`/clients/${encodeURIComponent(s.clientId)}`, key)
+/** Load who this is from Assembly. Called only with IDs from a verified source. */
+async function lookup(key: string, clientId: string, companyId: string | null): Promise<Who | Fail> {
+  const c = await assembly(`/clients/${encodeURIComponent(clientId)}`, key)
+  if (c.status === 404) return INVALID
   if (!c.ok) {
     console.error('crm-login: client lookup failed', c.status)
     return { status: 502, body: { state: 'error', error: 'We could not load your account. Please try again in a minute.' } }
   }
-  // The token's company must be one of this client's companies.
   const companyIds: string[] = [...(Array.isArray(c.data.companyIds) ? c.data.companyIds : []), c.data.companyId].filter(Boolean)
-  if (c.data.deleted === true || !companyIds.includes(s.companyId)) {
+  const coId = companyId ?? (c.data.companyId || null)
+  if (!coId) return { status: 200, body: { state: 'not_ready', message: 'Your account is still being set up. We will let you know when this step is ready.' } }
+  // The company must be one of this client's companies.
+  if (c.data.deleted === true || !companyIds.includes(coId)) {
     console.error('crm-login: company not on client')
-    return { status: 401, body: { state: 'invalid', error: 'This page only works inside your Kickbord portal. Please open it from there.' } }
+    return INVALID
   }
   const email = cleanEmail(c.data.email)
   if (!email) return { status: 200, body: { state: 'not_ready', message: 'We do not have an email on your account yet. Please contact Kickbord.' } }
 
-  const co = await assembly(`/companies/${encodeURIComponent(s.companyId)}`, key)
+  const co = await assembly(`/companies/${encodeURIComponent(coId)}`, key)
   if (!co.ok) {
     console.error('crm-login: company lookup failed', co.status)
     return { status: 502, body: { state: 'error', error: 'We could not load your account. Please try again in a minute.' } }
   }
   const raw = String(co.data.customFields?.[LOCATION_FIELD] ?? '').trim()
   return {
-    clientId: s.clientId,
-    companyId: s.companyId,
+    clientId,
+    companyId: coId,
     email,
     firstName: String(c.data.givenName ?? '').trim(),
     lastName: String(c.data.familyName ?? '').trim(),
     company: String(co.data.name ?? '').trim(),
     locationId: LOCATION_RE.test(raw) ? raw : null,
   }
+}
+
+// ---------- Signed links for the Assembly-built onboarding app ----------
+// The onboarding app's server (holding the shared secret) asks for a link for its logged-in client.
+// The link carries the client and company IDs, an expiry and an HMAC; only this function can mint it.
+const LINK_TTL_MS = 30 * 60 * 1000
+const b64u = (b: Uint8Array) => btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+const unb64u = (s: string) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)), (c) => c.charCodeAt(0))
+
+async function linkSig(data: string) {
+  const k = await vault('crm_login_link_key')
+  if (!k) throw new Error('link key missing')
+  const hk = await crypto.subtle.importKey('raw', new TextEncoder().encode(k), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  return b64u(new Uint8Array(await crypto.subtle.sign('HMAC', hk, new TextEncoder().encode(data))))
+}
+async function mintLink(clientId: string, companyId: string) {
+  const data = b64u(new TextEncoder().encode(JSON.stringify({ c: clientId, co: companyId, exp: Date.now() + LINK_TTL_MS })))
+  return `${data}.${await linkSig(data)}`
+}
+async function readLink(k: unknown): Promise<{ clientId: string; companyId: string } | null> {
+  if (typeof k !== 'string' || k.length > 600) return null
+  const [data, sig] = k.split('.')
+  if (!data || !sig || !safeEqual(sig, await linkSig(data))) return null
+  try {
+    const p = JSON.parse(new TextDecoder().decode(unb64u(data)))
+    if (typeof p.exp !== 'number' || p.exp < Date.now()) return null
+    if (!IDS_RE.test(p.c) || !IDS_RE.test(p.co)) return null
+    return { clientId: p.c, companyId: p.co }
+  } catch {
+    return null
+  }
+}
+function safeEqual(a: string, b: string) {
+  if (a.length !== b.length) return false
+  let r = 0
+  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  return r === 0
+}
+/** Server-to-server calls from the onboarding app must carry the shared secret. */
+async function appCallerOk(req: Request) {
+  const want = await vault('assembly_onboarding_secret')
+  const got = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '').trim()
+  return !!want && got.length >= 32 && safeEqual(got, want)
+}
+const workspaceKey = () => Deno.env.get('ASSEMBLY_API_KEY') ?? ''
+
+/** Who is this page for: an Assembly session token (custom app) or a signed link (onboarding app). */
+async function resolve(body: Row): Promise<Who | Fail> {
+  if (body.k) {
+    const l = await readLink(body.k)
+    if (!l) return { status: 401, body: { state: 'invalid', error: 'This link has expired. Please refresh the page in your portal.' } }
+    const key = workspaceKey()
+    if (!key) return { status: 503, body: { state: 'unavailable', error: 'This step is not switched on yet. Please contact Kickbord.' } }
+    return await lookup(key, l.clientId, l.companyId)
+  }
+  const key = await appKey()
+  if (!key) return { status: 503, body: { state: 'unavailable', error: 'This step is not switched on yet. Please contact Kickbord.' } }
+  const s = await decryptToken(body.token, key)
+  if (!s) return INVALID
+  if (!s.clientId) return { status: 200, body: { state: 'not_client', message: 'This step is for clients. Preview it from a client account.' } }
+  if (!s.companyId) return { status: 200, body: { state: 'not_ready', message: 'Your account is still being set up. We will let you know when this step is ready.' } }
+  return await lookup(key, s.clientId, s.companyId)
 }
 
 const crmUrl = (loc: string) => `https://app.kickbord.com/v2/location/${encodeURIComponent(loc)}/dashboard`
@@ -180,8 +241,12 @@ async function findUser(email: string) {
 }
 
 async function actionSession(body: Row) {
-  const who = await resolve(body.token)
+  const who = await resolve(body)
   if ('status' in who) return who
+  return await sessionFor(who)
+}
+
+async function sessionFor(who: Who) {
   const base = { email: who.email, firstName: who.firstName, company: who.company }
   if (!who.locationId || !(await locationIsOurs(who.locationId))) {
     return { status: 200, body: { state: 'not_ready', ...base, message: 'Your Kickbord account is still being set up. We will let you know when this step is ready.' } }
@@ -192,7 +257,7 @@ async function actionSession(body: Row) {
 }
 
 async function actionCreate(body: Row) {
-  const who = await resolve(body.token)
+  const who = await resolve(body)
   if ('status' in who) return who
   const pw = typeof body.password === 'string' ? body.password : ''
   const problems = passwordProblems(pw)
@@ -232,12 +297,29 @@ async function actionCreate(body: Row) {
   return { status: 200, body: { state: 'created', email: who.email, crmUrl: crmUrl(who.locationId) } }
 }
 
+/** Onboarding app server -> us. Body: { clientId, companyId? }. Returns the step state and, unless done, a login link. */
+async function actionAppLink(req: Request, body: Row, withLink: boolean) {
+  if (!(await appCallerOk(req))) return { status: 401, body: { error: 'unauthorized' } }
+  const clientId = typeof body.clientId === 'string' ? body.clientId.trim() : ''
+  const companyId = typeof body.companyId === 'string' && body.companyId.trim() ? body.companyId.trim() : null
+  if (!IDS_RE.test(clientId) || (companyId && !IDS_RE.test(companyId))) return { status: 400, body: { error: 'clientId (and optional companyId) required' } }
+  const key = workspaceKey()
+  if (!key) return { status: 503, body: { error: 'Assembly key missing' } }
+  const who = await lookup(key, clientId, companyId)
+  if ('status' in who) return who
+  const s = await sessionFor(who)
+  const state = s.body.state as string
+  const out: Row = { state, loginCreated: state === 'exists', email: who.email }
+  if (withLink && state === 'ready') out.url = `https://www.kickbord.com/assembly/crm-login?k=${await mintLink(who.clientId, who.companyId)}`
+  return { status: 200, body: out }
+}
+
 // ---------- HTTP ----------
 const ALLOWED_ORIGINS = new Set(['https://www.kickbord.com', 'https://kickbord.com', 'http://localhost:3100'])
 function cors(req: Request): Record<string, string> {
   const o = req.headers.get('origin') ?? ''
   return ALLOWED_ORIGINS.has(o)
-    ? { 'Access-Control-Allow-Origin': o, 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'content-type', Vary: 'Origin' }
+    ? { 'Access-Control-Allow-Origin': o, 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'content-type, authorization', Vary: 'Origin' }
     : {}
 }
 
@@ -249,9 +331,12 @@ Deno.serve(async (req) => {
     const raw = await req.text()
     if (raw.length > 10_000) return new Response(JSON.stringify({ error: 'Request too large.' }), { status: 413, headers: h })
     const body = JSON.parse(raw || '{}') as Row
-    const run = body.action === 'session' ? actionSession : body.action === 'create' ? actionCreate : null
-    if (!run) return new Response(JSON.stringify({ error: 'unknown action' }), { status: 400, headers: h })
-    const out = await run(body)
+    const out =
+      body.action === 'session' ? await actionSession(body)
+      : body.action === 'create' ? await actionCreate(body)
+      : body.action === 'link' ? await actionAppLink(req, body, true)
+      : body.action === 'status' ? await actionAppLink(req, body, false)
+      : { status: 400, body: { error: 'unknown action' } }
     return new Response(JSON.stringify(out.body), { status: out.status, headers: h })
   } catch (e) {
     console.error('crm-login error', String(e).slice(0, 300))

@@ -227,7 +227,7 @@ async function resolve(body: Row): Promise<Who | Fail> {
   return await lookup(key, s.clientId, s.companyId)
 }
 
-const crmUrl = (loc: string) => `https://app.kickbord.com/v2/location/${encodeURIComponent(loc)}/dashboard`
+const crmUrl = (loc: string) => `https://app.kickbord.com/v2/location/${encodeURIComponent(loc)}`
 
 async function locationIsOurs(loc: string) {
   const r = await ghl(`/locations/${encodeURIComponent(loc)}`)
@@ -310,6 +310,8 @@ async function actionAppLink(req: Request, body: Row, withLink: boolean) {
   const s = await sessionFor(who)
   const state = s.body.state as string
   const out: Row = { state, loginCreated: state === 'exists', email: who.email }
+  // The client's CRM address, so the onboarding app can show "Open your CRM" after the login exists.
+  if (state === 'exists' && who.locationId) out.crmUrl = crmUrl(who.locationId)
   if (withLink && state === 'ready') out.url = `https://www.kickbord.com/assembly/crm-login?k=${await mintLink(who.clientId, who.companyId)}`
   return { status: 200, body: out }
 }

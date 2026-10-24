@@ -113,7 +113,8 @@ function page(nonce: string) {
     <h2 class="h2" id="doneTitle">Your login is ready</h2>
     <p class="mt8 muted" id="doneText"></p>
     <ol class="steps" id="doneSteps"></ol>
-    <a class="btn" id="crm" href="#" target="_blank" rel="noopener noreferrer">Sign in to Kickbord &#8599;</a>
+    <a class="btn" id="crm" href="#" target="_blank" rel="noopener noreferrer">Open your CRM &#8599;</a>
+    <p class="note" id="crmText"></p>
   </div>
 
   <div class="card hidden" id="info"><p class="m0" id="infoText"></p></div>
@@ -150,11 +151,12 @@ function page(nonce: string) {
     $('doneText').append('Sign in with ');
     var s = document.createElement('strong'); s.textContent = email; $('doneText').append(s);
     $('doneText').append(created ? ' and the password you just picked.' : ' and your existing password.');
-    var steps = ['Click "Sign in to Kickbord" below. It opens in a new tab.', 'The first time, we email you a 6-digit security code. Enter it to finish signing in.'];
+    var steps = ['Please open your CRM in a new page: click "Open your CRM" below.', 'The first time, we email you a 6-digit security code. Enter it to finish signing in.'];
     steps.push(created ? 'You may also get an email called "Activate Your Account". You can ignore it.' : 'Forgot your password? Use "Forgot password" on the sign-in page.');
     $('doneSteps').textContent = '';
     steps.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; $('doneSteps').append(li); });
     if (crmUrl && /^https:\\/\\/app\\.kickbord\\.com\\//.test(crmUrl)) $('crm').href = crmUrl; else $('crm').href = 'https://app.kickbord.com/';
+    $('crmText').textContent = 'Your CRM address: ' + $('crm').href;
     show('done');
     try { window.parent.postMessage({ type: 'kickbord:crm-login', state: state }, '*'); } catch (e) {}
   }

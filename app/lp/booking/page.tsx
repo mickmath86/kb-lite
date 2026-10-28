@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { redirect } from 'next/navigation'
 import { Eyebrow } from "@/components/elements/eyebrow";
 import { Screenshot } from "@/components/elements/screenshot";
 import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-demo";
@@ -42,6 +43,16 @@ export default async function LpBookingPage({
   searchParams: Promise<SP>
 }) {
   const sp = await searchParams
+  // Default visitors without a price param to dp=397, keeping any other params (utm, etc.).
+  if (!first(sp.dp)?.trim()) {
+    const qs = new URLSearchParams()
+    for (const [k, v] of Object.entries(sp)) {
+      if (k === 'dp' || v === undefined) continue
+      for (const item of Array.isArray(v) ? v : [v]) qs.append(k, item)
+    }
+    qs.set('dp', '397')
+    redirect(`/lp/booking?${qs.toString()}`)
+  }
   const price = formatPrice(getDynamicPrice(sp))
   const useYouTubeDemo = first(sp.dp) === '397'
   return (

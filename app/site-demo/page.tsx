@@ -3,8 +3,17 @@ type SP = Record<string, string | string[] | undefined>
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)
 
 function getDemoUrl(searchParams: SP): string | null {
-  const raw = first(searchParams.url)?.trim()
+  let raw = first(searchParams.url)?.trim()
   if (!raw) return null
+  // Forgive common link mistakes: a doubled scheme ("https://https://site.com", "https://https//site.com")
+  // or a missing one ("site.com"). Keep only the last http(s) prefix, default to https.
+  const m = raw.match(/^(?:\s*https?(?::\/*|\/\/+))+/i)
+  if (m) {
+    const last = [...m[0].matchAll(/https?/gi)].pop()![0].toLowerCase()
+    raw = `${last}://${raw.slice(m[0].length)}`
+  } else if (!/^[a-z][a-z0-9+.-]*:/i.test(raw)) {
+    raw = 'https://' + raw
+  }
   try {
     const url = new URL(raw)
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return null

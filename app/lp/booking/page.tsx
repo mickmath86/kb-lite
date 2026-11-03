@@ -44,6 +44,18 @@ export default async function LpBookingPage({
   const sp = await searchParams
   const price = formatPrice(getDynamicPrice(sp))
   const useYouTubeDemo = first(sp.dp) === '397'
+  const bookingUrl = new URL('https://calendar.kickbord.com/widget/booking/joLrz73XMe6vKuIOrKfL')
+  const name = first(sp.name)?.trim()
+  if (name) {
+    const [firstName, ...lastName] = name.split(/\s+/)
+    bookingUrl.searchParams.set('name', name)
+    bookingUrl.searchParams.set('first_name', firstName)
+    if (lastName.length) bookingUrl.searchParams.set('last_name', lastName.join(' '))
+  }
+  for (const [source, target] of [['email', 'email'], ['phone', 'phone'], ['company', 'company_name']]) {
+    const value = first(sp[source])?.trim()
+    if (value) bookingUrl.searchParams.set(target, value)
+  }
   return (
     <div>
       <div className="w-full flex items-center justify-center my-12">
@@ -89,7 +101,7 @@ export default async function LpBookingPage({
       
       photo={
         <iframe
-          src="https://calendar.kickbord.com/widget/booking/joLrz73XMe6vKuIOrKfL"
+          src={bookingUrl.toString()}
           allow="payment"
           style={{ width: '100%', border: 'none', overflow: 'hidden' }}
           scrolling="no"

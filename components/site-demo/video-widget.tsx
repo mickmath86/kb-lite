@@ -18,8 +18,8 @@ const wistiaFallbackStyles = `
   }
 `
 
-export function VideoWidget() {bjn
-  const [isOpen, setIsOpen] = bvmvmh hmmngggmnnj©bjnmggmngngmng  nhmn hfm n gfmn fnmf nfm,ng m,g mg nmn nmg mbnm   nmb nm nm nm nvmf bmm bm mmb bm bmvc useState(true)
+export function VideoWidget() {
+  const [isOpen, setIsOpen] = useState(true)
 
   if (!isOpen) {
     return (

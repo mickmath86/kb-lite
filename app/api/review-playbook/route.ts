@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { getReviewPlaybookGuide } from '@/lib/review-playbook/guide'
-import { isReviewDemoAllowed, submitReviewPlaybookLead, type SubmitFailure } from '@/lib/review-playbook/submit'
+import { isAutomaticReviewDemo, submitReviewPlaybookLead, type SubmitFailure } from '@/lib/review-playbook/submit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -55,25 +55,24 @@ export async function POST(request: Request) {
   }
 
   const nodeEnv = process.env.NODE_ENV ?? 'development'
-  const allowDemo = isReviewDemoAllowed({
-    nodeEnv,
-    allowDemo: process.env.REVIEW_PLAYBOOK_ALLOW_DEMO,
-  })
+  const vercelEnv = process.env.VERCEL_ENV
+  const webhookUrl = process.env.REVIEW_PLAYBOOK_WEBHOOK_URL
+  const automaticDemo = isAutomaticReviewDemo({ nodeEnv, vercelEnv, webhookUrl })
   if (
     body &&
     typeof body === 'object' &&
     !Array.isArray(body) &&
     (body as { demo?: unknown }).demo === true &&
-    !allowDemo
+    !automaticDemo
   ) {
-    logOutcome('review_playbook_demo_ignored', nodeEnv === 'production' ? 503 : 400)
+    logOutcome('review_playbook_demo_ignored', 403)
   }
 
   const result = await submitReviewPlaybookLead(body, {
-    webhookUrl: process.env.REVIEW_PLAYBOOK_WEBHOOK_URL,
+    webhookUrl,
     webhookToken: process.env.REVIEW_PLAYBOOK_WEBHOOK_TOKEN,
     nodeEnv,
-    allowDemo,
+    vercelEnv,
   })
 
   if (!result.ok) {

@@ -4,7 +4,7 @@ import { afterEach, describe, it } from 'node:test'
 
 import { PLAYBOOK_OUTLINE } from './outline'
 import {
-  isReviewDemoAllowed,
+  isAutomaticReviewDemo,
   resetReviewPlaybookDedupeForTests,
   REVIEW_PLAYBOOK_SOURCE,
   submitReviewPlaybookLead,
@@ -267,15 +267,15 @@ describe('submitReviewPlaybookLead', () => {
     assert.equal(calls, 1)
   })
 
-  it('ignores a demo flag in production, even if review mode is set', async () => {
-    for (const allowDemo of [false, true]) {
+  it('stays closed in production when the webhook is unset, even if the body asks for demo', async () => {
+    for (const vercelEnv of [undefined, 'production']) {
       let called = false
       const result = await submitReviewPlaybookLead(
         { ...lead, demo: true },
         {
           webhookUrl: undefined,
           nodeEnv: 'production',
-          allowDemo,
+          vercelEnv,
           fetchImpl: async () => {
             called = true
             return jsonResponse(200)
@@ -284,40 +284,55 @@ describe('submitReviewPlaybookLead', () => {
       )
       assert.deepEqual(result, { ok: false, status: 503, code: 'unconfigured' })
       assert.equal(called, false)
-      assert.equal(isReviewDemoAllowed({ nodeEnv: 'production', allowDemo: allowDemo ? 'true' : undefined }), false)
+      assert.equal(isAutomaticReviewDemo({ nodeEnv: 'production', vercelEnv, webhookUrl: undefined }), false)
     }
   })
 
-  it('opens a labeled local review only when demo mode is deliberately enabled', async () => {
-    const blocked = await submitReviewPlaybookLead(
-      { ...lead, demo: true },
-      { webhookUrl: undefined, nodeEnv: 'development', allowDemo: false },
-    )
-    assert.deepEqual(blocked, { ok: false, status: 503, code: 'unconfigured' })
+  it('unlocks a Vercel preview and local dev when the webhook url is unset', async () => {
+    for (const env of [
+      { nodeEnv: 'production', vercelEnv: 'preview' },
+      { nodeEnv: 'development', vercelEnv: undefined },
+      { nodeEnv: 'development', vercelEnv: 'development' },
+    ]) {
+      let called = false
+      const result = await submitReviewPlaybookLead(lead, {
+        webhookUrl: '   ',
+        nodeEnv: env.nodeEnv,
+        vercelEnv: env.vercelEnv,
+        fetchImpl: async () => {
+          called = true
+          return jsonResponse(200)
+        },
+      })
+      assert.deepEqual(result, { ok: true, demo: true, captured: false, sent: false })
+      assert.equal(called, false)
+    }
+  })
 
+  it('uses the real webhook on preview when a url is configured', async () => {
     let called = false
-    const opened = await submitReviewPlaybookLead(
+    const result = await submitReviewPlaybookLead(
       { ...lead, demo: true },
       {
-        webhookUrl: undefined,
-        nodeEnv: 'development',
-        allowDemo: true,
+        webhookUrl: 'https://hooks.example/playbook',
+        nodeEnv: 'production',
+        vercelEnv: 'preview',
         fetchImpl: async () => {
           called = true
           return jsonResponse(200)
         },
       },
     )
-    assert.deepEqual(opened, { ok: true, demo: true, captured: false, sent: false })
-    assert.equal(called, false)
-  })
-
-  it('does not treat a demo string as demo mode', async () => {
-    const result = await submitReviewPlaybookLead(
-      { ...lead, demo: 'true' },
-      { webhookUrl: undefined, nodeEnv: 'development', allowDemo: true },
+    assert.deepEqual(result, { ok: true, demo: false, captured: true, sent: true })
+    assert.equal(called, true)
+    assert.equal(
+      isAutomaticReviewDemo({
+        nodeEnv: 'production',
+        vercelEnv: 'preview',
+        webhookUrl: 'https://hooks.example/playbook',
+      }),
+      false,
     )
-    assert.deepEqual(result, { ok: false, status: 503, code: 'unconfigured' })
   })
 
   it('does not forward a honeypot submission', async () => {

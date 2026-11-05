@@ -42,19 +42,18 @@ The route does not log the name, email, trade, webhook URL, or token. Server log
 
 There is a hidden honeypot field (`hp`). A filled honeypot is not forwarded and does not open the playbook.
 
-## Review-only demo
+## Review demo when no webhook is set
 
-The public form never opens the playbook unless the webhook accepts the lead. `?demo=1` does not change that on its own.
+The guide opens without a webhook only when `REVIEW_PLAYBOOK_WEBHOOK_URL` is unset and the process is one of:
 
-A local review mode exists for reading the guide without a webhook:
+- Vercel Preview: `VERCEL_ENV=preview` (Vercel also sets `NODE_ENV=production` there)
+- Local dev: `NODE_ENV` is not `production`, and `VERCEL_ENV` is unset or `development`
 
-```bash
-REVIEW_PLAYBOOK_ALLOW_DEMO=true npm run dev
-```
+No extra flag and no query string are required. The page says nothing is captured or sent, fills sample values, and a valid submit returns the guide. The webhook is not called.
 
-Then open `/resources/review-request-playbook?demo=1`. The page says it is a demo, fills sample values, and does not call the webhook. The ordinary URL, without `?demo=1`, still tries the real webhook and stays closed when that URL is missing.
+Production stays closed. `VERCEL_ENV=production`, or `NODE_ENV=production` with no preview env, returns an error and does not include the guide when the webhook URL is missing. A `demo: true` field in the request does not change that. Do not set a demo flag in production. `REVIEW_PLAYBOOK_ALLOW_DEMO` is not used.
 
-`REVIEW_PLAYBOOK_ALLOW_DEMO` is ignored when `NODE_ENV` is `production`. Vercel Preview and Production both run with `NODE_ENV=production`, so the query and a `demo: true` post do not unlock the guide there. Do not set the flag in production.
+When `REVIEW_PLAYBOOK_WEBHOOK_URL` is set, preview and local dev send the real payload instead of opening the demo.
 
 The guide text is built on the server and returned only in a successful API response. It is not part of the initial page or the browser bundle. Refreshing the page shows the form again.
 

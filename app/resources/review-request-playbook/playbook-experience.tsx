@@ -219,7 +219,7 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
         <div className="playbook-no-print border-b border-[#7b627d]/40 bg-[#7b627d]/15" data-testid="playbook-demo-banner">
           <Container className="py-3">
             <p className="text-sm/6 font-medium text-olive-950 dark:text-white">
-              Demo preview. Sample details are filled in for review. Submitting checks the form and opens the playbook. Nothing is captured or sent.
+              Preview only. No webhook is configured, so submitting opens the guide on this page. Nothing is captured or sent.
             </p>
           </Container>
         </div>
@@ -278,7 +278,7 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
                 <h2 className="font-display text-3xl tracking-tight text-olive-950 dark:text-white">Get the playbook</h2>
                 <p className="mt-2 text-sm/6 text-olive-600 dark:text-olive-300">
                   {demoMode
-                    ? 'These sample values are for the preview. Change them if you want. They are not saved.'
+                    ? 'Sample values are filled in so you can open the guide. They are not saved.'
                     : 'Name, email, and trade. Then the full guide opens on this page.'}
                 </p>
 

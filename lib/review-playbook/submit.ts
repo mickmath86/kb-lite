@@ -37,16 +37,27 @@ export type SubmitOptions = {
   webhookUrl: string | undefined
   webhookToken?: string | undefined
   nodeEnv: string
-  /** Local review switch. Ignored whenever nodeEnv is production, including Vercel Preview. */
-  allowDemo?: boolean
+  vercelEnv?: string
   fetchImpl?: typeof fetch
   now?: () => number
   timeoutMs?: number
 }
 
-export function isReviewDemoAllowed(env: { nodeEnv?: string; allowDemo?: string }) {
-  if ((env.nodeEnv ?? 'production') === 'production') return false
-  return env.allowDemo === 'true'
+export type ReviewDemoEnv = {
+  nodeEnv?: string
+  vercelEnv?: string
+  webhookUrl?: string
+}
+
+/**
+ * Open the guide without a webhook only when no destination is configured and
+ * this is a Vercel preview or a local dev process. Production stays closed.
+ */
+export function isAutomaticReviewDemo(env: ReviewDemoEnv) {
+  if ((env.webhookUrl ?? '').trim()) return false
+  if (env.vercelEnv === 'production') return false
+  if (env.vercelEnv === 'preview' || env.vercelEnv === 'development') return true
+  return !env.vercelEnv && (env.nodeEnv ?? 'production') !== 'production'
 }
 
 type ResolvedWebhook =
@@ -123,7 +134,13 @@ export async function submitReviewPlaybookLead(
     return { ok: false, status: 400, code: 'validation', fieldErrors: validated.fieldErrors }
   }
 
-  if (submitted.demo === true && isReviewDemoAllowed({ nodeEnv: options.nodeEnv, allowDemo: options.allowDemo ? 'true' : undefined })) {
+  if (
+    isAutomaticReviewDemo({
+      nodeEnv: options.nodeEnv,
+      vercelEnv: options.vercelEnv,
+      webhookUrl: options.webhookUrl,
+    })
+  ) {
     return { ok: true, demo: true, captured: false, sent: false }
   }
 

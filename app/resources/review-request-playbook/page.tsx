@@ -4,24 +4,20 @@ import { Main } from '@/components/elements/main'
 import FooterMain from '@/components/sections/footer-main'
 import MainNav from '@/components/sections/main-nav'
 
-import { isReviewDemoAllowed } from '@/lib/review-playbook/submit'
+import { isAutomaticReviewDemo } from '@/lib/review-playbook/submit'
 
 import { PlaybookExperience } from './playbook-experience'
 
-type SearchParams = Promise<{ demo?: string | string[] }>
+function reviewDemoFromEnv() {
+  return isAutomaticReviewDemo({
+    nodeEnv: process.env.NODE_ENV,
+    vercelEnv: process.env.VERCEL_ENV,
+    webhookUrl: process.env.REVIEW_PLAYBOOK_WEBHOOK_URL,
+  })
+}
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: SearchParams
-}): Promise<Metadata> {
-  const params = await searchParams
-  const demo =
-    params.demo === '1' &&
-    isReviewDemoAllowed({
-      nodeEnv: process.env.NODE_ENV,
-      allowDemo: process.env.REVIEW_PLAYBOOK_ALLOW_DEMO,
-    })
+export async function generateMetadata(): Promise<Metadata> {
+  const demo = reviewDemoFromEnv()
 
   return {
     title: 'Review Request Playbook | Kickbord',
@@ -32,18 +28,8 @@ export async function generateMetadata({
   }
 }
 
-export default async function ReviewRequestPlaybookPage({
-  searchParams,
-}: {
-  searchParams: SearchParams
-}) {
-  const params = await searchParams
-  const demoMode =
-    params.demo === '1' &&
-    isReviewDemoAllowed({
-      nodeEnv: process.env.NODE_ENV,
-      allowDemo: process.env.REVIEW_PLAYBOOK_ALLOW_DEMO,
-    })
+export default async function ReviewRequestPlaybookPage() {
+  const demoMode = reviewDemoFromEnv()
 
   return (
     <>

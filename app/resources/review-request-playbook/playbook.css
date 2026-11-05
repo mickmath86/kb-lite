@@ -1,0 +1,25 @@
+.playbook-root {
+  --font-display: var(--font-instrument), Georgia, 'Times New Roman', serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@media print {
+  .playbook-chrome,
+  .playbook-no-print {
+    display: none !important;
+  }
+
+  .playbook-root {
+    background: white !important;
+    color: #0c0c09 !important;
+  }
+
+  .playbook-doc {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .playbook-doc a[href^='http']::after {
+    content: ' (' attr(href) ')';
+  }
+}

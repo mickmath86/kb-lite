@@ -42,13 +42,21 @@ The route does not log the name, email, trade, webhook URL, or token. Server log
 
 There is a hidden honeypot field (`hp`). A filled honeypot is not forwarded and does not open the playbook.
 
-## Demo preview
+## Review-only demo
 
-`/resources/review-request-playbook?demo=1`
+The public form never opens the playbook unless the webhook accepts the lead. `?demo=1` does not change that on its own.
 
-This mode is labeled on the page. It prefills obvious sample values, validates them, and opens the playbook. It does not call the webhook, even if the URL is missing. The default page does not send `demo: true` and does not fall back to this mode when the webhook is missing.
+A local review mode exists for reading the guide without a webhook:
 
-Use the demo URL for review. Do not share it as the Instagram or Facebook link.
+```bash
+REVIEW_PLAYBOOK_ALLOW_DEMO=true npm run dev
+```
+
+Then open `/resources/review-request-playbook?demo=1`. The page says it is a demo, fills sample values, and does not call the webhook. The ordinary URL, without `?demo=1`, still tries the real webhook and stays closed when that URL is missing.
+
+`REVIEW_PLAYBOOK_ALLOW_DEMO` is ignored when `NODE_ENV` is `production`. Vercel Preview and Production both run with `NODE_ENV=production`, so the query and a `demo: true` post do not unlock the guide there. Do not set the flag in production.
+
+The guide text is built on the server and returned only in a successful API response. It is not part of the initial page or the browser bundle. Refreshing the page shows the form again.
 
 ## Test against a local mock
 

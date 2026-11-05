@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
-import { submitReviewPlaybookLead, type SubmitFailure } from '@/lib/review-playbook/submit'
+import { getReviewPlaybookGuide } from '@/lib/review-playbook/guide'
+import { isReviewDemoAllowed, submitReviewPlaybookLead, type SubmitFailure } from '@/lib/review-playbook/submit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -53,10 +54,26 @@ export async function POST(request: Request) {
     )
   }
 
+  const nodeEnv = process.env.NODE_ENV ?? 'development'
+  const allowDemo = isReviewDemoAllowed({
+    nodeEnv,
+    allowDemo: process.env.REVIEW_PLAYBOOK_ALLOW_DEMO,
+  })
+  if (
+    body &&
+    typeof body === 'object' &&
+    !Array.isArray(body) &&
+    (body as { demo?: unknown }).demo === true &&
+    !allowDemo
+  ) {
+    logOutcome('review_playbook_demo_ignored', nodeEnv === 'production' ? 503 : 400)
+  }
+
   const result = await submitReviewPlaybookLead(body, {
     webhookUrl: process.env.REVIEW_PLAYBOOK_WEBHOOK_URL,
     webhookToken: process.env.REVIEW_PLAYBOOK_WEBHOOK_TOKEN,
-    nodeEnv: process.env.NODE_ENV ?? 'development',
+    nodeEnv,
+    allowDemo,
   })
 
   if (!result.ok) {
@@ -81,5 +98,6 @@ export async function POST(request: Request) {
     captured: result.captured,
     sent: result.sent,
     duplicate: result.duplicate === true,
+    playbook: getReviewPlaybookGuide(),
   })
 }

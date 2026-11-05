@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { afterEach, describe, it } from 'node:test'
 
 import { PLAYBOOK_OUTLINE } from './outline'
 import {
+  isReviewDemoAllowed,
   resetReviewPlaybookDedupeForTests,
   REVIEW_PLAYBOOK_SOURCE,
   submitReviewPlaybookLead,
@@ -26,6 +28,16 @@ describe('review playbook outline', () => {
   it('lists ten distinct sections', () => {
     assert.equal(PLAYBOOK_OUTLINE.length, 10)
     assert.equal(new Set(PLAYBOOK_OUTLINE.map((section) => section.id)).size, 10)
+  })
+
+  it('keeps the full guide out of the client form bundle', () => {
+    const client = readFileSync(new URL('../../app/resources/review-request-playbook/playbook-experience.tsx', import.meta.url), 'utf8')
+    const guide = readFileSync(new URL('./guide.ts', import.meta.url), 'utf8')
+    const route = readFileSync(new URL('../../app/api/review-playbook/route.ts', import.meta.url), 'utf8')
+    assert.equal(client.includes("Reply STOP if you'd rather"), false)
+    assert.equal(client.includes('getReviewPlaybookGuide'), false)
+    assert.equal(guide.includes("Reply STOP if you'd rather"), true)
+    assert.equal(route.includes('getReviewPlaybookGuide'), true)
   })
 })
 
@@ -255,28 +267,55 @@ describe('submitReviewPlaybookLead', () => {
     assert.equal(calls, 1)
   })
 
-  it('reveals a demo submission without calling the webhook, even when unconfigured', async () => {
+  it('ignores a demo flag in production, even if review mode is set', async () => {
+    for (const allowDemo of [false, true]) {
+      let called = false
+      const result = await submitReviewPlaybookLead(
+        { ...lead, demo: true },
+        {
+          webhookUrl: undefined,
+          nodeEnv: 'production',
+          allowDemo,
+          fetchImpl: async () => {
+            called = true
+            return jsonResponse(200)
+          },
+        },
+      )
+      assert.deepEqual(result, { ok: false, status: 503, code: 'unconfigured' })
+      assert.equal(called, false)
+      assert.equal(isReviewDemoAllowed({ nodeEnv: 'production', allowDemo: allowDemo ? 'true' : undefined }), false)
+    }
+  })
+
+  it('opens a labeled local review only when demo mode is deliberately enabled', async () => {
+    const blocked = await submitReviewPlaybookLead(
+      { ...lead, demo: true },
+      { webhookUrl: undefined, nodeEnv: 'development', allowDemo: false },
+    )
+    assert.deepEqual(blocked, { ok: false, status: 503, code: 'unconfigured' })
+
     let called = false
-    const result = await submitReviewPlaybookLead(
+    const opened = await submitReviewPlaybookLead(
       { ...lead, demo: true },
       {
         webhookUrl: undefined,
-        nodeEnv: 'production',
+        nodeEnv: 'development',
+        allowDemo: true,
         fetchImpl: async () => {
           called = true
           return jsonResponse(200)
         },
       },
     )
-
-    assert.deepEqual(result, { ok: true, demo: true, captured: false, sent: false })
+    assert.deepEqual(opened, { ok: true, demo: true, captured: false, sent: false })
     assert.equal(called, false)
   })
 
   it('does not treat a demo string as demo mode', async () => {
     const result = await submitReviewPlaybookLead(
       { ...lead, demo: 'true' },
-      { webhookUrl: undefined, nodeEnv: 'production' },
+      { webhookUrl: undefined, nodeEnv: 'development', allowDemo: true },
     )
     assert.deepEqual(result, { ok: false, status: 503, code: 'unconfigured' })
   })

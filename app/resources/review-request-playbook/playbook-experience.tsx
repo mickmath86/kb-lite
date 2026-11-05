@@ -1,25 +1,18 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import { useId, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 import { Button } from '@/components/elements/button'
 import { Container } from '@/components/elements/container'
 import { PLAYBOOK_OUTLINE } from '@/lib/review-playbook/outline'
 import { TRADE_TYPES } from '@/lib/review-playbook/trades'
+import type { GuideBlock, ReviewPlaybookGuide } from '@/lib/review-playbook/guide'
 import { validateLead, type FieldErrors } from '@/lib/review-playbook/validate'
-
-const PlaybookDocument = dynamic(() => import('./playbook-document'), {
-  ssr: false,
-  loading: () => <p className="mt-10 text-base text-olive-700 dark:text-olive-300">Opening the playbook…</p>,
-})
-
-const STORAGE_KEY = 'kb-review-playbook-access'
 
 const inputClass =
   'w-full rounded-lg border border-olive-950/15 bg-white px-4 py-3 text-base text-olive-950 placeholder:text-olive-500 focus:outline-none focus:ring-2 focus:ring-olive-950/20 aria-invalid:border-red-700 aria-invalid:ring-red-700/20 dark:border-white/10 dark:bg-olive-900 dark:text-white dark:placeholder:text-olive-400 dark:focus:ring-white/20 dark:aria-invalid:border-red-400'
 
-type Access = { demo: boolean }
+type Unlock = { demo: boolean; duplicate: boolean; playbook: ReviewPlaybookGuide }
 
 type ApiSuccess = {
   ok: true
@@ -27,6 +20,7 @@ type ApiSuccess = {
   captured: boolean
   sent: boolean
   duplicate: boolean
+  playbook?: ReviewPlaybookGuide
 }
 
 type ApiFailure = {
@@ -35,49 +29,118 @@ type ApiFailure = {
   fieldErrors?: FieldErrors
 }
 
-function readAccess(): Access | null {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as { demo?: unknown }
-    if (!parsed || typeof parsed.demo !== 'boolean') return null
-    return { demo: parsed.demo }
-  } catch {
-    return null
+function isGuide(value: ReviewPlaybookGuide | undefined): value is ReviewPlaybookGuide {
+  return Boolean(value && typeof value.title === 'string' && Array.isArray(value.sections) && value.sections.length > 0)
+}
+
+function SampleBlock({ block }: { block: Extract<GuideBlock, { type: 'sample' }> }) {
+  const [copied, setCopied] = useState(false)
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(block.text)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
+    }
   }
+
+  return (
+    <figure className="mt-5 overflow-hidden rounded-2xl border border-olive-950/10 bg-olive-50 dark:border-white/10 dark:bg-olive-950/40">
+      <figcaption className="flex flex-wrap items-center justify-between gap-3 border-b border-olive-950/10 px-4 py-3 sm:px-5 dark:border-white/10">
+        <span className="text-sm font-semibold text-olive-950 dark:text-white">{block.label}</span>
+        <button
+          type="button"
+          onClick={copy}
+          className="playbook-no-print inline-flex min-h-10 items-center rounded-full bg-olive-950 px-3 text-sm font-medium text-white hover:bg-olive-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-950 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200"
+        >
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+      </figcaption>
+      <pre className="overflow-x-auto px-4 py-4 font-sans text-sm/6 whitespace-pre-wrap text-olive-800 sm:px-5 dark:text-olive-200">{block.text}</pre>
+      {block.note ? <p className="px-4 pb-4 text-sm/6 text-olive-600 sm:px-5 dark:text-olive-400">{block.note}</p> : null}
+    </figure>
+  )
 }
 
-let accessSnapshot: Access | null | undefined
-const accessListeners = new Set<() => void>()
-
-function writeAccess(access: Access) {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(access))
-  } catch {
-    // The playbook still opens in this view if storage is blocked.
-  }
-  accessSnapshot = access
-  accessListeners.forEach((listener) => listener())
-}
-
-function subscribeAccess(listener: () => void) {
-  accessListeners.add(listener)
-  return () => accessListeners.delete(listener)
-}
-
-function getAccessSnapshot() {
-  if (accessSnapshot === undefined) accessSnapshot = readAccess()
-  return accessSnapshot
-}
-
-function getServerAccessSnapshot() {
-  return null
+function PlaybookView({ guide }: { guide: ReviewPlaybookGuide }) {
+  return (
+    <article id="playbook" tabIndex={-1} data-testid="playbook-document" className="playbook-doc outline-none">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="max-w-3xl">
+          <p className="text-sm/7 font-semibold text-olive-700 dark:text-olive-400">Kickbord playbook</p>
+          <h1 className="mt-2 font-display text-4xl tracking-tight text-olive-950 sm:text-5xl dark:text-white">{guide.title}</h1>
+          <p className="mt-4 text-base/7 text-olive-700 dark:text-olive-300">{guide.intro}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="playbook-no-print inline-flex min-h-11 items-center rounded-full bg-olive-950/10 px-4 text-sm font-medium text-olive-950 hover:bg-olive-950/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-950 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
+        >
+          Print or save as PDF
+        </button>
+      </div>
+      <div className="mt-8 rounded-2xl border border-[#7b627d]/30 bg-[#7b627d]/10 px-5 py-4 text-sm/6 text-olive-800 dark:border-white/10 dark:bg-white/5 dark:text-olive-200">
+        <p>{guide.disclaimer}</p>
+      </div>
+      <div className="mt-10 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
+        <nav aria-label="Playbook contents" className="mb-10 lg:sticky lg:top-8 lg:mb-0 lg:self-start">
+          <p className="text-sm font-semibold text-olive-950 dark:text-white">Contents</p>
+          <ol className="mt-3 space-y-2 text-sm/6">
+            {guide.sections.map((section, index) => (
+              <li key={section.id}>
+                <a href={`#${section.id}`} className="text-olive-700 underline-offset-4 hover:text-olive-950 hover:underline dark:text-olive-300 dark:hover:text-white">
+                  {index + 1}. {section.title}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <div>
+          {guide.sections.map((section, index) => (
+            <section key={section.id} id={section.id} aria-labelledby={`${section.id}-title`} className="scroll-mt-8 border-t border-olive-950/10 pt-10 dark:border-white/10">
+              <p className="font-display text-xl text-[#596352] dark:text-olive-300">{String(index + 1).padStart(2, '0')}</p>
+              <h2 id={`${section.id}-title`} className="mt-1 font-display text-3xl tracking-tight text-olive-950 sm:text-4xl dark:text-white">
+                {section.title}
+              </h2>
+              <div className="mt-4 space-y-4 text-base/7 text-olive-700 dark:text-olive-300">
+                {section.blocks.map((block, blockIndex) => {
+                  if (block.type === 'p') return <p key={blockIndex}>{block.text}</p>
+                  if (block.type === 'emphasis') {
+                    return <p key={blockIndex} className="font-medium text-olive-950 dark:text-white">{block.text}</p>
+                  }
+                  if (block.type === 'sample') return <SampleBlock key={blockIndex} block={block} />
+                  const ListTag = block.type === 'ol' ? 'ol' : 'ul'
+                  return (
+                    <ListTag key={blockIndex} className={block.type === 'ol' ? 'list-decimal space-y-2 pl-5' : 'list-disc space-y-2 pl-5'}>
+                      {block.items.map((item, itemIndex) => (
+                        <li key={itemIndex}>
+                          {typeof item === 'string' ? (
+                            item
+                          ) : (
+                            <>
+                              <span className="font-semibold text-olive-950 dark:text-white">{item.lead} </span>
+                              {item.text}
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ListTag>
+                  )
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </article>
+  )
 }
 
 export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
   const formErrorId = useId()
-  const access = useSyncExternalStore(subscribeAccess, getAccessSnapshot, getServerAccessSnapshot)
-  const [duplicate, setDuplicate] = useState(false)
+  const [unlock, setUnlock] = useState<Unlock | null>(null)
   const [name, setName] = useState(demoMode ? 'Alex Rivera' : '')
   const [email, setEmail] = useState(demoMode ? 'alex.rivera@example.com' : '')
   const [tradeType, setTradeType] = useState(demoMode ? 'Plumber' : '')
@@ -86,6 +149,12 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const lock = useRef(false)
+
+  useEffect(() => {
+    if (!unlock) return
+    document.getElementById('playbook')?.focus()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [unlock])
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -125,15 +194,15 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
         data = null
       }
 
-      if (!response.ok || !data || data.ok !== true || (!data.captured && !data.demo)) {
+      const playbook = data && data.ok === true ? data.playbook : undefined
+      if (!response.ok || !data || data.ok !== true || !isGuide(playbook) || (!data.captured && !data.demo)) {
         const failure = data && data.ok === false ? data : null
         setFieldErrors(failure?.fieldErrors ?? {})
         setFormError(failure?.error || 'We could not submit that. Nothing was saved.')
         return
       }
 
-      setDuplicate(data.duplicate)
-      writeAccess({ demo: data.demo })
+      setUnlock({ demo: data.demo, duplicate: data.duplicate, playbook })
     } catch {
       setFormError('We could not deliver your request, so it was not saved. Please try again.')
     } finally {
@@ -142,7 +211,7 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
     }
   }
 
-  const showDemo = demoMode || access?.demo === true
+  const showDemo = demoMode || unlock?.demo === true
 
   return (
     <div className="pb-20">
@@ -157,20 +226,20 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
       ) : null}
 
       <Container className="pt-14 sm:pt-20">
-        {access ? (
+        {unlock ? (
           <div>
-              <div
+            <div
               role="status"
               data-testid="playbook-success"
               className="playbook-no-print mb-10 rounded-2xl border border-olive-950/10 bg-white px-5 py-4 text-base/7 text-olive-800 dark:border-white/10 dark:bg-olive-900 dark:text-olive-100"
             >
-              {access.demo
+              {unlock.demo
                 ? 'Demo preview only. Nothing was captured or sent.'
-                : duplicate
+                : unlock.duplicate
                   ? 'This request was already received, so it was not sent again. The playbook is below.'
                   : 'Request received. The playbook is below.'}
             </div>
-            <PlaybookDocument />
+            <PlaybookView guide={unlock.playbook} />
           </div>
         ) : (
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:gap-x-16">

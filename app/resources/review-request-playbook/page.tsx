@@ -4,6 +4,8 @@ import { Main } from '@/components/elements/main'
 import FooterMain from '@/components/sections/footer-main'
 import MainNav from '@/components/sections/main-nav'
 
+import { isReviewDemoAllowed } from '@/lib/review-playbook/submit'
+
 import { PlaybookExperience } from './playbook-experience'
 
 type SearchParams = Promise<{ demo?: string | string[] }>
@@ -14,7 +16,12 @@ export async function generateMetadata({
   searchParams: SearchParams
 }): Promise<Metadata> {
   const params = await searchParams
-  const demo = params.demo === '1'
+  const demo =
+    params.demo === '1' &&
+    isReviewDemoAllowed({
+      nodeEnv: process.env.NODE_ENV,
+      allowDemo: process.env.REVIEW_PLAYBOOK_ALLOW_DEMO,
+    })
 
   return {
     title: 'Review Request Playbook | Kickbord',
@@ -31,7 +38,12 @@ export default async function ReviewRequestPlaybookPage({
   searchParams: SearchParams
 }) {
   const params = await searchParams
-  const demoMode = params.demo === '1'
+  const demoMode =
+    params.demo === '1' &&
+    isReviewDemoAllowed({
+      nodeEnv: process.env.NODE_ENV,
+      allowDemo: process.env.REVIEW_PLAYBOOK_ALLOW_DEMO,
+    })
 
   return (
     <>

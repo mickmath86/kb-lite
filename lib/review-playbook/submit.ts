@@ -37,9 +37,16 @@ export type SubmitOptions = {
   webhookUrl: string | undefined
   webhookToken?: string | undefined
   nodeEnv: string
+  /** Local review switch. Ignored whenever nodeEnv is production, including Vercel Preview. */
+  allowDemo?: boolean
   fetchImpl?: typeof fetch
   now?: () => number
   timeoutMs?: number
+}
+
+export function isReviewDemoAllowed(env: { nodeEnv?: string; allowDemo?: string }) {
+  if ((env.nodeEnv ?? 'production') === 'production') return false
+  return env.allowDemo === 'true'
 }
 
 type ResolvedWebhook =
@@ -116,7 +123,7 @@ export async function submitReviewPlaybookLead(
     return { ok: false, status: 400, code: 'validation', fieldErrors: validated.fieldErrors }
   }
 
-  if (submitted.demo === true) {
+  if (submitted.demo === true && isReviewDemoAllowed({ nodeEnv: options.nodeEnv, allowDemo: options.allowDemo ? 'true' : undefined })) {
     return { ok: true, demo: true, captured: false, sent: false }
   }
 

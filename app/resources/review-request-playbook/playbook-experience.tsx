@@ -1,9 +1,11 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useId, useRef, useState } from 'react'
 
-import { Button } from '@/components/elements/button'
+import { Button, ButtonLink } from '@/components/elements/button'
 import { Container } from '@/components/elements/container'
+import { HeroWithDemoOnBackground } from '@/components/sections/hero-with-demo-on-background'
 import { PLAYBOOK_OUTLINE } from '@/lib/review-playbook/outline'
 import { TRADE_TYPES } from '@/lib/review-playbook/trades'
 import type { GuideBlock, ReviewPlaybookGuide } from '@/lib/review-playbook/guide'
@@ -73,13 +75,27 @@ function PlaybookView({ guide }: { guide: ReviewPlaybookGuide }) {
           <h1 className="mt-2 font-display text-4xl tracking-tight text-olive-950 sm:text-5xl dark:text-white">{guide.title}</h1>
           <p className="mt-4 text-base/7 text-olive-700 dark:text-olive-300">{guide.intro}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => window.print()}
+        <a
+          href="/google-review-request-playbook.pdf"
+          download="The Google Review Request Playbook.pdf"
           className="playbook-no-print inline-flex min-h-11 items-center rounded-full bg-olive-950/10 px-4 text-sm font-medium text-olive-950 hover:bg-olive-950/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-950 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
         >
-          Print or save as PDF
-        </button>
+          Download PDF
+        </a>
+      </div>
+      <div className="playbook-no-print mt-8">
+        <iframe
+          src="/google-review-request-playbook.pdf"
+          title="The Google Review Request Playbook PDF"
+          className="h-[75vh] min-h-96 w-full rounded-2xl border border-olive-950/10 bg-white dark:border-white/10"
+        />
+        <p className="mt-3 text-sm/6 text-olive-700 dark:text-olive-300">
+          Can’t see the preview?{' '}
+          <a href="/google-review-request-playbook.pdf" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+            Open the PDF in a new tab
+          </a>{' '}
+          or use the download button above.
+        </p>
       </div>
       <div className="mt-8 rounded-2xl border border-[#7b627d]/30 bg-[#7b627d]/10 px-5 py-4 text-sm/6 text-olive-800 dark:border-white/10 dark:bg-white/5 dark:text-olive-200">
         <p>{guide.disclaimer}</p>
@@ -225,9 +241,8 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
         </div>
       ) : null}
 
-      <Container className="pt-14 sm:pt-20">
-        {unlock ? (
-          <div>
+      {unlock ? (
+          <Container className="pt-14 sm:pt-20">
             <div
               role="status"
               data-testid="playbook-success"
@@ -240,19 +255,21 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
                   : 'Request received. The playbook is below.'}
             </div>
             <PlaybookView guide={unlock.playbook} />
-          </div>
+          </Container>
         ) : (
-          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:gap-x-16">
-            <div className="lg:col-start-1 lg:row-start-1">
-              <p className="text-sm/7 font-semibold text-olive-700 dark:text-olive-400">Free playbook</p>
-              <h1 className="mt-3 font-display text-5xl/12 tracking-tight text-balance text-olive-950 sm:text-6xl/16 dark:text-white">
-                A simple way to ask for reviews after the job is done.
-              </h1>
-              <p className="mt-5 max-w-xl text-lg/8 text-olive-700 dark:text-olive-300">
+          <HeroWithDemoOnBackground
+            demoLayout="contained"
+            eyebrow={<p className="text-sm/7 font-semibold text-white/70">Free playbook</p>}
+            headline="A simple way to ask for reviews after the job is done."
+            subheadline={
+              <p>
                 A field guide for home-service contractors. Who owns the ask, when it goes out, the words to use, and when to stop. No star-chasing and no review filtering.
               </p>
-
-              <dl className="mt-8 grid gap-4 sm:grid-cols-3">
+            }
+            cta={
+              <>
+              <ButtonLink href="#get-playbook" size="lg" color="light">Get the free playbook</ButtonLink>
+              <dl className="grid gap-4 sm:grid-cols-3">
                 {[
                   ['One owner', 'A named person, and a backup, so the ask is not everyone\u2019s job.'],
                   ['Every finished job', 'The same honest ask. Nothing offered in exchange.'],
@@ -264,16 +281,28 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
                   </div>
                 ))}
               </dl>
-            </div>
-
-            <div className="lg:sticky lg:top-8 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+              </>
+            }
+            demo={
+              <Image
+                src="/images/review-playbook-preview.png"
+                alt="The Google Review Request Playbook cover and one-page review checklist"
+                width={1024}
+                height={630}
+                sizes="(min-width: 1024px) 512px, 100vw"
+                priority
+                className="h-auto w-full rounded-2xl shadow-xl"
+              />
+            }
+            footer={
+              <section aria-label="Get the free playbook" className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
               <form
                 id="get-playbook"
                 noValidate
                 onSubmit={onSubmit}
                 data-testid="playbook-form"
                 aria-describedby={formError ? formErrorId : undefined}
-                className="relative rounded-3xl border border-olive-950/10 bg-white p-6 shadow-sm sm:p-8 dark:border-white/10 dark:bg-olive-900"
+                className="relative scroll-mt-8 rounded-3xl border border-olive-950/10 bg-white p-6 shadow-sm sm:p-8 dark:border-white/10 dark:bg-olive-900"
               >
                 <h2 className="font-display text-3xl tracking-tight text-olive-950 dark:text-white">Get the playbook</h2>
                 <p className="mt-2 text-sm/6 text-olive-600 dark:text-olive-300">
@@ -359,7 +388,7 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
                   </div>
                 </div>
 
-                <div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+                <div className="absolute -left-2499.75 h-0 w-0 overflow-hidden" aria-hidden="true">
                   <label htmlFor="playbook-hp">Company website</label>
                   <input
                     id="playbook-hp"
@@ -418,9 +447,7 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
                   )}
                 </p>
               </form>
-            </div>
-
-            <div className="lg:col-start-1 lg:row-start-2">
+            <div>
               <h2 className="font-display text-3xl tracking-tight text-olive-950 dark:text-white">What is inside</h2>
               <ol className="mt-5 space-y-4">
                 {PLAYBOOK_OUTLINE.map((section, index) => (
@@ -436,9 +463,10 @@ export function PlaybookExperience({ demoMode }: { demoMode: boolean }) {
                 ))}
               </ol>
             </div>
-          </div>
+              </section>
+            }
+          />
         )}
-      </Container>
     </div>
   )
 }

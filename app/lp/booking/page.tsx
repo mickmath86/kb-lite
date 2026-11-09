@@ -115,7 +115,7 @@ export default async function LpBookingPage({
           src={bookingUrl.toString()}
           allow="payment"
           style={{ width: '100%', border: 'none', overflow: 'hidden' }}
-          scrolling="no"
+          scrolling="yes"
           id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
           title="Kickbord Booking Calendar"
         />

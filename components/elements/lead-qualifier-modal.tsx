@@ -85,9 +85,11 @@ const STEPS: Step[] = [
 export function LeadQualifierModal({
   triggerLabel = 'See how it works',
   triggerClassName,
+  triggerAriaLabel,
 }: {
   triggerLabel?: string
   triggerClassName?: string
+  triggerAriaLabel?: string
 }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -164,6 +166,7 @@ export function LeadQualifierModal({
       <Button
         size="lg"
         className={triggerClassName}
+        aria-label={triggerAriaLabel}
         onClick={() => {
           if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
             posthog.capture('lead_qualifier_started')

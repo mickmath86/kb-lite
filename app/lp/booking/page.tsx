@@ -72,11 +72,11 @@ export default async function LpBookingPage({
         <img src="/logos/kb-icon-white.png" className="h-16 not-dark:hidden" alt="Kickbord Logo" />
         <img src="/logos/kb-icon-blk.png" className="h-16 dark:hidden" alt="Kickbord Logo" />
       </div>
-      <p className="text-center font-display text-lg tracking-tight text-olive-700 dark:text-olive-300">More calls answered. More reviews earned. More jobs booked.</p>
+      <p className="text-center font-display px-4 text-lg tracking-tight text-olive-700 dark:text-olive-300">More calls answered. More reviews earned. <br/>More jobs booked.</p>
       <HeroCenteredWithDemo
-                eyebrow={<Eyebrow>Platform tour</Eyebrow>}
+                eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}
                 headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
-                subheadline={<p>Kickbord gives plumbers, electricians and HVAC pros an AI receptionist that answers every call, a website that books jobs, and automatic review requests, all set up for you.</p>}
+                subheadline={<p>Kickbord sets home service contractors up with a Local Service advertising to land more calls,a website that books the jobs, an AI receptionist that answers every call, and automatic review requests to keep your reputation on point, <span className="font-bold italic text-xl underline">all set up for you.</span></p>}
                 
                 demo={
                 <>
@@ -104,7 +104,7 @@ export default async function LpBookingPage({
         </span>
       </div>
     <HeroLeftAlignedWithDemo
-      headline="Ready to transform your marketing?"
+      headline="Your next missed call is someone else's job. Grab a time below."
       subheadline="Book a free consultation with our team to discover how Kickbord can help your business grow."
       cta={
         <div className="w-full">

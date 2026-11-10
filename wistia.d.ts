@@ -9,6 +9,10 @@ declare module 'react' {
       > & {
         'media-id': string;
         aspect?: string;
+        autoplay?: boolean | string;
+        muted?: boolean | string;
+        playsinline?: boolean | string;
+        loop?: boolean | string;
       };
     }
   }

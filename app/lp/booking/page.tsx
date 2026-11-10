@@ -126,7 +126,7 @@ export default async function LpBookingPage({
         </div>
       }
       demo={
-        <div className="relative left-1/2 w-screen -translate-x-1/2 px-12 sm:px-32">
+        <div className="relative left-1/2 w-screen -translate-x-1/2 px-6 sm:px-32">
           <iframe
             src={bookingUrl.toString()}
             allow="payment"

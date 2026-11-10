@@ -4,8 +4,9 @@ import { redirect } from 'next/navigation'
 import { Eyebrow } from "@/components/elements/eyebrow";
 import { Screenshot } from "@/components/elements/screenshot";
 import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-demo";
-import { HeroTwoColumnWithPhoto } from '@/components/sections/hero-two-column-with-photo';
+import { HeroLeftAlignedWithDemo } from '@/components/sections/hero-left-aligned-with-demo';
 import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with-links-and-social-icons';
+import { CheckmarkIcon } from '@/components/icons/checkmark-icon';
 
 type SP = Record<string, string | string[] | undefined>
 
@@ -53,8 +54,6 @@ export default async function LpBookingPage({
     qs.set('dp', '397')
     redirect(`/lp/booking?${qs.toString()}`)
   }
-  const price = formatPrice(getDynamicPrice(sp))
-  const useYouTubeDemo = first(sp.dp) === '397'
   const bookingUrl = new URL('https://calendar.kickbord.com/widget/booking/joLrz73XMe6vKuIOrKfL')
   const name = first(sp.name)?.trim()
   if (name) {
@@ -73,52 +72,70 @@ export default async function LpBookingPage({
         <img src="/logos/kb-icon-white.png" className="h-16 not-dark:hidden" alt="Kickbord Logo" />
         <img src="/logos/kb-icon-blk.png" className="h-16 dark:hidden" alt="Kickbord Logo" />
       </div>
-     
+      <p className="text-center font-display text-lg tracking-tight text-olive-700 dark:text-olive-300">More calls answered. More reviews earned. More jobs booked.</p>
       <HeroCenteredWithDemo
                 eyebrow={<Eyebrow>Platform tour</Eyebrow>}
-                headline={`We help businesses grow with modern marketing for $${price}/mo`}
-                subheadline={<p>From AI voice agents to campaign strategy, Kickbord brings the full stack of modern marketing to your business.</p>}
+                headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
+                subheadline={<p>Kickbord gives plumbers, electricians and HVAC pros an AI receptionist that answers every call, a website that books jobs, and automatic review requests, all set up for you.</p>}
                 
                 demo={
                 <>
-                    <h3 className="text-3xl text-white bg-[#637c86] rounded px-4 py-2">Step 1: Watch this video</h3>
-                   
-                    {useYouTubeDemo ? (
-                      <div className="aspect-video w-full">
-                        <iframe
-                          src="https://www.youtube.com/embed/4mYiuBwNqY4"
-                          title="Kickbord platform tour"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          className="h-full w-full rounded"
-                        />
-                      </div>
-                    ) : (
-                      <wistia-player
-                        media-id="e3b8vgs3q0"
-                        aspect="1.7777777777777777"
-                        className="w-full h-full"
-                      />
-                    )}
+                    <div className="mb-6 flex justify-center">
+                      <span className="inline-flex items-center gap-3 rounded-full bg-olive-950/10 px-5 py-2.5 dark:bg-white/10">
+                        <span className="font-display text-xl/6 text-[#596352] dark:text-olive-300">01</span>
+                        <span className="text-base/7 font-medium text-olive-950 dark:text-white">Watch the 5-minute tour</span>
+                      </span>
+                    </div>
+
+                    <wistia-player
+                      media-id="e3b8vgs3q0"
+                      aspect="1.7777777777777777"
+                      className="w-full h-full"
+                    />
                     
                 </>
                 }
                
     />
-     <h3 className="text-3xl text-white w-100 mx-auto text-center bg-[#637c86] rounded">Step 2: Book a call</h3>
-    <HeroTwoColumnWithPhoto
+      <div className="flex justify-center">
+        <span className="inline-flex items-center gap-3 rounded-full bg-olive-950/10 px-5 py-2.5 dark:bg-white/10">
+          <span className="font-display text-xl/6 text-[#596352] dark:text-olive-300">02</span>
+          <span className="text-base/7 font-medium text-olive-950 dark:text-white">Pick a time for your free 30-minute demo</span>
+        </span>
+      </div>
+    <HeroLeftAlignedWithDemo
       headline="Ready to transform your marketing?"
       subheadline="Book a free consultation with our team to discover how Kickbord can help your business grow."
-      
-      photo={
-        <iframe
-          src={bookingUrl.toString()}
-          allow="payment"
-          style={{ width: '100%', border: 'none', overflow: 'hidden' }}
-          scrolling="yes"
-          id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
-          title="Kickbord Booking Calendar"
-        />
+      cta={
+        <div className="w-full">
+          <p className="font-display text-2xl tracking-tight text-olive-950 dark:text-white">What you&rsquo;ll get on the call</p>
+          <ul className="mt-4 space-y-3 text-base/7 text-olive-700 dark:text-olive-300">
+            {[
+              'See your own AI receptionist answer a call for your business.',
+              'Get a look at a demo website built for your company.',
+              'Leave with a plan to get more calls and reviews, whether you sign up or not.',
+            ].map((item) => (
+              <li key={item} className="flex gap-4">
+                <CheckmarkIcon className="h-lh shrink-0 stroke-olive-950 dark:stroke-white" />
+                <p>{item}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 text-base/7 font-semibold text-olive-950 dark:text-white">Plans start at $250/mo.</p>
+          <p className="mt-1 text-sm/6 text-olive-600 dark:text-olive-400">$400 setup fee. AI usage rates and ad spend not included.</p>
+        </div>
+      }
+      demo={
+        <div className="relative left-1/2 w-screen -translate-x-1/2 px-12 sm:px-32">
+          <iframe
+            src={bookingUrl.toString()}
+            allow="payment"
+            style={{ width: '100%', height: '720px', border: 'none', overflow: 'hidden' }}
+            scrolling="no"
+            id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
+            title="Kickbord Booking Calendar"
+          />
+        </div>
       }
     />
       <Script

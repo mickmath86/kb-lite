@@ -131,7 +131,16 @@ export function LeadQualifierModal({
         setOpen(false)
         setStepIndex(0)
         setAnswers({})
-        const params = new URLSearchParams(next)
+        try {
+          sessionStorage.setItem('kb_lead', JSON.stringify(next))
+        } catch {}
+        // Keep tracking params (fbclid, utm_*, etc.) and non-contact quiz answers
+        // in the URL. Contact details go through sessionStorage so the pixel
+        // doesn't send email/phone/name to Meta in the page URL.
+        const params = new URLSearchParams(window.location.search)
+        for (const [k, v] of Object.entries(next)) {
+          if (!['phone', 'email', 'name', 'company'].includes(k)) params.set(k, v)
+        }
         router.push(`/lp/booking?${params.toString()}`)
       } catch {
         setSubmitError('We could not submit your information. Please try again.')

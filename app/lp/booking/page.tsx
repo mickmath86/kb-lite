@@ -3,7 +3,6 @@ import Script from 'next/script'
 import { redirect } from 'next/navigation'
 import { Eyebrow } from "@/components/elements/eyebrow";
 import { Screenshot } from "@/components/elements/screenshot";
-import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-demo";
 import { HeroLeftAlignedWithDemo } from '@/components/sections/hero-left-aligned-with-demo';
 import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with-links-and-social-icons';
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon';
@@ -68,15 +67,15 @@ export default async function LpBookingPage({
   }
   return (
     <div>
-      <div className="w-full flex items-center justify-center my-12">
+      <div className="w-full flex items-center justify-center my-6">
         <img src="/logos/kb-icon-white.png" className="h-16 not-dark:hidden" alt="Kickbord Logo" />
         <img src="/logos/kb-icon-blk.png" className="h-16 dark:hidden" alt="Kickbord Logo" />
       </div>
-      <p className="text-center font-display px-4 text-lg tracking-tight text-olive-700 dark:text-olive-300">More calls answered. More reviews earned. <br/>More jobs booked.</p>
-      <HeroCenteredWithDemo
-                eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}
+      
+      <HeroLeftAlignedWithDemo
+                
                 headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
-                subheadline={<p>Kickbord sets home service contractors up with a Local Service advertising to land more calls,a website that books the jobs, an AI receptionist that answers every call, and automatic review requests to keep your reputation on point, <span className="font-bold italic text-xl underline">all set up for you.</span></p>}
+                subheadline={<p>Local Service ads, a website that books jobs, an AI receptionist, and automatic review requests  <br/><span className="font-bold italic text-xl underline">all set up for you.</span></p>}
                 
                 demo={
                 <>

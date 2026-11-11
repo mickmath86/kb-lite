@@ -1,0 +1,16 @@
+.report-root {
+  --font-display: var(--font-instrument), Georgia, 'Times New Roman', serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@media print {
+  .report-chrome,
+  .report-no-print {
+    display: none !important;
+  }
+
+  .report-root {
+    background: white !important;
+    color: #0c0c09 !important;
+  }
+}

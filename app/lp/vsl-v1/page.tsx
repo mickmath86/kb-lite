@@ -4,17 +4,19 @@ import { Screenshot } from "@/components/elements/screenshot";
 import Image from "next/image";
 import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-demo";
 import { FooterWithLinksAndSocialIcons } from "@/components/sections/footer-with-links-and-social-icons";
+import { PreserveQueryParams } from "@/components/elements/preserve-query-params";
 
 export default function VslV1() {
     return (
         <div>
+            <PreserveQueryParams />
             <div className="w-full flex items-center justify-center my-12">
                 <img src="/logos/kb-icon-white.png"  className="h-16" alt="Kickbord Logo" />
             </div>
             <HeroCenteredWithDemo
                         eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}
                         headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
-                        subheadline={<p>See how Kickbord gets your happy customers leaving Google reviews, then answers and books every call those reviews bring in, even when you're on a job.</p>}
+                        subheadline={<p>See how Kickbord gets your happy customers leaving Google reviews, then answers and books every call those reviews bring in, even when you&rsquo;re on a job.</p>}
                         cta2={
                           <LeadQualifierModal
                             triggerLabel="Watch the Demo"

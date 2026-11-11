@@ -4,6 +4,7 @@ import { Screenshot } from "@/components/elements/screenshot";
 import { HeroLeftAlignedWithDemo } from '@/components/sections/hero-left-aligned-with-demo';
 import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with-links-and-social-icons';
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon';
+import { PreserveQueryParams } from '@/components/elements/preserve-query-params';
 
 type SP = Record<string, string | string[] | undefined>
 
@@ -125,6 +126,7 @@ export default async function LpBookingPage({
         </div>
       }
     />
+      <PreserveQueryParams />
       <Script
         src="https://calendar.kickbord.com/js/form_embed.js"
         strategy="afterInteractive"

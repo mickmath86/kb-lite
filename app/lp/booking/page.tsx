@@ -54,7 +54,7 @@ export default async function LpBookingPage({
       
       <HeroLeftAlignedWithDemo
                 
-                headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
+                headline={<span className="block text-3xl sm:text-6xl font-bold">Never miss another call. Get more 5-star reviews. Show up first on Google.</span>}
                 subheadline={<p>Local Service ads, a website that books jobs, an AI receptionist, and automatic review requests  <br/><span className="font-bold italic text-xl underline">all set up for you.</span></p>}
                 
                 demo={
@@ -84,7 +84,7 @@ export default async function LpBookingPage({
         </span>
       </div>
     <HeroLeftAlignedWithDemo
-      headline="Your next missed call is someone else's job. Grab a time below."
+      headline={<span className="block text-3xl sm:text-6xl font-bold">Your next missed call is someone else&rsquo;s job. Grab a time below.</span>}
       subheadline="Book a free consultation with our team to discover how Kickbord can help your business grow."
       cta={
         <div className="w-full">

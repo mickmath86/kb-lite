@@ -47,8 +47,9 @@ export function BookingCalendar() {
     <iframe
       src={src}
       allow="payment"
-      style={{ width: '100%', height: '720px', border: 'none', overflow: 'hidden' }}
-      scrolling="yes"
+      className="block w-full"
+      style={{ height: '1100px', minHeight: '1100px', border: 'none', overflow: 'hidden' }}
+      scrolling="no"
       id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
       title="Kickbord Booking Calendar"
     />

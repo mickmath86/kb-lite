@@ -65,8 +65,9 @@ export default async function LpBookingPage({
                       </span>
                     </div>
 
+                    <Script src="https://fast.wistia.com/embed/b5emfcfkir.js" async type="module" />
                     <wistia-player
-                      media-id="e3b8vgs3q0"
+                      media-id="b5emfcfkir"
                       aspect="1.7777777777777777"
                       className="w-full h-full"
                     />

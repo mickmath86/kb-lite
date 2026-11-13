@@ -7,6 +7,7 @@ import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon';
 import { PreserveQueryParams } from '@/components/elements/preserve-query-params';
 import { BookingCalendar } from '@/components/elements/booking-calendar';
+import { Container } from '@/components/elements/container';
 
 type SP = Record<string, string | string[] | undefined>
 
@@ -105,11 +106,11 @@ export default async function LpBookingPage({
         </div>
       }
       demo={
-        <div className="relative left-1/2 w-screen -translate-x-1/2 px-6 sm:px-32">
+        <Container className=" relative left-1/2 w-screen -translate-x-1/2 px-6 sm:px-32">
           <Suspense fallback={<div style={{ height: '720px' }} aria-hidden="true" />}>
             <BookingCalendar />
           </Suspense>
-        </div>
+        </Container>
       }
     />
       <PreserveQueryParams />

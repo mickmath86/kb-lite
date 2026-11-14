@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useMemo, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 
 const TRACKING_KEYS = ['fbclid', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const
 
@@ -15,6 +15,29 @@ const getServerSnapshot = () => null
 export function BookingCalendar() {
   const searchParams = useSearchParams()
   const leadJson = useSyncExternalStore(subscribe, getLeadJson, getServerSnapshot)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [height, setHeight] = useState(1100)
+
+  // GHL's embed script resizes the iframe via 'highlevel.setHeight' postMessages,
+  // but it only discovers iframes that exist when it loads. Since this iframe
+  // mounts afterward, listen for the height messages and apply them ourselves.
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      const data = e.data
+      if (!data) return
+      let h: number | undefined
+      if (Array.isArray(data) && data[0] === 'highlevel.setHeight') {
+        const payload = data[1]
+        if (typeof payload === 'number') h = payload
+        else if (payload && typeof payload === 'object' && typeof payload.height === 'number') h = payload.height
+      } else if (typeof data === 'object' && typeof data.height === 'number' && e.source === iframeRef.current?.contentWindow) {
+        h = data.height
+      }
+      if (h && h > 100) setHeight(Math.ceil(h))
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
 
   const src = useMemo(() => {
     let lead: Record<string, string> = {}
@@ -45,10 +68,11 @@ export function BookingCalendar() {
 
   return (
     <iframe
+      ref={iframeRef}
       src={src}
       allow="payment"
       className="block w-full"
-      style={{ height: '1100px', minHeight: '1100px', border: 'none', overflow: 'hidden' }}
+      style={{ height: `${height}px`, minHeight: '1600px', border: 'none', overflow: 'hidden' }}
       scrolling="no"
       id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
       title="Kickbord Booking Calendar"

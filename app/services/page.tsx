@@ -331,7 +331,8 @@ export default function ServicesPage() {
             </FooterCategory>
             <FooterCategory title="Legal">
               <FooterLink href="/privacy">Privacy Policy</FooterLink>
-              <FooterLink href="#">Terms of Service</FooterLink>
+              <FooterLink href="/terms">Terms of Service</FooterLink>
+              <FooterLink href="/security">Security</FooterLink>
             </FooterCategory>
           </>
         }

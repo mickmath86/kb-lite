@@ -12,11 +12,21 @@ const getServerSnapshot = () => null
 // Renders the HighLevel booking calendar with the lead's contact details
 // prefilled. Contact data comes from sessionStorage (set by the lead-qualifier
 // modal) so it never appears in the page URL; tracking params come from the URL.
-export function BookingCalendar() {
+export function BookingCalendar({
+  minHeight = 1600,
+  maxHeight,
+}: {
+  minHeight?: number
+  maxHeight?: number
+}) {
   const searchParams = useSearchParams()
   const leadJson = useSyncExternalStore(subscribe, getLeadJson, getServerSnapshot)
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const [height, setHeight] = useState(1100)
+  const [height, setHeight] = useState(minHeight)
+  const maxHeightRef = useRef(maxHeight)
+  useEffect(() => {
+    maxHeightRef.current = maxHeight
+  }, [maxHeight])
 
   // GHL's embed script resizes the iframe via 'highlevel.setHeight' postMessages,
   // but it only discovers iframes that exist when it loads. Since this iframe
@@ -33,7 +43,7 @@ export function BookingCalendar() {
       } else if (typeof data === 'object' && typeof data.height === 'number' && e.source === iframeRef.current?.contentWindow) {
         h = data.height
       }
-      if (h && h > 100) setHeight(Math.ceil(h))
+      if (h && h > 100) setHeight(Math.min(Math.ceil(h), maxHeightRef.current ?? Infinity))
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
@@ -72,7 +82,7 @@ export function BookingCalendar() {
       src={src}
       allow="payment"
       className="block w-full"
-      style={{ height: `${height}px`, minHeight: '1600px', border: 'none', overflow: 'hidden' }}
+      style={{ height: `${Math.max(height, minHeight)}px`, minHeight: `${minHeight}px`, border: 'none', overflow: 'hidden' }}
       scrolling="no"
       id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
       title="Kickbord Booking Calendar"

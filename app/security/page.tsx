@@ -1,16 +1,9 @@
 import { Main } from '@/components/elements/main'
-import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
-import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import {
   FooterCategory,
   FooterLink,
   FooterWithLinkCategories,
 } from '@/components/sections/footer-with-link-categories'
-import {
-  NavbarLink,
-  NavbarLogo,
-  NavbarWithLogoActionsAndCenteredLinks,
-} from '@/components/sections/navbar-with-logo-actions-and-centered-links'
 
 export const metadata = {
   title: 'Security — Kickbord',
@@ -33,31 +26,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function SecurityPage() {
   return (
     <>
-      <NavbarWithLogoActionsAndCenteredLinks
-        id="navbar"
-        links={
-          <>
-            <NavbarLink href="/about">About</NavbarLink>
-            <NavbarLink href="/services">Services</NavbarLink>
-            <NavbarLink href="/ai-voice-agents">AI Voice Agents</NavbarLink>
-            <NavbarLink href="/results">Results</NavbarLink>
-            <NavbarLink href="/contact">Contact</NavbarLink>
-            <NavbarLink href="/get-started" className="sm:hidden">Get started</NavbarLink>
-          </>
-        }
-        logo={
-          <NavbarLogo href="/">
-            <img src="/Logos/icon.svg" alt="Kickbord" className="dark:hidden" width={85} height={28} />
-            <img src="/Logos/icon.svg" className="not-dark:hidden" width={85} height={28} />
-          </NavbarLogo>
-        }
-        actions={
-          <>
-            <PlainButtonLink href="/contact" className="max-sm:hidden">Book a call</PlainButtonLink>
-            <ButtonLink href="/get-started">Get started <ArrowNarrowRightIcon /></ButtonLink>
-          </>
-        }
-      />
+      <div className="w-full flex items-center justify-center my-12">
+        <img src="/logos/kb-icon-white.png" className="h-16" alt="Kickbord Logo" />
+      </div>
 
       <Main>
         <div className="mx-auto max-w-3xl px-6 py-20 sm:py-28">
@@ -183,9 +154,9 @@ export default function SecurityPage() {
               <FooterLink href="/contact">Contact</FooterLink>
             </FooterCategory>
             <FooterCategory title="Legal">
-              <FooterLink href="/privacy">Privacy Policy</FooterLink>
-              <FooterLink href="/terms">Terms of Service</FooterLink>
-              <FooterLink href="/security">Security</FooterLink>
+              <FooterLink href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</FooterLink>
+              <FooterLink href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</FooterLink>
+              <FooterLink href="/security" target="_blank" rel="noopener noreferrer">Security</FooterLink>
             </FooterCategory>
           </>
         }

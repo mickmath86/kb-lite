@@ -14,17 +14,19 @@ import { FadeInSection } from "@/components/elements/fade-in-section";
 import { MapPinIcon } from "@/components/icons/map-pin-icon";
 import { StarIcon } from "@/components/icons/star-icon";
 import { BellIcon } from "@/components/icons/bell-icon";
+import { FloatingVideo } from "@/components/elements/floating-video";
 
 export default function VslV1() {
     return (
         <div>
             <PreserveQueryParams />
             <div className="w-full flex items-center justify-center my-12">
-                <img src="/logos/kb-icon-white.png"  className="h-16" alt="Kickbord Logo" />
+                <img src="/logos/kb-icon-white.png"  className="h-16 not-dark:hidden" alt="Kickbord Logo" />
+                <img src="/logos/kb-icon-black.png"  className="h-16  dark:hidden" alt="Kickbord Logo" />
             </div>
             <HeroCenteredWithDemo
                         eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}
-                        headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
+                        headline="More 5-star reviews. More calls booked. An AI receptionist that never misses."
                         subheadline={<p>See how Kickbord gets your happy customers leaving Google reviews, then answers and books every call those reviews bring in, even when you&rsquo;re on a job.</p>}
                         cta2={
                           <LeadQualifierModal
@@ -35,11 +37,13 @@ export default function VslV1() {
                         demo={
                          <>                           
                           <Script src="https://fast.wistia.com/embed/91avpg3417.js" async type="module" />
+                          <FloatingVideo>
                             <wistia-player
                               media-id="91avpg3417"
                               aspect="1.7777777777777777"
                               className="w-full h-full"
                             />
+                          </FloatingVideo>
                           </>
                         }
                         // footer={<p className="text-center text-sm text-olive-500">Trusted by 50+ small businesses</p>}

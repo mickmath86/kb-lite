@@ -22,8 +22,9 @@ const FooterMain = () => {
               <FooterLink href="/lp/booking">Book a Call</FooterLink>
             </FooterCategory>
             <FooterCategory title="Legal">
-              <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
-              <FooterLink href="/legal/terms">Terms of Service</FooterLink>
+              <FooterLink href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</FooterLink>
+              <FooterLink href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</FooterLink>
+              <FooterLink href="/security" target="_blank" rel="noopener noreferrer">Security</FooterLink>
             </FooterCategory>
           </>
         }

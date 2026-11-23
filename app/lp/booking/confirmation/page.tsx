@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
+import Image from 'next/image'
 
 import { Eyebrow } from '@/components/elements/eyebrow'
 import { HeroCenteredWithDemo } from '@/components/sections/hero-centered-with-demo'
@@ -33,10 +33,13 @@ export default function BookingConfirmationPage() {
         }
         demo={
           <div className="w-full max-w-3xl">
-            <wistia-player
-              media-id="e3b8vgs3q0"
-              aspect="1.7777777777777777"
-              className="w-full h-full"
+            <Image
+              src="/images/confirmation-hero.jpg"
+              alt="A home-service contractor checking his phone between jobs"
+              width={1024}
+              height={576}
+              priority
+              className="h-auto w-full rounded-2xl"
             />
           </div>
         }
@@ -78,8 +81,6 @@ export default function BookingConfirmationPage() {
           </>
         }
       />
-
-      <Script src="https://fast.wistia.net/assets/external/E-v1.js" strategy="lazyOnload" />
 
       <FooterWithLinksAndSocialIcons
         links={<></>}

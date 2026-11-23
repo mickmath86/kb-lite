@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import Script from 'next/script'
-import { redirect } from 'next/navigation'
-import { Eyebrow } from "@/components/elements/eyebrow";
 import { Screenshot } from "@/components/elements/screenshot";
 import { HeroLeftAlignedWithDemo } from '@/components/sections/hero-left-aligned-with-demo';
 import { FooterWithLinksAndSocialIcons } from '@/components/sections/footer-with-links-and-social-icons';
 import { CheckmarkIcon } from '@/components/icons/checkmark-icon';
+import { PreserveQueryParams } from '@/components/elements/preserve-query-params';
+import { BookingCalendar } from '@/components/elements/booking-calendar';
+import { Container } from '@/components/elements/container';
 
 type SP = Record<string, string | string[] | undefined>
 
@@ -42,29 +44,7 @@ export default async function LpBookingPage({
 }: {
   searchParams: Promise<SP>
 }) {
-  const sp = await searchParams
-  // Default visitors without a price param to dp=397, keeping any other params (utm, etc.).
-  if (!first(sp.dp)?.trim()) {
-    const qs = new URLSearchParams()
-    for (const [k, v] of Object.entries(sp)) {
-      if (k === 'dp' || v === undefined) continue
-      for (const item of Array.isArray(v) ? v : [v]) qs.append(k, item)
-    }
-    qs.set('dp', '397')
-    redirect(`/lp/booking?${qs.toString()}`)
-  }
-  const bookingUrl = new URL('https://calendar.kickbord.com/widget/booking/joLrz73XMe6vKuIOrKfL')
-  const name = first(sp.name)?.trim()
-  if (name) {
-    const [firstName, ...lastName] = name.split(/\s+/)
-    bookingUrl.searchParams.set('name', name)
-    bookingUrl.searchParams.set('first_name', firstName)
-    if (lastName.length) bookingUrl.searchParams.set('last_name', lastName.join(' '))
-  }
-  for (const [source, target] of [['email', 'email'], ['phone', 'phone'], ['company', 'company_name']]) {
-    const value = first(sp[source])?.trim()
-    if (value) bookingUrl.searchParams.set(target, value)
-  }
+  await searchParams // keeps the page dynamic so search params reach the client
   return (
     <div>
       <div className="w-full flex items-center justify-center my-6">
@@ -74,7 +54,7 @@ export default async function LpBookingPage({
       
       <HeroLeftAlignedWithDemo
                 
-                headline="Never miss another call. Get more 5-star reviews. Show up first on Google."
+                headline={<span className="block text-3xl sm:text-6xl font-bold">Never miss another call. Get more 5-star reviews. Show up first on Google.</span>}
                 subheadline={<p>Local Service ads, a website that books jobs, an AI receptionist, and automatic review requests  <br/><span className="font-bold italic text-xl underline">all set up for you.</span></p>}
                 
                 demo={
@@ -86,8 +66,9 @@ export default async function LpBookingPage({
                       </span>
                     </div>
 
+                    <Script src="https://fast.wistia.com/embed/b5emfcfkir.js" async type="module" />
                     <wistia-player
-                      media-id="e3b8vgs3q0"
+                      media-id="b5emfcfkir"
                       aspect="1.7777777777777777"
                       className="w-full h-full"
                     />
@@ -103,7 +84,7 @@ export default async function LpBookingPage({
         </span>
       </div>
     <HeroLeftAlignedWithDemo
-      headline="Your next missed call is someone else's job. Grab a time below."
+      headline={<span className="block text-3xl sm:text-6xl font-bold">Your next missed call is someone else&rsquo;s job. Grab a time below.</span>}
       subheadline="Book a free consultation with our team to discover how Kickbord can help your business grow."
       cta={
         <div className="w-full">
@@ -125,18 +106,14 @@ export default async function LpBookingPage({
         </div>
       }
       demo={
-        <div className="relative left-1/2 w-screen -translate-x-1/2 px-6 sm:px-32">
-          <iframe
-            src={bookingUrl.toString()}
-            allow="payment"
-            style={{ width: '100%', height: '720px', border: 'none', overflow: 'hidden' }}
-            scrolling="no"
-            id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
-            title="Kickbord Booking Calendar"
-          />
-        </div>
+        <Container className=" relative left-1/2 w-screen -translate-x-1/2 px-6 sm:px-32">
+          <Suspense fallback={<div style={{ height: '720px' }} aria-hidden="true" />}>
+            <BookingCalendar />
+          </Suspense>
+        </Container>
       }
     />
+      <PreserveQueryParams />
       <Script
         src="https://calendar.kickbord.com/js/form_embed.js"
         strategy="afterInteractive"

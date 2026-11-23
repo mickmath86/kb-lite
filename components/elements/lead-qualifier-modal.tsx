@@ -112,7 +112,7 @@ export function LeadQualifierModal({
       <Dialog open={open} onClose={close} className="relative z-50">
         <div className="fixed inset-0 bg-olive-950/50 backdrop-blur-sm" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <DialogPanel className={`relative w-full rounded-2xl bg-white p-6 shadow-xl sm:p-8 dark:bg-olive-900 ${isCalendar ? 'max-h-[90vh] max-w-4xl overflow-x-hidden overflow-y-auto' : 'max-w-lg'}`}>
+          <DialogPanel className={`relative w-full rounded-2xl bg-white p-6 shadow-xl sm:p-8 dark:bg-olive-900 ${isCalendar ? 'flex max-h-[90vh] max-w-4xl flex-col overflow-hidden' : 'max-w-lg'}`}>
             <button
               type="button"
               onClick={close}
@@ -156,8 +156,8 @@ export function LeadQualifierModal({
             ) : null}
 
             {screen === 'calendar' ? (
-              <div className="mt-6 overflow-x-hidden">
-                <BookingCalendar minHeight={720} />
+              <div className="mt-6 min-h-0 flex-1 overflow-hidden">
+                <BookingCalendar minHeight={480} scrollable />
               </div>
             ) : null}
 

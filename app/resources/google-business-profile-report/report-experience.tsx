@@ -10,7 +10,7 @@ import { validateGbpLead, type GbpFieldErrors } from '@/lib/gbp-report/validate'
 import { trackMetaEvent } from '@/lib/meta-pixel'
 import { TRADE_TYPES } from '@/lib/review-playbook/trades'
 
-import { ReportView, ScoreRing } from './report-view'
+import { ScoreRing } from './report-view'
 
 const inputClass =
   'w-full rounded-lg border border-olive-950/15 bg-white px-4 py-3 text-base text-olive-950 placeholder:text-olive-500 focus:outline-none focus:ring-2 focus:ring-olive-950/20 aria-invalid:border-red-700 aria-invalid:ring-red-700/20 dark:border-white/10 dark:bg-olive-900 dark:text-white dark:placeholder:text-olive-400 dark:focus:ring-white/20 dark:aria-invalid:border-red-400'
@@ -22,12 +22,15 @@ type ApiChoose = { ok: true; kind: 'choose'; candidates: Candidate[] }
 type ApiFailure = { ok: false; error?: string; fieldErrors?: GbpFieldErrors }
 
 const WHAT_WE_CHECK = [
-  ['Stars and reviews', 'Your rating, how many reviews you have, and how recent they are, compared with nearby competitors.'],
-  ['Profile basics', 'Hours, phone, website link, open status, and whether your main category is set.'],
-  ['Photos', 'Whether you have enough real photos to look busy and trustworthy.'],
-  ['Top 5 competitors', 'The businesses Google shows first for your trade in your area, side by side with you.'],
-  ['What to fix first', 'A short, ranked list of fixes with the points each one is worth.'],
+  ['Score and letter grade', 'Your profile gets a score out of 100 and an A–F grade, so you know where you stand at a glance.'],
+  ['Every check, line by line', 'Star rating, review count, review recency, photos, hours, website link, phone, category, and open status — each with points earned.'],
+  ['Top 5 competitors', 'The businesses Google shows first for your trade in your area, side by side with your rating, reviews, photos, hours, and website.'],
+  ['What to fix first', 'A ranked list of fixes with the points each one is worth — high, medium, and low priority.'],
+  ['The things Google hides', 'Items Google does not share publicly, flagged for you to check inside your own profile.'],
+  ['A PDF to keep or share', 'The whole report, downloadable — handy to send to a partner or your office manager.'],
 ]
+
+const RANKING_GIF = 'https://cdn-user-public.veed.io/animatedProjectThumbnails/aefdd272-0f0e-4264-9fc5-7fdfaea3faaa.gif'
 
 function SamplePreview() {
   return (
@@ -57,8 +60,82 @@ function SamplePreview() {
           </li>
         ))}
       </ul>
+      <div className="mt-4 overflow-hidden rounded-lg border border-olive-950/10 dark:border-white/10">
+        <table className="w-full text-left text-xs/5">
+          <thead className="bg-olive-50 text-olive-600 dark:bg-olive-950/40 dark:text-olive-400">
+            <tr>
+              <th className="px-3 py-2 font-semibold">You vs. top 5 nearby</th>
+              <th className="px-3 py-2 text-right font-semibold">Rating</th>
+              <th className="px-3 py-2 text-right font-semibold">Reviews</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-olive-950/10 dark:divide-white/10">
+            {[
+              ['Your Business Name', '4.6', '38', true],
+              ['Competitor Plumbing Co.', '4.9', '214', false],
+              ['Ace Rooter & Drain', '4.8', '161', false],
+            ].map(([name, rating, reviews, you]) => (
+              <tr key={String(name)} className={you ? 'bg-[#596352]/10' : undefined}>
+                <td className="px-3 py-2 font-medium text-olive-950 dark:text-white">
+                  {name}
+                  {you ? <span className="ml-1.5 rounded-full bg-olive-950 px-1.5 py-0.5 text-[10px] text-white dark:bg-olive-300 dark:text-olive-950">You</span> : null}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums text-olive-700 dark:text-olive-300">{rating}</td>
+                <td className="px-3 py-2 text-right tabular-nums text-olive-700 dark:text-olive-300">{reviews}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-olive-950/10 px-3 py-2.5 dark:border-white/10">
+        <span className="font-display text-lg/6 text-[#596352] dark:text-olive-300">01</span>
+        <div>
+          <p className="text-sm font-semibold text-olive-950 dark:text-white">
+            Add your business hours
+            <span className="ml-2 inline-flex rounded-full bg-[#a2453a]/10 px-2 py-0.5 text-[10px] font-semibold text-[#8a3328] ring-1 ring-inset ring-[#a2453a]/25 dark:text-[#f0a79c]">High priority</span>
+          </p>
+          <p className="mt-0.5 text-xs/5 text-olive-600 dark:text-olive-400">+10 points toward your score</p>
+        </div>
+      </div>
       <p className="mt-4 rounded-lg bg-olive-50 px-3 py-2 text-xs text-olive-700 dark:bg-olive-950/40 dark:text-olive-300">Example report. Yours uses your real Google profile.</p>
     </div>
+  )
+}
+
+function RankingSection() {
+  return (
+    <Container className="pb-10">
+      <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <p className="text-sm/7 font-semibold text-olive-700 dark:text-olive-400">Then the needle moves</p>
+          <h2 className="mt-1 font-display text-3xl tracking-tight text-olive-950 sm:text-4xl dark:text-white">
+            Watch your rankings climb, month over month
+          </h2>
+          <p className="mt-4 text-base/7 text-olive-700 dark:text-olive-300">
+            Your report is the starting point. When we manage a profile, we track a geo-grid heat map around your
+            service area — the same map you see here — and work the fixes that move it: steady review requests,
+            posts and photos, AI replies, and profile upkeep.
+          </p>
+          <ul className="mt-6 space-y-3 text-sm/6 text-olive-700 dark:text-olive-300">
+            {[
+              'Geo-grid tracking shows your rank at every spot in your area, not just your office',
+              'Reviews, photos, and posts compound into better local pack positions',
+              'You see the map improve — no guessing whether it is working',
+            ].map((item) => (
+              <li key={item} className="flex gap-3">
+                <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-[#596352] dark:bg-olive-300" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <img
+          src={RANKING_GIF}
+          alt="Geo-grid heat map showing a business's local search rankings improving over time"
+          className="w-full rounded-2xl shadow-xl ring-1 ring-olive-950/10 dark:ring-white/10"
+        />
+      </div>
+    </Container>
   )
 }
 
@@ -73,14 +150,13 @@ export function ReportExperience({ demoMode, sampleMode }: { demoMode: boolean; 
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [candidates, setCandidates] = useState<Candidate[] | null>(null)
-  const [result, setResult] = useState<{ report: GbpReport; demo: boolean; duplicate: boolean } | null>(null)
   const lock = useRef(false)
 
   useEffect(() => {
-    if (!result && !candidates) return
+    if (!candidates) return
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    document.getElementById(result ? 'report' : 'choose')?.focus()
-  }, [result, candidates])
+    document.getElementById('choose')?.focus()
+  }, [candidates])
 
   async function send(extra: { placeId?: string; noneOfThese?: boolean } = {}) {
     const validated = validateGbpLead({ website, name, email, tradeType })
@@ -131,8 +207,8 @@ export function ReportExperience({ demoMode, sampleMode }: { demoMode: boolean; 
       }
 
       if (data.captured && !data.duplicate) trackMetaEvent('Lead', { content_name: 'gbp-profile-report' })
-      setCandidates(null)
-      setResult({ report: data.report, demo: data.demo, duplicate: data.duplicate })
+      window.location.assign('https://audit.reviews.kickbord.com/light-audit/search')
+      return
     } catch {
       setFormError('We could not reach the server. Nothing was saved. Please try again.')
     } finally {
@@ -147,13 +223,12 @@ export function ReportExperience({ demoMode, sampleMode }: { demoMode: boolean; 
   }
 
   function startOver() {
-    setResult(null)
     setCandidates(null)
     setFormError('')
     window.setTimeout(() => document.getElementById('gbp-website')?.focus(), 0)
   }
 
-  const banner = demoMode || sampleMode || result?.demo
+  const banner = demoMode || sampleMode
 
   return (
     <div className="pb-20">
@@ -169,23 +244,7 @@ export function ReportExperience({ demoMode, sampleMode }: { demoMode: boolean; 
         </div>
       ) : null}
 
-      {result ? (
-        <Container className="pt-14 sm:pt-20">
-          <div className="report-no-print mb-8 flex flex-wrap items-center justify-between gap-3">
-            <p role="status" className="text-sm/6 text-olive-700 dark:text-olive-300">
-              {result.demo
-                ? 'Preview only. Nothing was captured or sent.'
-                : result.duplicate
-                  ? 'You already ran this report, so here it is again.'
-                  : 'Your report is ready.'}
-            </p>
-            <button type="button" onClick={startOver} className="text-sm font-medium text-olive-950 underline underline-offset-4 dark:text-white">
-              Check another business
-            </button>
-          </div>
-          <ReportView report={result.report} />
-        </Container>
-      ) : candidates ? (
+      {candidates ? (
         <Container className="pt-14 sm:pt-20">
           <section id="choose" tabIndex={-1} aria-labelledby="choose-title" className="mx-auto max-w-2xl outline-none">
             <p className="text-sm/7 font-semibold text-olive-700 dark:text-olive-400">One quick check</p>
@@ -362,6 +421,7 @@ export function ReportExperience({ demoMode, sampleMode }: { demoMode: boolean; 
           }
         />
       )}
+      {!candidates && <RankingSection />}
     </div>
   )
 }

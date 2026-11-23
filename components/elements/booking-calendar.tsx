@@ -15,9 +15,13 @@ const getServerSnapshot = () => null
 export function BookingCalendar({
   minHeight = 1600,
   maxHeight,
+  scrollable = false,
 }: {
   minHeight?: number
   maxHeight?: number
+  /** Cap the frame at a fixed height and let the GHL widget scroll internally.
+      Use inside containers where the widget's full height would exceed the view. */
+  scrollable?: boolean
 }) {
   const searchParams = useSearchParams()
   const leadJson = useSyncExternalStore(subscribe, getLeadJson, getServerSnapshot)
@@ -82,8 +86,12 @@ export function BookingCalendar({
       src={src}
       allow="payment"
       className="block w-full"
-      style={{ height: `${Math.max(height, minHeight)}px`, minHeight: `${minHeight}px`, border: 'none', overflow: 'hidden' }}
-      scrolling="no"
+      style={
+        scrollable
+          ? { height: '100%', minHeight: `${minHeight}px`, border: 'none', overflow: 'auto' }
+          : { height: `${Math.max(height, minHeight)}px`, minHeight: `${minHeight}px`, border: 'none', overflow: 'hidden' }
+      }
+      scrolling={scrollable ? 'yes' : 'no'}
       id="PA9BL9KS5PxCkzn4C6f4_1790640186692"
       title="Kickbord Booking Calendar"
     />

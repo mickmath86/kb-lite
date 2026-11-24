@@ -1,175 +1,176 @@
 import { Eyebrow } from "@/components/elements/eyebrow";
-import { LeadQualifierModal } from "@/components/elements/lead-qualifier-modal";
+import { LeadQualifier } from "@/components/elements/lead-qualifier-modal";
+import { ButtonLink } from "@/components/elements/button";
 import Script from "next/script";
 import { HeroCenteredWithDemo } from "@/components/sections/hero-centered-with-demo";
+import { HeroLeftAlignedWithPhoto } from "@/components/sections/hero-left-aligned-with-photo";
 import { FooterWithLinksAndSocialIcons } from "@/components/sections/footer-with-links-and-social-icons";
 import { PreserveQueryParams } from "@/components/elements/preserve-query-params";
 import { Wallpaper } from "@/components/elements/wallpaper";
+import { Screenshot } from "@/components/elements/screenshot";
+import { LoopVideo } from "@/components/elements/loop-video";
+import { StatsWithGraph, Stat as StatGraph } from "@/components/sections/stats-with-graph";
 import { PricingMultiTier, Plan } from "@/components/sections/pricing-multi-tier";
 import { PlanComparisonTable } from "@/components/sections/plan-comparison-table";
 import { FeaturesThreeColumn, Feature } from "@/components/sections/features-three-column";
+import { FeatureThreeColumnWithDemos, Features as FeaturesThreeColumnWithDemos } from "@/components/sections/features-three-column-with-demos";
 import { FeaturesStackedAlternatingWithDemos, Feature as FeatureStacked } from "@/components/sections/features-stacked-alternating-with-demos";
+import { FeaturesWithLargeDemo, Feature as LargeDemoFeature } from "@/components/sections/features-with-large-demo";
+import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon";
+import { ChatBubbleCircleIcon } from "@/components/icons/chat-bubble-circle-icon";
+import { ChartLineIcon } from "@/components/icons/chart-line-icon";
+import { UiLayoutIcon } from "@/components/icons/ui-layout-icon";
+import { LightingBoltIcon } from "@/components/icons/lighting-bolt-icon";
+import { TargetIcon } from "@/components/icons/target-icon";
+import { MicrophoneIcon } from "@/components/icons/microphone-icon";
+import { CalendarIcon } from "@/components/icons/calendar-icon";
+import { ClockIcon } from "@/components/icons/clock-icon";
 import { PricingSingleTierTwoColumn } from "@/components/sections/pricing-single-tier-two-column";
 import { FadeInSection } from "@/components/elements/fade-in-section";
 import { MapPinIcon } from "@/components/icons/map-pin-icon";
 import { StarIcon } from "@/components/icons/star-icon";
 import { BellIcon } from "@/components/icons/bell-icon";
 import { FloatingVideo } from "@/components/elements/floating-video";
+import { BookingCalendar } from "@/components/elements/booking-calendar";
+import { Suspense } from "react";
 
 export default function VslV1() {
     return (
         <div>
             <PreserveQueryParams />
-            <div className="w-full flex items-center justify-center my-12">
+            <div className="w-full flex items-center justify-center my-6">
                 <img src="/logos/kb-icon-white.png"  className="h-16 not-dark:hidden" alt="Kickbord Logo" />
                 <img src="/logos/kb-icon-blk.png"  className="h-16  dark:hidden" alt="Kickbord Logo" />
             </div>
             <HeroCenteredWithDemo
                         eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}
-                        headline="More 5-star reviews. More calls booked. An AI receptionist that never misses."
-                        subheadline={<p>See how Kickbord gets your happy customers leaving Google reviews, then answers and books every call those reviews bring in, even when you&rsquo;re on a job.</p>}
-                        cta2={
-                          <LeadQualifierModal
-                            triggerLabel="Book a Demo"
-                            triggerClassName="px-10 py-5 text-2xl"
-                          />
-                        }
+                        headline="The boring stuff is costing you jobs. Let AI handle it."
+                        subheadline={<p>We start with your Google profile and reviews, the basics that decide who gets the call. Then we make sure no call goes unanswered.</p>}
+                      
                         demo={
                          <>                           
                           <Script src="https://fast.wistia.com/embed/91avpg3417.js" async type="module" />
-                          <FloatingVideo>
-                            <wistia-player
+                          <wistia-player
                               media-id="91avpg3417"
                               aspect="1.7777777777777777"
                               className="w-full h-full"
                             />
-                          </FloatingVideo>
+                          
                           </>
                         }
-                        // footer={<p className="text-center text-sm text-olive-500">Trusted by 50+ small businesses</p>}
+                        footer={<LeadQualifier  />}
             />
-            <PricingMultiTier
-              eyebrow="Pricing"
-              headline="Simple pricing for home-service pros"
-              subheadline={<p>Every plan starts with your Google Business Profile — the place your next customer looks first.</p>}
-              plans={
-                <>
-                  <Wallpaper color="green" className="rounded-xl h-full">
-                    <Plan
-                      className="h-full"
-                      name="Starter"
-                      price="$250"
-                      period="/mo"
-                      subheadline={<p>Get in front of local customers with Local Service Ads done for you.</p>}
-                      features={[
-                        'Local Service Ads setup and management',
-                        'One-time Google Business Profile cleanup',
-                      ]}
-                      cta={<LeadQualifierModal triggerLabel="Get started" triggerClassName="w-full justify-center" />}
-                    />
-                  </Wallpaper>
-                  <Wallpaper color="blue" className="rounded-xl h-full">
-                    <Plan
-                      className="h-full"
-                      name="Grow"
-                      price="$597"
-                      period="/mo"
-                      badge="Most popular"
-                      subheadline={<p>The full Google profile and reputation package. No website.</p>}
-                      features={[
-                        'Automated review requests',
-                        'AI review replies and bad-review alerts',
-                        'GBP posts and photos',
-                        'Local ranking maps and AI search reports',
-                        'Competitor analysis',
-                        'Add LSA for $200/mo',
-                      ]}
-                      cta={<LeadQualifierModal triggerLabel="Start growing" triggerClassName="w-full justify-center" />}
-                    />
-                  </Wallpaper>
-                  <Wallpaper color="purple" className="rounded-xl h-full">
-                    <Plan
-                      className="h-full"
-                      name="Expand"
-                      price="$799"
-                      period="/mo + usage"
-                      subheadline={<p>Everything in Grow, plus the website and the AI front office.</p>}
-                      features={[
-                        'Everything in Grow',
-                        'Kickbord website',
-                        'AI backup receptionist',
-                        'Missed-call text-back',
-                        'New business line',
-                      ]}
-                      cta={<LeadQualifierModal triggerLabel="Get the full system" triggerClassName="w-full justify-center" />}
-                    />
-                  </Wallpaper>
-                </>
+           
+
+            <FeaturesWithLargeDemo
+              eyebrow="Google Business Profile &amp; reputation"
+              headline="Climb to the top of local search, and stay there."
+              subheadline="We start with a full audit of your Google Business Profile, fix what&rsquo;s holding it back, then keep it maintained every month so you keep outranking the competition."
+              demo={
+                <Screenshot wallpaper="green" placement="bottom">
+                  <LoopVideo
+                    name="gbp-demo"
+                    label="A Google Business Profile gets audited, fixed, and starts collecting and answering reviews automatically"
+                  />
+                </Screenshot>
               }
-            />
-            <p className="mx-auto max-w-2xl -mt-8 pb-8 text-center text-sm text-olive-500 dark:text-olive-400">
-              $400 setup on every plan. AI usage rates and ad spend not included.
-              Running a larger operation? <a href="/contact" className="underline hover:text-olive-950 dark:hover:text-white">Call for a quote</a>.
-            </p>
-
-            <PlanComparisonTable
-              plans={["Starter", "Grow", "Expand"]}
-              features={[
-                {
-                  title: "Google Business Profile & reputation",
-                  features: [
-                    { name: "GBP cleanup and optimization", value: { Starter: "One-time", Grow: true, Expand: true } },
-                    { name: "Automated review requests", value: { Starter: false, Grow: true, Expand: true } },
-                    { name: "AI review replies", value: { Starter: false, Grow: true, Expand: true } },
-                    { name: "Bad-review alerts", value: { Starter: false, Grow: true, Expand: true } },
-                    { name: "GBP posts and photos", value: { Starter: false, Grow: true, Expand: true } },
-                    { name: "Local ranking maps", value: { Starter: false, Grow: true, Expand: true } },
-                    { name: "AI search reports", value: { Starter: false, Grow: true, Expand: true } },
-                    { name: "Competitor analysis", value: { Starter: false, Grow: true, Expand: true } },
-                  ],
-                },
-                {
-                  title: "Advertising",
-                  features: [
-                    { name: "Local Service Ads setup and management", value: { Starter: true, Grow: "Add-on — $200/mo", Expand: "Add-on — $200/mo" } },
-                  ],
-                },
-                {
-                  title: "Website & phones",
-                  features: [
-                    { name: "Kickbord website", value: { Starter: false, Grow: false, Expand: true } },
-                    { name: "AI backup receptionist", value: { Starter: false, Grow: false, Expand: true } },
-                    { name: "Missed-call text-back", value: { Starter: false, Grow: false, Expand: true } },
-                    { name: "New business line", value: { Starter: false, Grow: false, Expand: true } },
-                  ],
-                },
-              ]}
-            />
-
-            <FeaturesThreeColumn
-              eyebrow="Why it works"
-              headline="Built around your Google Business Profile"
               features={
                 <>
-                  <Feature
-                    icon={<MapPinIcon className="size-5" />}
-                    headline="Get found locally"
-                    subheadline={<p>Reviews, posts, photos, and ranking maps work to keep your profile competitive in local search — where most jobs start.</p>}
+                  <LargeDemoFeature
+                    icon={<MagnifyingGlassIcon />}
+                    headline="Profile audit"
+                    subheadline={<p>We review your categories, services, photos, hours, and ranking across your service area, and fix every gap.</p>}
                   />
-                  <Feature
-                    icon={<StarIcon className="size-5" />}
-                    headline="Reputation on autopilot"
-                    subheadline={<p>Review requests go out after every job, AI writes the replies, and you get alerted the moment a bad review lands.</p>}
+                  <LargeDemoFeature
+                    icon={<ChatBubbleCircleIcon />}
+                    headline="Ongoing reputation management"
+                    subheadline={<p>Review requests go out after every job, every review gets a reply, and you hear about a bad one right away.</p>}
                   />
-                  <Feature
-                    icon={<BellIcon className="size-5" />}
-                    headline="Never miss a call"
-                    subheadline={<p>On Expand, an AI receptionist answers when you can&rsquo;t, and missed-call text-back catches every lead that slips through.</p>}
+                  <LargeDemoFeature
+                    icon={<ChartLineIcon />}
+                    headline="Rank higher every month"
+                    subheadline={<p>Fresh posts, photos, and reviews keep your profile active, so you keep moving up in search and the map pack.</p>}
                   />
                 </>
               }
             />
 
+            <FeaturesWithLargeDemo
+              eyebrow="New website"
+              headline="A website that turns visitors into booked jobs."
+              subheadline="Customers check your site before they call. We build you a fast, modern site that earns their trust and makes it easy to reach you."
+              demo={
+                <Screenshot wallpaper="blue" placement="bottom">
+                  <LoopVideo
+                    name="website-demo"
+                    label="A new contractor website with a chat widget capturing a lead"
+                  />
+                </Screenshot>
+              }
+              features={
+                <>
+                  <LargeDemoFeature
+                    icon={<UiLayoutIcon />}
+                    headline="Built for your business"
+                    subheadline={<p>A custom design that matches your brand, not a generic template.</p>}
+                  />
+                  <LargeDemoFeature
+                    icon={<LightingBoltIcon />}
+                    headline="Fast and mobile-first"
+                    subheadline={<p>Loads quickly and looks great on phones, where most of your customers find you.</p>}
+                  />
+                  <LargeDemoFeature
+                    icon={<TargetIcon />}
+                    headline="Made to convert"
+                    subheadline={<p>Clear calls to action, click-to-call, and online booking turn visits into jobs.</p>}
+                  />
+                </>
+              }
+            />
+
+            <FeaturesWithLargeDemo
+              eyebrow="AI fallback receptionist"
+              headline="Never miss a call again."
+              subheadline="When you&rsquo;re on a job or after hours, our AI receptionist picks up, so every caller gets an answer and every lead gets captured."
+              demo={
+                <Screenshot wallpaper="purple" placement="bottom">
+                  <LoopVideo
+                    name="receptionist-demo"
+                    label="A missed call rolls to the AI receptionist, which captures the caller's details and texts them to the owner"
+                  />
+                </Screenshot>
+              }
+              features={
+                <>
+                  <LargeDemoFeature
+                    icon={<MicrophoneIcon />}
+                    headline="Answers when you can&rsquo;t"
+                    subheadline={<p>Calls you miss roll over to the AI, which greets callers by your business name and handles the conversation.</p>}
+                  />
+                  <LargeDemoFeature
+                    icon={<CalendarIcon />}
+                    headline="Captures and books the job"
+                    subheadline={<p>It collects the caller&rsquo;s details and what they need, and can book them straight onto your calendar.</p>}
+                  />
+                  <LargeDemoFeature
+                    icon={<ClockIcon />}
+                    headline="Covers you 24/7"
+                    subheadline={<p>Nights, weekends, and busy days are covered, and you get a summary of every call.</p>}
+                  />
+                </>
+              }
+            />
+            <StatsWithGraph
+              className="overflow-hidden"
+              eyebrow="Results"
+              headline="Proof it works."
+              subheadline="Results from businesses running on the platform behind Kickbord. Results vary by market."
+            >
+              <StatGraph stat="↑ #47 → #1" text="A roofing contractor climbed to the top of Google Maps in under 4 months." />
+              <StatGraph stat="↑ 29 leads" text="New leads for that roofer within 90 days." />
+              <StatGraph stat="10,000+" text="Google profiles managed on our platform." />
+              <StatGraph stat="About 45 min" text="Typical time to reply to a new review." />
+            </StatsWithGraph>
             <FadeInSection delay={100}>
               <FeaturesStackedAlternatingWithDemos
                 eyebrow="How it works"
@@ -179,7 +180,7 @@ export default function VslV1() {
                     <FeatureStacked
                       headline="Step 1 — Demo Call (20 Mins)"
                       subheadline={<p>We start by understanding your business, your customers, and your goals. This shapes every decision that follows.</p>}
-                      cta={<LeadQualifierModal triggerLabel="Start here" triggerClassName="px-4 py-2 text-sm" />}
+                      cta={<ButtonLink href="#lead-qualifier" size="lg">Start here</ButtonLink>}
                       demo={
                         <img
                           src="/images/zoom-call.png"
@@ -192,7 +193,7 @@ export default function VslV1() {
                     <FeatureStacked
                       headline="Step 2 — Build &amp; Configure (7-10 Days)"
                       subheadline={<p>We build your website, configure your AI agent, or execute your campaign strategy — fast, with full transparency.</p>}
-                      cta={<LeadQualifierModal triggerLabel="See the process" triggerClassName="px-4 py-2 text-sm" />}
+                      cta={<ButtonLink href="#lead-qualifier" size="lg">See the process</ButtonLink>}
                       demo={
                         <img
                           src="/images/build.png"
@@ -205,7 +206,7 @@ export default function VslV1() {
                     <FeatureStacked
                       headline="Step 3 — Launch &amp; Optimize (Ongoing)"
                       subheadline={<p>Your deliverable goes live with performance checks and a clear handoff. We stay available for questions and iteration.</p>}
-                      cta={<LeadQualifierModal triggerLabel="Get started" triggerClassName="px-4 py-2 text-sm" />}
+                      cta={<ButtonLink href="#lead-qualifier" size="lg">Get started</ButtonLink>}
                       demo={
                         <img
                           src="/images/review.png"
@@ -231,7 +232,7 @@ export default function VslV1() {
                 'Monthly check-in on ad performance',
                 '$400 one-time setup',
               ]}
-              cta={<LeadQualifierModal triggerLabel="Get your free Google profile audit" />}
+              cta={<ButtonLink href="#lead-qualifier" size="lg">Get your free Google profile audit</ButtonLink>}
             />
 
             <PricingSingleTierTwoColumn
@@ -247,7 +248,7 @@ export default function VslV1() {
                 'Competitor analysis',
                 'Add LSA for $200/mo · $400 one-time setup',
               ]}
-              cta={<LeadQualifierModal triggerLabel="Get your free Google profile audit" />}
+              cta={<ButtonLink href="#lead-qualifier" size="lg">Get your free Google profile audit</ButtonLink>}
             />
 
             <PricingSingleTierTwoColumn
@@ -263,7 +264,7 @@ export default function VslV1() {
                 'New business line included',
                 '$400 one-time setup',
               ]}
-              cta={<LeadQualifierModal triggerLabel="Get your free Google profile audit" />}
+              cta={<ButtonLink href="#lead-qualifier" size="lg">Get your free Google profile audit</ButtonLink>}
             />
             <FooterWithLinksAndSocialIcons 
               links={

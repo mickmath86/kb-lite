@@ -24,9 +24,9 @@ export function HeroCenteredWithDemo({
   cta2?:ReactNode
 } & ComponentProps<'section'>) {
   return (
-    <section className={clsx('py-16', className)} {...props}>
+    <section className={clsx('py-8', className)} {...props}>
       <Container className="flex flex-col gap-16">
-        <div className="flex flex-col items-center gap-32">
+        <div className="flex flex-col items-center gap-8">
           <div className="flex flex-col items-center gap-6">
             {eyebrow}
             <Heading className="max-w-5xl text-center">{headline}</Heading>

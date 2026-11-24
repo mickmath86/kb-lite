@@ -2,7 +2,7 @@
 
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/20/solid'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState, useSyncExternalStore } from 'react'
 import posthog from 'posthog-js'
 import { Button } from './button'
 import { BookingCalendar } from './booking-calendar'
@@ -23,6 +23,20 @@ const qualified = (revenue: string) =>
 
 type Screen = 'workType' | 'revenue' | 'calendar' | 'resource' | 'notFit' | 'booked'
 
+// GHL's 'highlevel.setHeight' under-reports on narrow screens (e.g. 560px for
+// ~1000px of content), so on mobile the inline calendar scrolls internally.
+const MOBILE_QUERY = '(max-width: 639px)'
+const subscribeMobile = (cb: () => void) => {
+  const mq = window.matchMedia(MOBILE_QUERY)
+  mq.addEventListener('change', cb)
+  return () => mq.removeEventListener('change', cb)
+}
+const useIsMobile = () =>
+  useSyncExternalStore(subscribeMobile, () => window.matchMedia(MOBILE_QUERY).matches, () => false)
+
+const posthogEnabled = () =>
+  Boolean(process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST)
+
 function bookingDetailsFromMessage(data: unknown): string {
   if (!Array.isArray(data)) return ''
   const payload = data[1]
@@ -35,18 +49,25 @@ function bookingDetailsFromMessage(data: unknown): string {
   return ''
 }
 
-export function LeadQualifierModal({
-  triggerLabel = 'See how it works',
-  triggerClassName,
-  triggerAriaLabel,
+// The qualifier steps, shared by the modal and the inline <LeadQualifier />.
+// Inline (no `onClose`), the end screens offer "Start over" instead of closing.
+function LeadQualifierFlow({
+  inline = false,
+  onClose,
+  onScreenChange,
 }: {
-  triggerLabel?: string
-  triggerClassName?: string
-  triggerAriaLabel?: string
+  inline?: boolean
+  onClose?: () => void
+  onScreenChange?: (screen: Screen) => void
 }) {
-  const [open, setOpen] = useState(false)
-  const [screen, setScreen] = useState<Screen>('workType')
+  const [screen, setScreenState] = useState<Screen>('workType')
+  const isMobile = useIsMobile()
   const [bookingDetails, setBookingDetails] = useState('')
+
+  function setScreen(next: Screen) {
+    setScreenState(next)
+    onScreenChange?.(next)
+  }
 
   // GHL posts 'msgsndr-booking-complete' to the parent when a booking goes through.
   useEffect(() => {
@@ -54,18 +75,18 @@ export function LeadQualifierModal({
       const data = e.data
       if (Array.isArray(data) && data[0] === 'msgsndr-booking-complete') {
         setBookingDetails(bookingDetailsFromMessage(data))
-        setScreen('booked')
-        if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
-          posthog.capture('lead_qualifier_booking_complete')
-        }
+        setScreenState('booked')
+        onScreenChange?.('booked')
+        if (posthogEnabled()) posthog.capture('lead_qualifier_booking_complete')
       }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [])
+  }, [onScreenChange])
 
   function answer(step: 'workType' | 'revenue', value: string) {
     if (step === 'workType') {
+      if (inline && posthogEnabled()) posthog.capture('lead_qualifier_started')
       setScreen(value === NOT_CONTRACTOR ? 'notFit' : 'revenue')
       return
     }
@@ -73,11 +94,14 @@ export function LeadQualifierModal({
   }
 
   function back() {
-    setScreen((s) => (s === 'revenue' ? 'workType' : 'revenue'))
+    setScreen(screen === 'revenue' ? 'workType' : 'revenue')
   }
 
-  function close() {
-    setOpen(false)
+  function finish() {
+    if (onClose) {
+      onClose()
+      return
+    }
     setScreen('workType')
     setBookingDetails('')
   }
@@ -91,7 +115,131 @@ export function LeadQualifierModal({
     notFit: 'Kickbord is built for contractors and trade businesses, so we’re probably not the right fit. Thanks for checking us out.',
     booked: 'You’re booked. Check your texts for confirmation.',
   }
-  const isCalendar = screen === 'calendar'
+  const titleClassName = 'font-display text-2xl/8 text-olive-950 dark:text-white'
+  const finishLabel = onClose ? (screen === 'booked' ? 'Done' : 'Close') : 'Start over'
+
+  return (
+    <>
+      {stepNumber > 0 ? (
+        <div className="mb-6">
+          <div className="flex items-center justify-between text-xs/5 font-medium text-olive-500 dark:text-olive-400">
+            <span>Step {stepNumber} of 3</span>
+          </div>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-olive-950/10 dark:bg-white/10">
+            <div
+              className="h-full rounded-full bg-olive-600 transition-all duration-300 dark:bg-olive-300"
+              style={{ width: `${(stepNumber / 3) * 100}%` }}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      {inline ? (
+        <h2 className={titleClassName}>{title[screen]}</h2>
+      ) : (
+        <DialogTitle className={titleClassName}>{title[screen]}</DialogTitle>
+      )}
+
+      {screen === 'workType' || screen === 'revenue' ? (
+        <div className=" flex flex-col gap-3">
+          {(screen === 'workType' ? WORK_TYPES : REVENUE_OPTIONS).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => answer(screen, option)}
+              className="w-full rounded-xl border border-olive-950/10 px-5 py-4 text-left text-base/7 font-medium text-olive-950 transition hover:border-olive-600 hover:bg-olive-950/5 dark:border-white/10 dark:text-white dark:hover:border-olive-300 dark:hover:bg-white/5"
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {screen === 'calendar' ? (
+        <div className={!inline ? 'mt-6 min-h-0 flex-1 overflow-hidden' : isMobile ? 'mt-6 h-[85svh]' : 'mt-6'}>
+          <Suspense fallback={<div style={{ height: '720px' }} aria-hidden="true" />}>
+            {inline && !isMobile ? (
+              <BookingCalendar minHeight={600} maxHeight={2100} />
+            ) : (
+              <BookingCalendar minHeight={480} scrollable />
+            )}
+          </Suspense>
+        </div>
+      ) : null}
+
+      {screen === 'resource' ? (
+        <div className="mt-6">
+          <p className="text-base/7 text-olive-700 dark:text-olive-300">
+            We&rsquo;ll text you a free guide to getting more jobs from Google and missed calls.
+          </p>
+          <a
+            href={RESOURCE_URL}
+            className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-olive-950 px-4 text-sm/7 font-medium text-white hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200"
+          >
+            Get the free guide
+          </a>
+          <button
+            type="button"
+            onClick={() => setScreen('calendar')}
+            className="mt-4 block w-full text-center text-sm/6 font-medium text-olive-500 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white"
+          >
+            Still want to talk? Book a call
+          </button>
+        </div>
+      ) : null}
+
+      {screen === 'notFit' || screen === 'booked' ? (
+        <div className="mt-6">
+          {screen === 'booked' && bookingDetails ? (
+            <p className="mb-4 text-base/7 text-olive-700 dark:text-olive-300">{bookingDetails}</p>
+          ) : null}
+          <Button type="button" size="lg" onClick={finish} className="min-h-11 w-full justify-center">
+            {finishLabel}
+          </Button>
+        </div>
+      ) : null}
+
+      {screen !== 'workType' && screen !== 'notFit' && screen !== 'booked' ? (
+        <button
+          type="button"
+          onClick={back}
+          className="mt-4 text-sm/6 font-medium text-olive-500 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white"
+        >
+          &larr; Back
+        </button>
+      ) : null}
+    </>
+  )
+}
+
+// The qualifier rendered directly on the page (no trigger button or dialog).
+export function LeadQualifier({ className }: { className?: string }) {
+  return (
+    <div
+      id="lead-qualifier"
+      className={`mx-auto w-full max-w-7xl scroll-mt-6 rounded-2xl bg-white p-6 shadow-xl ring-1 ring-olive-950/5 sm:p-8 dark:bg-olive-900 dark:ring-white/10 ${className ?? ''}`}
+    >
+      <LeadQualifierFlow inline />
+    </div>
+  )
+}
+
+export function LeadQualifierModal({
+  triggerLabel = 'See how it works',
+  triggerClassName,
+  triggerAriaLabel,
+}: {
+  triggerLabel?: string
+  triggerClassName?: string
+  triggerAriaLabel?: string
+}) {
+  const [open, setOpen] = useState(false)
+  const [isCalendar, setIsCalendar] = useState(false)
+
+  function close() {
+    setOpen(false)
+    setIsCalendar(false)
+  }
 
   return (
     <>
@@ -100,9 +248,7 @@ export function LeadQualifierModal({
         className={triggerClassName}
         aria-label={triggerAriaLabel}
         onClick={() => {
-          if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
-            posthog.capture('lead_qualifier_started')
-          }
+          if (posthogEnabled()) posthog.capture('lead_qualifier_started')
           setOpen(true)
         }}
       >
@@ -121,95 +267,7 @@ export function LeadQualifierModal({
               <span className="sr-only">Close</span>
               <XMarkIcon className="size-5" />
             </button>
-
-            {stepNumber > 0 ? (
-              <div className="mb-6">
-                <div className="flex items-center justify-between text-xs/5 font-medium text-olive-500 dark:text-olive-400">
-                  <span>Step {stepNumber} of 3</span>
-                </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-olive-950/10 dark:bg-white/10">
-                  <div
-                    className="h-full rounded-full bg-olive-600 transition-all duration-300 dark:bg-olive-300"
-                    style={{ width: `${(stepNumber / 3) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ) : null}
-
-            <DialogTitle className="font-display text-2xl/8 text-olive-950 dark:text-white">
-              {title[screen]}
-            </DialogTitle>
-
-            {screen === 'workType' || screen === 'revenue' ? (
-              <div className=" flex flex-col gap-3">
-                {(screen === 'workType' ? WORK_TYPES : REVENUE_OPTIONS).map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => answer(screen, option)}
-                    className="w-full rounded-xl border border-olive-950/10 px-5 py-4 text-left text-base/7 font-medium text-olive-950 transition hover:border-olive-600 hover:bg-olive-950/5 dark:border-white/10 dark:text-white dark:hover:border-olive-300 dark:hover:bg-white/5"
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-
-            {screen === 'calendar' ? (
-              <div className="mt-6 min-h-0 flex-1 overflow-hidden">
-                <BookingCalendar minHeight={480} scrollable />
-              </div>
-            ) : null}
-
-            {screen === 'resource' ? (
-              <div className="mt-6">
-                <p className="text-base/7 text-olive-700 dark:text-olive-300">
-                  We&rsquo;ll text you a free guide to getting more jobs from Google and missed calls.
-                </p>
-                <a
-                  href={RESOURCE_URL}
-                  className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-olive-950 px-4 text-sm/7 font-medium text-white hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200"
-                >
-                  Get the free guide
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setScreen('calendar')}
-                  className="mt-4 block w-full text-center text-sm/6 font-medium text-olive-500 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white"
-                >
-                  Still want to talk? Book a call
-                </button>
-              </div>
-            ) : null}
-
-            {screen === 'notFit' ? (
-              <div className="mt-6">
-                <Button type="button" size="lg" onClick={close} className="min-h-11 w-full justify-center">
-                  Close
-                </Button>
-              </div>
-            ) : null}
-
-            {screen === 'booked' ? (
-              <div className="mt-6">
-                {bookingDetails ? (
-                  <p className="text-base/7 text-olive-700 dark:text-olive-300">{bookingDetails}</p>
-                ) : null}
-                <Button type="button" size="lg" onClick={close} className="mt-4 min-h-11 w-full justify-center">
-                  Done
-                </Button>
-              </div>
-            ) : null}
-
-            {screen !== 'workType' && screen !== 'notFit' && screen !== 'booked' ? (
-              <button
-                type="button"
-                onClick={back}
-                className="mt-4 text-sm/6 font-medium text-olive-500 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white"
-              >
-                &larr; Back
-              </button>
-            ) : null}
+            <LeadQualifierFlow onClose={close} onScreenChange={(s) => setIsCalendar(s === 'calendar')} />
           </DialogPanel>
         </div>
       </Dialog>

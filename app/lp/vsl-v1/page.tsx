@@ -22,7 +22,7 @@ export default function VslV1() {
             <PreserveQueryParams />
             <div className="w-full flex items-center justify-center my-12">
                 <img src="/logos/kb-icon-white.png"  className="h-16 not-dark:hidden" alt="Kickbord Logo" />
-                <img src="/logos/kb-icon-black.png"  className="h-16  dark:hidden" alt="Kickbord Logo" />
+                <img src="/logos/kb-icon-blk.png"  className="h-16  dark:hidden" alt="Kickbord Logo" />
             </div>
             <HeroCenteredWithDemo
                         eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}

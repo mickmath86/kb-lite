@@ -102,8 +102,7 @@ const pricingPlans: {
 import { TeamMember, TeamThreeColumnGrid } from '@/components/sections/team-three-column-grid'
 import Link from 'next/link'
 import MainNav from '@/components/sections/main-nav'
-import { Plan, PricingHeroMultiTier } from '@/components/sections/pricing-hero-multi-tier'
-import { Wallpaper } from '@/components/elements/wallpaper'
+import { KickbordPricing } from '@/components/sections/kickbord-pricing'
 
 export default function Page() {
   const [billing, setBilling] = useState<'monthly' | 'quarterly'>('monthly')
@@ -195,66 +194,7 @@ export default function Page() {
           }
         />
         {/* Pricing */}
-      <PricingHeroMultiTier 
-              eyebrow="Pricing"
-              headline="Choose the plan that's right for you"
-              subheadline="Start with our Essential plan and upgrade as you grow"
-             options={['Monthly', 'Annual'] as const}
-                         plans={{
-                           Monthly: (
-                             <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-                              <Wallpaper color="green" className="rounded-xl">
-                               <Plan
-                                 name="Core Contractor"
-                                 price="$297"
-                                 period="/ month"
-                                 subheadline={<p>Perfect for businesses getting started with digital marketing modernization.</p>}
-                                 features={['Functional Website', 'Missed Call Text Back', 'Local SEO', 'One-Click Marketing Campaigns', '5-Star Review Funnel']}
-                                 cta={<ButtonLink href="#" size="lg" className="w-full justify-center">Get started</ButtonLink>}
-                               />
-                               </Wallpaper>
-                               <Wallpaper color="blue" className="rounded-xl">
-                               <Plan
-                                 name="Growth Plan"
-                                 price="$500"
-                                 period="/ month (not including ad spend)"
-                                 badge="Best value"
-                                 subheadline={<p>For businesses ready to go all-in on marketing modernization.</p>}
-                                 features={['Everything in Core Contractor Plus...', 'Weekly strategy calls', 'Slack access', 'Priority delivery']}
-                                 cta={<ButtonLink href="#" size="lg" className="w-full justify-center">Start growing</ButtonLink>}
-                               />
-                               </Wallpaper>
-      
-                             </div>
-                           ),
-                           Annual: (
-                             <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-                              <Wallpaper color="green" className="rounded-xl">
-                               <Plan
-                                 name="Core Contractor"
-                                 price="$1,200"
-                                 period="/ year"
-                                 badge="Save 20%"
-                                 subheadline={<p>Save 20% with annual billing. Perfect for businesses getting started.</p>}
-                               features={['Functional Website', 'Missed Call Text Back', 'Local SEO', 'One-Click Marketing Campaigns', '5-Star Review Funnel']}
-                                 cta={<ButtonLink href="#" size="lg" className="w-full justify-center">Get started</ButtonLink>}
-                               />
-                               </Wallpaper>
-                               <Wallpaper color="blue" className="rounded-xl">
-                               <Plan
-                                 name="Growth"
-                                 price="$2,400"
-                                 period="/ year"
-                                 badge="Best value"
-                                 subheadline={<p>Save 20% annually. For businesses going all-in on marketing modernization.</p>}
-                                 features={['Unlimited projects', 'Weekly strategy calls', 'Slack access', 'Priority delivery']}
-                                 cta={<ButtonLink href="#" size="lg" className="w-full justify-center">Start growing</ButtonLink>}
-                               />
-                               </Wallpaper>
-                             </div>
-                           ),
-                         }}
-            />
+        <KickbordPricing ctaHref="/lp/booking" eyebrow="Pricing" headline="Choose the plan that's right for you" />
 
         {/* Features */}
         <FeaturesThreeColumn

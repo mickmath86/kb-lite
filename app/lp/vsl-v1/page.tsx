@@ -25,7 +25,7 @@ import { TargetIcon } from "@/components/icons/target-icon";
 import { MicrophoneIcon } from "@/components/icons/microphone-icon";
 import { CalendarIcon } from "@/components/icons/calendar-icon";
 import { ClockIcon } from "@/components/icons/clock-icon";
-import { PricingSingleTierTwoColumn } from "@/components/sections/pricing-single-tier-two-column";
+import { KickbordPricing } from "@/components/sections/kickbord-pricing";
 import { FadeInSection } from "@/components/elements/fade-in-section";
 import { MapPinIcon } from "@/components/icons/map-pin-icon";
 import { StarIcon } from "@/components/icons/star-icon";
@@ -239,51 +239,7 @@ export default async function VslV1({ searchParams }: { searchParams: Promise<SP
               />
             </FadeInSection>
 
-            <PricingSingleTierTwoColumn
-              headline="Starter — ads running, profile cleaned up"
-              subheadline={<p>The simplest way to start showing up where homeowners are already searching. We set up and manage your Local Service Ads and give your Google Business Profile a one-time cleanup.</p>}
-              price="$250"
-              period="/mo"
-              features={[
-                'Local Service Ads setup and management',
-                'One-time Google Business Profile cleanup',
-                'Monthly check-in on ad performance',
-                '$400 one-time setup',
-              ]}
-              cta={<ButtonLink href="#lead-qualifier" size="lg">Get your free Google profile audit</ButtonLink>}
-            />
-
-            <PricingSingleTierTwoColumn
-              headline="Grow — your reputation, working for you"
-              subheadline={<p>The full Google Business Profile and reputation package. Reviews go out automatically, AI writes the replies, and you see exactly where you rank — no website required.</p>}
-              price="$597"
-              period="/mo"
-              features={[
-                'Automated review requests after every job',
-                'AI review replies and bad-review alerts',
-                'GBP posts and photos',
-                'Local ranking maps and AI search reports',
-                'Competitor analysis',
-                'Add LSA for $200/mo · $400 one-time setup',
-              ]}
-              cta={<ButtonLink href="#lead-qualifier" size="lg">Get your free Google profile audit</ButtonLink>}
-            />
-
-            <PricingSingleTierTwoColumn
-              headline="Expand — the whole front office, handled"
-              subheadline={<p>Google profile, reputation, website, and an AI receptionist answering every call — one plan, fully set up for you. Larger operations get a custom quote.</p>}
-              price="$799"
-              period="/mo + usage"
-              features={[
-                'Everything in Grow — GBP, reputation, ranking maps, and reports',
-                'Kickbord website that books jobs',
-                'AI backup receptionist answering 24/7',
-                'Missed-call text-back',
-                'New business line included',
-                '$400 one-time setup',
-              ]}
-              cta={<ButtonLink href="#lead-qualifier" size="lg">Get your free Google profile audit</ButtonLink>}
-            />
+            <KickbordPricing ctaHref="#lead-qualifier" />
             <FooterWithLinksAndSocialIcons 
               links={
                 <div className="flex flex-wrap justify-center gap-6 text-sm text-olive-600">

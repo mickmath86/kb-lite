@@ -34,7 +34,25 @@ import { FloatingVideo } from "@/components/elements/floating-video";
 import { BookingCalendar } from "@/components/elements/booking-calendar";
 import { Suspense } from "react";
 
-export default function VslV1() {
+type SP = Record<string, string | string[] | undefined>
+
+const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)
+
+const HERO_COPY = {
+    default: {
+        headline: "The boring stuff is costing you jobs. Let AI handle it.",
+        subheadline: "We start with your Google profile and reviews, the basics that decide who gets the call. Then we make sure no call goes unanswered.",
+    },
+    gbp: {
+        headline: "Fresh reviews after every job, without you asking.",
+        subheadline: "Every finished job gets a review request, every review gets a reply in your voice, and your profile stays active every month. Book a call and your profile audit will be done before we talk.",
+    },
+}
+
+export default async function VslV1({ searchParams }: { searchParams: Promise<SP> }) {
+    const sp = await searchParams
+    const hero = first(sp.h) === "gbp" ? HERO_COPY.gbp : HERO_COPY.default
+
     return (
         <div>
             <PreserveQueryParams />
@@ -44,8 +62,8 @@ export default function VslV1() {
             </div>
             <HeroCenteredWithDemo
                         eyebrow={<Eyebrow>Marketing for home service businesses</Eyebrow>}
-                        headline="The boring stuff is costing you jobs. Let AI handle it."
-                        subheadline={<p>We start with your Google profile and reviews, the basics that decide who gets the call. Then we make sure no call goes unanswered.</p>}
+                        headline={hero.headline}
+                        subheadline={<p>{hero.subheadline}</p>}
                       
                         demo={
                          <>                           
